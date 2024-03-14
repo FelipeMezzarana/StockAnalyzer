@@ -18,7 +18,7 @@ class Polygon:
         self.grouped_daily_endpoint = "v2/aggs/grouped/locale/us/market/stocks/"
 
     def get_grouped_daily(self,date: str, adjusted: bool = True) -> dict:
-        """Return the daily open, high, low, and close (OHLC) 
+        """Return the daily open, high, low, and close (OHLC).
         for the entire stocks/equities markets.
 
         -- date format yyyy-mm-dd
@@ -33,10 +33,5 @@ class Polygon:
             f"{self.api_key_url}"
             )
         
-        print(url)
-        self.resp = requests.get(url)
-        return pl.resp.json()
-
-if __name__ == "__main__":
-    pl = Polygon()
-    print(pl.base_url,pl.apikey)
+        resp = requests.get(url)
+        return resp.json()
