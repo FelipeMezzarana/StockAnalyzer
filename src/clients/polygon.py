@@ -1,5 +1,6 @@
 import requests
 import os
+from .. import settings
 
 class Polygon:
     """Handle requests to Polygon API.
@@ -14,8 +15,9 @@ class Polygon:
         api_key = os.getenv("POLYGON_KEY")
         self.api_key_url = f"&apiKey={api_key}"
         self.api_calls_per_min = api_calls_per_min
-        self.base_url = "https://api.polygon.io/"
-        self.grouped_daily_endpoint = "v2/aggs/grouped/locale/us/market/stocks/"
+        self.base_url = settings.BASE_URL
+        self.endpoints = settings.ENDPOINTS
+
 
     def get_grouped_daily(self,date: str, adjusted: bool = True) -> dict:
         """Return the daily open, high, low, and close (OHLC).
@@ -27,7 +29,7 @@ class Polygon:
         adjusted_query = "?adjusted=true" if adjusted else "?adjusted=false"
         url = (
             f"{self.base_url}"
-            f"{self.grouped_daily_endpoint}"
+            f"{self.endpoints.get('grouped_daily_endpoint')}"
             f"{date}"
             f"{adjusted_query}"
             f"{self.api_key_url}"

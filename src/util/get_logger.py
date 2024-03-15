@@ -2,7 +2,7 @@
 import logging
 from .. import settings
 
-def get_structlogger(name: str):
+def get_logger(name: str):
     """Return configured logger."""
 
     logging.basicConfig(

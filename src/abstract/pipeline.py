@@ -1,0 +1,36 @@
+# Standard library
+import json
+from abc import ABC, abstractmethod
+from typing import List
+
+# Local
+from ..factories.step_factory import StepFactory
+from ..util.get_logger import get_logger
+
+
+class Pipeline(ABC):
+    """Abstract class used to run pipelines."""
+
+    def __init__(self, name: str, **kwargs):
+        self.logger = get_logger(__name__)
+        self.name = name
+        self.kwargs = kwargs
+        self.steps = StepFactory()
+
+    @abstractmethod
+    def build_steps(self) -> List[str]:
+        """Builds list of allowed steps in pipeline."""
+        pass
+
+    def run(self):
+        """Summary: Executes step if it wasn't run before."""
+
+        steps = self.build_steps()
+        output = None
+        
+        for step in steps:
+            self.logger.info(f"starting {step=}")
+            is_success, output = self.steps.create(step, output, **self.kwargs).run()
+            self.logger.debug(f"{is_success} -- {output}")
+            output = json.dumps(output) if output else None
+            self.logger.info(f"finished {step=}")
