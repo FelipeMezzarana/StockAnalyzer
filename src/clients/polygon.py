@@ -1,6 +1,7 @@
 import requests
 import os
-from .. import settings
+from ..settings import Settings 
+from ..util.get_logger import get_logger
 
 class Polygon:
     """Handle requests to Polygon API.
@@ -9,9 +10,10 @@ class Polygon:
     * Export POLYGON_KEY=YOUR_KEY as env variable
     """
 
-    def __init__(self, api_calls_per_min: int = 5):
+    def __init__(self, settings: Settings, api_calls_per_min: int = 5):
         """Initialize cretencials and settings."""
 
+        self.logger = get_logger(__name__, settings)
         api_key = os.getenv("POLYGON_KEY")
         self.api_key_url = f"&apiKey={api_key}"
         self.api_calls_per_min = api_calls_per_min

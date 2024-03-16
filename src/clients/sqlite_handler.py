@@ -1,5 +1,5 @@
 import sqlite3
-from .. import settings 
+from ..settings import Settings 
 import os
 from ..util.get_logger import get_logger
 
@@ -7,9 +7,9 @@ from ..util.get_logger import get_logger
 class SQLiteHandler:
     """SQLLite db operations handler.
     """
-    def __init__(self):
+    def __init__(self, settings: Settings):
 
-        self.logger = get_logger(__name__)
+        self.logger = get_logger(__name__, settings)
 
         # Create db file if not exist
         self.logger.debug(f"{settings.DB_PATH=}")
@@ -34,6 +34,11 @@ class SQLiteHandler:
             self.logger.debug(f"Query failed. {query=}")
             is_successful = False
             return is_successful, None
+        
+    def create_table(table_name: str, pipeline: str):
+        """Create table based on pipeline settings"""
+
+
 
 
         
