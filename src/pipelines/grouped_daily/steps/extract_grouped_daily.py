@@ -27,18 +27,24 @@ class GroupedDailyExtractor(Step):
         """
 
         table_name = self.settings.PIPELINE_TABLE["name"]
-        is_successful, max_date = self.sqlite_client.query(
+        is_successful, last_date = self.sqlite_client.query(
             f"SELECT MAX(DATE) FROM {table_name}"
             )
-        
-        if is_successful:
-            return max_date
+
+        last_update_date = last_date[0][0] if last_date else None
+        if is_successful and last_update_date:
+            return last_update_date
         else:
             max_hist_avaiable = (
                 datetime.today() - 
                 timedelta(days=self.max_days_hist)
                 ).strftime("%Y-%m-%d")
-            return max_hist_avaiable
+            if last_date:
+                return max_hist_avaiable
+            else:
+                self.logger.info(f"Table {table_name} not found. Creating from scratch")
+                self.sqlite_client.create_table()
+                return max_hist_avaiable
 
     def update_grouped_daily(self,start_date: str,end_date: str):
         """Return 
@@ -52,8 +58,8 @@ class GroupedDailyExtractor(Step):
     def run(self):
         """Run step."""
 
-        max_date = self.get_last_date()
-        self.logger.info(f"{max_date=}")
+        last_update_date = self.get_last_date()
+        self.logger.info(f"{last_update_date=}")
 
         output = {"test": "ok"}
         return True, output

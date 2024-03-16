@@ -10,7 +10,7 @@ class SQLiteHandler:
     def __init__(self, settings: Settings):
 
         self.logger = get_logger(__name__, settings)
-
+        self.settings = settings
         # Create db file if not exist
         self.logger.debug(f"{settings.DB_PATH=}")
         if not os.path.exists(settings.DB_PATH):
@@ -35,10 +35,23 @@ class SQLiteHandler:
             is_successful = False
             return is_successful, None
         
-    def create_table(table_name: str, pipeline: str):
+    def create_table(self):
         """Create table based on pipeline settings"""
 
+        # Build SQL statement
+        table_name = self.settings.PIPELINE_TABLE["name"]
+        table_fields = self.settings.PIPELINE_TABLE["fields_mapping"]
+        create_table_sql = f"CREATE TABLE IF NOT EXISTS {table_name} \n ("
+        for v in table_fields.values():
+            create_table_sql += f"{v[0]} {v[1]}\n, "
 
+        create_table_sql = create_table_sql.strip(", ")
+        create_table_sql += " )" 
+        self.logger.debug(f"{create_table_sql=}")
+
+        # Create Table
+        self.cur.execute(create_table_sql)
+        self.conn.commit()
 
 
         

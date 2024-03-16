@@ -14,15 +14,17 @@ class Settings:
             "grouped-daily-pipeline":{
                 "name": "GROUPED_DAILY",
                 "fields_mapping": {
-                    "T": "exchange_symbol",
-                    'v': "trading_volume",
-                    'vw': "volume_weighted_avg",
-                    'o': "open_price",
-                    'c': "close_price",
-                    'h': "highest_price",
-                    'l': "lowest_price",
-                    't': "end_window_timestamp",
-                    'n': "n_transaction"
+                    "non_api1": ("date", "DATETIME"),
+                    "T": ("exchange_symbol", "VARCHAR(255)"),
+                    'v': ("trading_volume", "FLOAT"),
+                    'vw': ("volume_weighted_avg", "FLOAT"),
+                    'o': ("open_price", "FLOAT"),
+                    'c': ("close_price", "FLOAT"),
+                    'h': ("highest_price", "FLOAT"),
+                    'l': ("lowest_price", "FLOAT"),
+                    't': ("end_window", "DATETIME"),
+                    'n': ("n_transaction", "INTEGER"),
+                    "non_api2": ("updated_at", "DATETIME"),
                     }
                 }
             }
