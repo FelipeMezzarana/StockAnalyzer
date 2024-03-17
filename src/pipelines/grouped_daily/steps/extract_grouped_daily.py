@@ -6,7 +6,7 @@ from ....abstract.step import Step
 from ....clients.polygon import Polygon
 from ....clients.sqlite_handler import SQLiteHandler
 from ....settings import Settings
-
+from ....util.csv_handler import append_to_file
 
 class GroupedDailyExtractor(Step):
     """Extract daily data from polygon API."""
@@ -20,7 +20,7 @@ class GroupedDailyExtractor(Step):
 
         self.polygon_client = Polygon(settings)
         self.sqlite_client = SQLiteHandler(settings)
-        self.max_days_hist = self.settings.MAX_DAYS_HIST
+        self.max_days_hist = self.settings.POLYGON_MAX_DAYS_HIST
 
     def get_last_date(self):
         """Return max date for grouped_daily table.
@@ -44,20 +44,37 @@ class GroupedDailyExtractor(Step):
                 self.sqlite_client.create_table()
                 return max_hist_avaiable
 
-    def update_grouped_daily(self, start_date: str, end_date: str):
+    def update_grouped_daily(self, start_date: str):
         """Update multiple dates in GROUPED_DAILY table.
 
         start_date -- start of period (format yyyy-mm-dd)
         end_date -- end of period (format yyyy-mm-dd)
         """
+        
+        request_date = start_date
+        file_path = "grouped_daily_temp.csv"
+        self.output["extracted_file_path"] = file_path
+        api_call_count, row_count = 0, 0
+        while request_date != self.settings.POLYGON_UPDATE_UNTIL:
+            result = self.polygon_client.get_grouped_daily(request_date)
+            data = result.get("results")
+            if data:
+                for stock_dict in data:
+                    stock_dict["date"] = request_date
+                append_to_file(file_path, data)
+            data_obj = datetime.strptime(request_date, '%Y-%m-%d')
+            request_date = (data_obj + timedelta(days=1)).strftime('%Y-%m-%d')
+            api_call_count += 1
+            row_count += result.get("resultsCount", 0)
 
-        pass
 
     def run(self):
         """Run step."""
 
         last_update_date = self.get_last_date()
         self.logger.info(f"{last_update_date=}")
+        self.update_grouped_daily(last_update_date)
 
-        output = {"test": "ok"}
-        return True, output
+
+        self.output["test"] = "ok"
+        return True, self.output

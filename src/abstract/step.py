@@ -14,6 +14,7 @@ class Step(ABC):
         self.previous_output = previous_output
         self.logger = get_logger(name, settings)
         self.logger = self.logger.bind(step=settings.step_name)
+        self.output = {}
 
     @abstractmethod
     def run(self):
