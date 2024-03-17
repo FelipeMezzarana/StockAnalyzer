@@ -5,8 +5,9 @@ from typing import List
 
 # Local
 from ..factories.step_factory import StepFactory
-from ..util.get_logger import get_logger
 from ..settings import Settings
+from ..util.get_logger import get_logger
+
 
 class Pipeline(ABC):
     """Abstract class used to run pipelines."""
@@ -27,7 +28,7 @@ class Pipeline(ABC):
 
         pipeline_steps = self.build_steps()
         output = None
-        
+
         for step in pipeline_steps:
             self.logger.info(f"starting {step=}")
             self.settings.step_name = step

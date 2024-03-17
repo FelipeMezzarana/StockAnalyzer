@@ -1,7 +1,13 @@
-import requests
+# Standard library
 import os
-from ..settings import Settings 
+
+# Third party
+import requests
+
+# Local
+from ..settings import Settings
 from ..util.get_logger import get_logger
+
 
 class Polygon:
     """Handle requests to Polygon API.
@@ -20,8 +26,7 @@ class Polygon:
         self.base_url = settings.BASE_URL
         self.endpoints = settings.ENDPOINTS
 
-
-    def get_grouped_daily(self,date: str, adjusted: bool = True) -> dict:
+    def get_grouped_daily(self, date: str, adjusted: bool = True) -> dict:
         """Return the daily open, high, low, and close (OHLC).
         for the entire stocks/equities markets.
 
@@ -35,7 +40,7 @@ class Polygon:
             f"{date}"
             f"{adjusted_query}"
             f"{self.api_key_url}"
-            )
-        
+        )
+
         resp = requests.get(url)
         return resp.json()

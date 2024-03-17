@@ -1,15 +1,14 @@
-
+# Local
 from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
 from ..settings import Settings
 
 
-class PipelineFactory():
+class PipelineFactory:
     """Pipeline Factory.
     Uses factory design pattern to create pipelines.
     """
 
     def __init__(self, settings: Settings):
-
         self.pipeline = settings.pipeline
         self._pipelines = {
             "grouped-daily-pipeline": lambda: GroupedDailyPipeline(settings),

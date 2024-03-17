@@ -1,4 +1,4 @@
-
+# Local
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
 from ..settings import Settings
 
@@ -9,13 +9,15 @@ class StepFactory:
     """
 
     def __init__(self, settings: Settings):
-
         self.settings = settings
         self._steps = {
-            "extract-grouped-daily-polygon": 
-            lambda previous_output, settings, **kwargs: GroupedDailyExtractor(previous_output, settings, **kwargs)
-            }
-    
+            "extract-grouped-daily-polygon": (
+                lambda previous_output, settings, **kwargs: GroupedDailyExtractor(
+                    previous_output, settings, **kwargs
+                )
+            )
+        }
+
     def create(self, step, previous_output, **kwargs):
         """Returns instance of step if name is found.
 

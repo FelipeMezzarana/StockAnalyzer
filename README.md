@@ -1,1 +1,4 @@
 # StockAnalyzer
+
+## Usage 
+
