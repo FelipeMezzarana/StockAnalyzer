@@ -2,7 +2,7 @@ import sqlite3
 from ..settings import Settings 
 import os
 from ..util.get_logger import get_logger
-
+import shutil
 
 class SQLiteHandler:
     """SQLLite db operations handler.
@@ -19,6 +19,8 @@ class SQLiteHandler:
              )
         
         self.conn = sqlite3.connect(settings.DB_PATH)
+        # Save a recovery copy 
+        shutil.copy(settings.DB_PATH, settings.DB_PATH.replace(".db",".recovery"))
         self.cur = self.conn.cursor()
         self.logger.info("conected")
 
