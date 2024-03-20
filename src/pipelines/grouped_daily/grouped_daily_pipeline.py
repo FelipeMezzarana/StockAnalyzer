@@ -18,4 +18,5 @@ class GroupedDailyPipeline(Pipeline):
         # the order of the processors are important!
         return [
             "extract-grouped-daily-polygon",
+            "validate-grouped-daily-polygon",
         ]

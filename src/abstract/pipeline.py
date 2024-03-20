@@ -34,6 +34,5 @@ class Pipeline(ABC):
             self.settings.step_name = step
             steps = StepFactory(self.settings)
             is_success, output = steps.create(step, output, **self.kwargs).run()
-            self.logger.debug(f"{is_success} -- {output}")
-            output = json.dumps(output) if output else None
+            self.logger.debug(f"{is_success=} -- {output=}")
             self.logger.info(f"finished {step=}")

@@ -18,3 +18,18 @@ def append_to_file(file_path: str, data:list[dict]):
             # Append data
             for dictionary in data:
                 csv_writer.writerow(dictionary)
+
+
+def append_line(file_path: str, line: list, fields: list):
+        """Append one line to csv file.
+        Creates file if not exist.
+        """
+  
+        file_exists = os.path.isfile(file_path)
+        with open(file_path, 'a', newline='') as f:
+            csv_writer = csv.writer(f)
+            # Check File
+            if not file_exists:
+                csv_writer.writerow(fields)
+            # Append data
+            csv_writer.writerow(line)

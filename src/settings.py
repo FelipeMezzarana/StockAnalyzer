@@ -18,7 +18,7 @@ class Settings:
             "grouped-daily-pipeline": {
                 "name": "GROUPED_DAILY",
                 "fields_mapping": {
-                    "non_api1": ("date", "DATETIME"),
+                    "date": ("date", "DATETIME"),
                     "T": ("exchange_symbol", "VARCHAR(255)"),
                     "v": ("trading_volume", "FLOAT"),
                     "vw": ("volume_weighted_avg", "FLOAT"),
@@ -28,7 +28,7 @@ class Settings:
                     "l": ("lowest_price", "FLOAT"),
                     "t": ("end_window", "DATETIME"),
                     "n": ("n_transaction", "INTEGER"),
-                    "non_api2": ("updated_at", "DATETIME"),
+                    "updated_at": ("updated_at", "DATETIME"),
                 },
             }
         }
@@ -40,7 +40,7 @@ class Settings:
         self.ENDPOINTS = {"grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/"}
 
         # Polygon API settings
-        self.POLYGON_MAX_DAYS_HIST = 4
+        self.POLYGON_MAX_DAYS_HIST = 1
         self.POLYGON_CALLS_PER_MIN = 5
         # Free API allows calls only until the end of the previous day
         self.POLYGON_UPDATE_UNTIL = datetime.today().strftime('%Y-%m-%d')

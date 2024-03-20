@@ -44,7 +44,7 @@ class GroupedDailyExtractor(Step):
                 self.sqlite_client.create_table()
                 return max_hist_avaiable
 
-    def update_grouped_daily(self, start_date: str):
+    def update_grouped_daily(self, start_date: str, avoid_weeknds: bool = True):
         """Update multiple dates in GROUPED_DAILY table.
 
         start_date -- start of period (format yyyy-mm-dd)
@@ -52,21 +52,34 @@ class GroupedDailyExtractor(Step):
         """
         
         request_date = start_date
-        file_path = "grouped_daily_temp.csv"
-        self.output["extracted_file_path"] = file_path
+        file_path = "temp/grouped_daily_temp.csv"
+        self.output["file_path"] = file_path
         api_call_count, row_count = 0, 0
         while request_date != self.settings.POLYGON_UPDATE_UNTIL:
-            result = self.polygon_client.get_grouped_daily(request_date)
-            data = result.get("results")
-            if data:
-                for stock_dict in data:
-                    stock_dict["date"] = request_date
-                append_to_file(file_path, data)
+            if not avoid_weeknds or not self._is_weekend(request_date):
+                result = self.polygon_client.get_grouped_daily(request_date)
+                data = result.get("results")
+                if data:
+                    for stock_dict in data:
+                        # Add extra filds
+                        stock_dict["date"] = request_date
+                        stock_dict["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    append_to_file(file_path, data)
             data_obj = datetime.strptime(request_date, '%Y-%m-%d')
             request_date = (data_obj + timedelta(days=1)).strftime('%Y-%m-%d')
             api_call_count += 1
             row_count += result.get("resultsCount", 0)
 
+    def _is_weekend(self, date: str) -> bool:
+        """Check if string date is weekend.
+        date -- format yyyy-mm-dd
+        """
+
+        data_obj = datetime.strptime(date, '%Y-%m-%d')
+        if data_obj.weekday() in [5,6]:
+            return True
+        else:
+            return False
 
     def run(self):
         """Run step."""

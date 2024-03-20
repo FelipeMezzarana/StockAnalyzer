@@ -1,7 +1,7 @@
 # Local
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
 from ..settings import Settings
-
+from ..common_steps.validate import Validator
 
 class StepFactory:
     """Simple Processor Factory.
@@ -13,6 +13,11 @@ class StepFactory:
         self._steps = {
             "extract-grouped-daily-polygon": (
                 lambda previous_output, settings, **kwargs: GroupedDailyExtractor(
+                    previous_output, settings, **kwargs
+                )
+            ),
+            "validate-grouped-daily-polygon": (
+                lambda previous_output, settings, **kwargs: Validator(
                     previous_output, settings, **kwargs
                 )
             )
