@@ -48,6 +48,7 @@ class Settings:
         self.DB_PATH = "src/database/stock_database.db"
         self.BASE_URL = "https://api.polygon.io/"
         self.ENDPOINTS = {"grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/"}
+        self.CHUNK_SIZE = 10000
 
         # Polygon API settings
         self.POLYGON_MAX_DAYS_HIST = 2

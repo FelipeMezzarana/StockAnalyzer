@@ -27,6 +27,27 @@ class SQLiteHandler:
         self.cur = self.conn.cursor()
         self.logger.info("conected")
 
+    def insert_into(self, raw_values, header):
+        """Insert data into target table.
+        Map field to expected position, see more in settings.py
+        """
+
+        pipeline_table = self.settings.TABLES.get(self.settings.pipeline)
+        table_name = pipeline_table.get("name")
+        fields_mapping = pipeline_table.get("fields_mapping")
+        fields = tuple(fields_mapping.keys())
+        
+        # Map fields to correct position.
+        mapped_values_list = []
+        for line in raw_values:
+            raw_mapped_values = {h:v for h,v in zip(header,line)}
+            mapped_values = tuple(raw_mapped_values.get(key) for key in fields)
+            mapped_values_list.append(mapped_values)
+
+        query = F"INSERT INTO {table_name} VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        self.cur.executemany(query, mapped_values_list)
+        self.conn.commit()
+
     def query(self, query: str) -> tuple[bool, Optional[list]]:
         """Return result of a SQL query."""
 

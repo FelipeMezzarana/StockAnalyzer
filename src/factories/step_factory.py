@@ -2,6 +2,7 @@
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
 from ..settings import Settings
 from ..common_steps.validate import Validator
+from ..common_steps.load_sqlite import SQLiteLoader
 
 class StepFactory:
     """Simple Processor Factory.
@@ -16,8 +17,13 @@ class StepFactory:
                     previous_output, settings, **kwargs
                 )
             ),
-            "validate-grouped-daily-polygon": (
+            "validate": (
                 lambda previous_output, settings, **kwargs: Validator(
+                    previous_output, settings, **kwargs
+                )
+            ),
+            "load-sqlite": (
+                lambda previous_output, settings, **kwargs: SQLiteLoader(
                     previous_output, settings, **kwargs
                 )
             )

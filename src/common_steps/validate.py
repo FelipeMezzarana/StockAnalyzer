@@ -5,9 +5,10 @@ import csv
 import duckdb
 from datetime import datetime, date
 import os
+from ..abstract.step import Step
 
 
-class Validator:
+class Validator(Step):
     """Validade file.
      Validation based in: 
         * Current pipeline settings
@@ -15,11 +16,9 @@ class Validator:
     """
 
     def __init__(self,previous_output: dict, settings: Settings):
+        """Init validator."""
+        super(Validator, self).__init__(__name__, previous_output, settings)
 
-        self.logger = get_logger(__name__, settings)
-        self.output = {}
-        self.settings = settings
-        self.previous_output = previous_output
         self.file_path = self.previous_output["file_path"]
         self.pipeline = self.settings.pipeline
         self.pipeline_table = self.settings.TABLES.get(self.pipeline)

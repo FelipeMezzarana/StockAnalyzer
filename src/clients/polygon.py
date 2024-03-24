@@ -46,7 +46,15 @@ class Polygon:
 
         self.check_api_limit()
         resp = requests.get(url)
-        self.logger.debug(f"{resp.status_code=}")
+        # We need to make sure that request is successful
+        tries = 0
+        while resp.status_code != 200:
+            if tries == 3:
+                raise Exception(f"3 unsuccessful attempts to request {url=}")
+            tries += 1
+            sleep(5)
+            resp = requests.get(url)
+
         return resp.json()
 
     def check_api_limit(self):
