@@ -18,7 +18,7 @@ class Settings:
             "grouped-daily-pipeline": {
                 "name": "GROUPED_DAILY",
                 "fields_mapping": {
-                    "date": ("date", "DATETIME"),
+                    "date": ("date", "DATE"),
                     "T": ("exchange_symbol", "VARCHAR(255)"),
                     "v": ("trading_volume", "FLOAT"),
                     "vw": ("volume_weighted_avg", "FLOAT"),
@@ -30,6 +30,16 @@ class Settings:
                     "n": ("n_transaction", "INTEGER"),
                     "updated_at": ("updated_at", "DATETIME"),
                 },
+                "required_fields": [
+                    "date",
+                    "T",
+                    "o",
+                    "c",
+                    "h",
+                    "l",
+                    "t",
+                    "updated_at"
+                ]
             }
         }
         self.PIPELINE_TABLE = self.TABLES.get(pipeline)
@@ -40,7 +50,7 @@ class Settings:
         self.ENDPOINTS = {"grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/"}
 
         # Polygon API settings
-        self.POLYGON_MAX_DAYS_HIST = 1
+        self.POLYGON_MAX_DAYS_HIST = 2
         self.POLYGON_CALLS_PER_MIN = 5
         # Free API allows calls only until the end of the previous day
         self.POLYGON_UPDATE_UNTIL = datetime.today().strftime('%Y-%m-%d')

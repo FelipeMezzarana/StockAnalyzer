@@ -60,15 +60,23 @@ class GroupedDailyExtractor(Step):
                 result = self.polygon_client.get_grouped_daily(request_date)
                 data = result.get("results")
                 if data:
-                    for stock_dict in data:
-                        # Add extra filds
-                        stock_dict["date"] = request_date
-                        stock_dict["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    row_count += result.get("resultsCount", 0)
+                    self._raw_enrich(data, request_date)
                     append_to_file(file_path, data)
             data_obj = datetime.strptime(request_date, '%Y-%m-%d')
             request_date = (data_obj + timedelta(days=1)).strftime('%Y-%m-%d')
             api_call_count += 1
-            row_count += result.get("resultsCount", 0)
+
+    def _raw_enrich(self, data: list[dict], request_date: str):
+        """initial enrichment."""
+
+        for stock_dict in data:
+            # int timestamp to datetime
+            stock_dict["t"] =  datetime.utcfromtimestamp(stock_dict["t"]/1000)
+            # Add extra filds
+            stock_dict["date"] = request_date
+            stock_dict["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+   
 
     def _is_weekend(self, date: str) -> bool:
         """Check if string date is weekend.

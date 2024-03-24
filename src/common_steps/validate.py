@@ -1,7 +1,10 @@
 from ..settings import Settings
 from ..util.get_logger import get_logger
-from ..util.csv_handler import append_line
+from ..util.csv_handler import clean_temp_file
 import csv
+import duckdb
+from datetime import datetime, date
+import os
 
 
 class Validator:
@@ -21,6 +24,7 @@ class Validator:
         self.pipeline = self.settings.pipeline
         self.pipeline_table = self.settings.TABLES.get(self.pipeline)
         self.fields_mapping = self.pipeline_table.get("fields_mapping")
+        self.required_fields = self.pipeline_table.get("required_fields")
 
 
     def _get_python_type(self, sqlite_dtype) -> str:
@@ -31,31 +35,33 @@ class Validator:
               "VARCHAR(255)":str,
               "FLOAT": float,
               "INTEGER": int,
-              "DATETIME": (str, int) # Datetime from csv
+              "DATETIME": datetime,
+              "DATE": date
         }
 
         return dtype_mapping.get(sqlite_dtype)
 
-
     def _is_valid(self, fields: list, line: list):
+        """Checks is required fild exists.
+        """
+
+        for field, value in zip(fields, line):
+            if field in self.required_fields and not self._is_dtype_valid(field, value):
+                return False
+        return True
+
+
+    def _is_dtype_valid(self, field: str, value):
         """Validate line based on settings.py fields mappings.
         """
         
-        is_valid = True
-        for field, value in zip(fields, line):
-            # Check settings.py for better understanding.
-            
-            expected_dtype =  self._get_python_type(self.fields_mapping.get(field)[1])
-            # Try to convert str to dtype
-            if expected_dtype in (float, int):
-                str_digt = value.replace(".","")
-                is_valid = str_digt.isdigit()
-            elif not isinstance(value, expected_dtype):
-                is_valid = False
-                self.logger.info(f"Invalid data found. {field=} | {value=}")
-                break 
-  
-        return is_valid
+        expected_dtype =  self._get_python_type(self.fields_mapping.get(field)[1])
+        if not isinstance(value, expected_dtype):
+            self.logger.info(f"Invalid data found. {field=} | {value=}")
+            return False
+        else:
+            return True
+    
             
     def run(self):
         """Run validation step."""
@@ -63,19 +69,33 @@ class Validator:
         self.output["valid_file_path"] = self.file_path.replace(".csv","_valid.csv")
         self.output["invalid_file_path"] = self.file_path.replace(".csv","_invalid.csv")
 
-        with open(self.file_path, newline='') as raw_file:
-            csv_reader = csv.reader(raw_file)
-            n_lines = 0
-            for ln in csv_reader:
-                if n_lines == 0:
-                    fields = ln
-                    n_lines += 1
-                else:
-                    if self._is_valid(fields, ln):
-                        append_line(self.output["valid_file_path"], ln, fields)
-                    else:
-                        append_line(self.output["invalid_file_path"], ln, fields)
-                    n_lines += 1
+        if not os.path.isfile(self.file_path):
+            self.logger.info("No file to validade.")
+            return True, self.output
 
+        raw_file = duckdb.read_csv(self.file_path, header = True)
+        header = duckdb.read_csv(self.file_path, header = False).fetchone()
+
+        with (open(self.output["valid_file_path"], 'a', newline='') as valid_file, 
+              open(self.output["invalid_file_path"], 'a', newline='') as invalid_file):
+            valid_csv_writer = csv.writer(valid_file)
+            invalid_csv_writer = csv.writer(invalid_file)
+            valid_csv_writer.writerow(header)
+            invalid_csv_writer.writerow(header)
+            # Iterete results without loading in memory
+            n_lines, err_count = 0, 0
+            while True:
+                line = raw_file.fetchone()
+                if not line:
+                    break
+                if self._is_valid(header, line):
+                    valid_csv_writer.writerow(line)
+                else:
+                    invalid_csv_writer.writerow(line)
+                    err_count += 1
+                n_lines += 1
+
+        clean_temp_file(self.file_path)
+        self.logger.info(f"Validation complete. {err_count} Invalid lines found.")
         return True, self.output
 
