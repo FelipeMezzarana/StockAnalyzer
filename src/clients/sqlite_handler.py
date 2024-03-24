@@ -55,7 +55,7 @@ class SQLiteHandler:
             res = self.cur.execute(query)
             is_successful = True
             return is_successful, res.fetchall()
-        except sqlite3.OperationalError as e:
+        except sqlite3.OperationalError as e: # pragma: no cover
             self.logger.debug(f"Query failed. {e}. {query=}")
             is_successful = False
             return is_successful, None
