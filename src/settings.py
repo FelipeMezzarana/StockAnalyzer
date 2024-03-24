@@ -48,10 +48,10 @@ class Settings:
         self.DB_PATH = "src/database/stock_database.db"
         self.BASE_URL = "https://api.polygon.io/"
         self.ENDPOINTS = {"grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/"}
-        self.CHUNK_SIZE = 10000
+        self.CHUNK_SIZE = 50000
 
         # Polygon API settings
-        self.POLYGON_MAX_DAYS_HIST = 2
+        self.POLYGON_MAX_DAYS_HIST = 730
         self.POLYGON_CALLS_PER_MIN = 5
         # Free API allows calls only until the end of the previous day
         self.POLYGON_UPDATE_UNTIL = datetime.today().strftime('%Y-%m-%d')

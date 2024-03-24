@@ -3,6 +3,8 @@ from ..util.get_logger import get_logger
 from ..abstract.step import Step
 import duckdb
 from ..clients.sqlite_handler import SQLiteHandler
+from ..util.csv_handler import clean_temp_file
+import os
 
 class SQLiteLoader(Step):
 
@@ -18,6 +20,10 @@ class SQLiteLoader(Step):
     def run(self):
         """run step."""
 
+        if not os.path.isfile(self.valid_file_path):
+            self.logger.info("No file to load.")
+            return True, self.output
+        
         raw_file = duckdb.read_csv(self.valid_file_path, header = True)
         header = duckdb.read_csv(self.valid_file_path, header = False).fetchone()
 
@@ -36,5 +42,7 @@ class SQLiteLoader(Step):
             self.sqlite_client.insert_into(raw_values, header)
             self.logger.info(f"{rows:,} Values inserted. {chunk=}")
             chunk += 1
+
+        clean_temp_file(self.valid_file_path)
 
         return True, self.output

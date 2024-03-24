@@ -74,13 +74,15 @@ class Validator(Step):
 
         raw_file = duckdb.read_csv(self.file_path, header = True)
         header = duckdb.read_csv(self.file_path, header = False).fetchone()
-
+        invalid_file_exist = os.path.isfile(self.output["invalid_file_path"])
+        
         with (open(self.output["valid_file_path"], 'a', newline='') as valid_file, 
               open(self.output["invalid_file_path"], 'a', newline='') as invalid_file):
             valid_csv_writer = csv.writer(valid_file)
             invalid_csv_writer = csv.writer(invalid_file)
             valid_csv_writer.writerow(header)
-            invalid_csv_writer.writerow(header)
+            if not invalid_file_exist:
+                invalid_csv_writer.writerow(header)
             # Iterete results without loading in memory
             n_lines, err_count = 0, 0
             while True:

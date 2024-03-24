@@ -34,7 +34,7 @@ class GroupedDailyExtractor(Step):
         if is_successful and last_update_date:
             return last_update_date
         else:
-            max_hist_avaiable = (datetime.today() - timedelta(days=self.max_days_hist)).strftime(
+            max_hist_avaiable = (datetime.today() - timedelta(days=self.max_days_hist + 1)).strftime(
                 "%Y-%m-%d"
             )
             if last_date:
@@ -44,14 +44,16 @@ class GroupedDailyExtractor(Step):
                 self.sqlite_client.create_table()
                 return max_hist_avaiable
 
-    def update_grouped_daily(self, start_date: str, avoid_weeknds: bool = True):
+    def update_grouped_daily(self, last_date: str, avoid_weeknds: bool = True):
         """Update multiple dates in GROUPED_DAILY table.
 
-        start_date -- start of period (format yyyy-mm-dd)
+        last_date -- last date updated(format yyyy-mm-dd)
         end_date -- end of period (format yyyy-mm-dd)
         """
         
-        request_date = start_date
+        data_obj = datetime.strptime(last_date, '%Y-%m-%d')
+        request_date = (data_obj + timedelta(days=1)).strftime('%Y-%m-%d')
+
         file_path = "temp/grouped_daily_temp.csv"
         self.output["file_path"] = file_path
         api_call_count, row_count = 0, 0
