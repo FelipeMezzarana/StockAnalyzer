@@ -13,8 +13,8 @@ class SQLiteLoader(Step):
         super(SQLiteLoader, self).__init__(__name__, previous_output, settings)
         
         self.sqlite_client = SQLiteHandler(settings)
-        self.valid_file_path = self.previous_output["valid_file_path"] 
-        self.invalid_file_path = self.previous_output["invalid_file_path"]
+        self.valid_file_path = self.previous_output.get("valid_file_path")
+        self.invalid_file_path = self.previous_output.get("invalid_file_path")
         self.chunk_size = settings.CHUNK_SIZE
 
     def run(self):

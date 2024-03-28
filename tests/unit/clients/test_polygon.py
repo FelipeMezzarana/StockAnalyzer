@@ -18,7 +18,7 @@ class TestPolygon(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ """
-        cls.mock_settings = Settings("mock_pipeline")
+        cls.mock_settings = Settings("grouped-daily-pipeline")
 
     @patch("src.clients.polygon.requests")
     def test_get_grouped_daily(self, mock_requests) -> None:

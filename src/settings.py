@@ -1,6 +1,11 @@
 # Standard library
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
+
+# Pipelines to run, in order.
+PIPELINES = [
+    "grouped-daily-pipeline"
+    ]
 
 class Settings:
     """Handles settings through the application."""
@@ -11,6 +16,10 @@ class Settings:
         self.LOGGING_LEVEL = logging.DEBUG
 
         # Pipeline and step settings
+        if pipeline not in PIPELINES: # pragma: no cover
+            raise ValueError(
+                f"pipiline must be one of {PIPELINES}. {pipeline} is not valid."
+                )
         self.pipeline = pipeline
         self.step_name = None  # Placeholder
         # Each pipeline generally update one table

@@ -20,7 +20,7 @@ class PipelineFactory:
         - pipeline: name of the pipeline.
         """
 
-        if self.pipeline not in self._pipelines:
+        if self.pipeline not in self._pipelines: # pragma: no cover
             raise ValueError(f"Pipeline not found: {self.pipeline}")
 
         # lazy initialization

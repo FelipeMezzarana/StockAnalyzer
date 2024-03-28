@@ -19,7 +19,7 @@ class Validator(Step):
         """Init validator."""
         super(Validator, self).__init__(__name__, previous_output, settings)
 
-        self.file_path = self.previous_output["file_path"]
+        self.file_path = self.previous_output.get("file_path")
         self.pipeline = self.settings.pipeline
         self.pipeline_table = self.settings.TABLES.get(self.pipeline)
         self.fields_mapping = self.pipeline_table.get("fields_mapping")

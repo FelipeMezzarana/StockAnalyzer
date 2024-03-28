@@ -35,7 +35,7 @@ class StepFactory:
         - step: name of the step.
         """
 
-        if step not in self._steps:
+        if step not in self._steps: # pragma: no cover
             raise ValueError(f"Step not found: {step}")
 
         return self._steps[step](previous_output, self.settings, **kwargs)
