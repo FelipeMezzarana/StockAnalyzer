@@ -1,5 +1,16 @@
+# Secrets
 *.env
+
+# Draft notbooks
 *ipynb
 *pyc
+
+# Apple related
 .DS_Store
+
+# Provisory files path
 /temp
+
+# Database files
+*.db
+*.recovery
