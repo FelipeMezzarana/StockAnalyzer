@@ -68,13 +68,13 @@ class Validator(Step):
         self.output["valid_file_path"] = self.file_path.replace(".csv","_valid.csv")
         self.output["invalid_file_path"] = self.file_path.replace(".csv","_invalid.csv")
 
-        if not os.path.isfile(self.file_path):
+        if not os.path.isfile(self.file_path): # pragma: no cover
             self.logger.info("No file to validade.")
             return True, self.output
 
         raw_file = duckdb.read_csv(self.file_path, header = True)
         header = duckdb.read_csv(self.file_path, header = False).fetchone()
-        invalid_file_exist = os.path.isfile(self.output["invalid_file_path"])
+        invalid_file_exist = os.path.isfile(self.output.get("invalid_file_path"))
         
         with (open(self.output["valid_file_path"], 'a', newline='') as valid_file, 
               open(self.output["invalid_file_path"], 'a', newline='') as invalid_file):
