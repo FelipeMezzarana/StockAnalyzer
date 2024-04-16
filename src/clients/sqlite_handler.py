@@ -38,6 +38,7 @@ class SQLiteHandler:
         fields_mapping = pipeline_table.get("fields_mapping")
         fields = tuple(fields_mapping.keys())
         
+        self.create_table() # Create table if not exist
         # Map fields to correct position.
         mapped_values_list = []
         for line in raw_values:

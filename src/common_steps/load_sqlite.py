@@ -17,10 +17,10 @@ class SQLiteLoader(Step):
         self.invalid_file_path = self.previous_output.get("invalid_file_path")
         self.chunk_size = settings.CHUNK_SIZE
 
-    def run(self):
+    def run(self, clean_file: bool = True):
         """run step."""
 
-        if not os.path.isfile(self.valid_file_path):
+        if not os.path.isfile(self.valid_file_path): # pragma: no cover
             self.logger.info("No file to load.")
             return True, self.output
         
@@ -43,6 +43,7 @@ class SQLiteLoader(Step):
             self.logger.info(f"{rows:,} Values inserted. {chunk=}")
             chunk += 1
 
-        clean_temp_file(self.valid_file_path)
+        if clean_file: # pragma: no cover
+            clean_temp_file(self.valid_file_path)
 
         return True, self.output
