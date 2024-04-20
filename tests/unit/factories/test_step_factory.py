@@ -13,10 +13,16 @@ class TestStepFactory(unittest.TestCase):
     def test_create(self) -> None:
         """Test create pipeline."""
 
+        mock_output = {
+            "file_path": "path",
+            "valid_file_path": "path",
+            "invalid_file_path": "path"
+            }
+
         for pipeline in PIPELINES:
             settings = Settings(pipeline)
             pipeline_obj = PipelineFactory(settings).create()
             steps = pipeline_obj.build_steps()
             for step in steps:
-                step_obj = StepFactory(settings).create(step, {})
+                step_obj = StepFactory(settings).create(step, mock_output)
                 self.assertIsNotNone(step_obj)
