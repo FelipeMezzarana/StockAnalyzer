@@ -25,6 +25,16 @@ jobs:
       - name: check-linting-tests
         run: docker run stock_analyzer-linting tox
 
+      - name: check-db-folder-exist
+        run: >-
+          if [ ! -d "src/database" ]; then
+            echo "The directory $directory does not exist. Creating..."
+            mkdir "src/database"
+            echo "Directory created successfully!"
+          else
+              echo "The directory "src/database" already exists."
+          fi
+
       - name: build-unit-test-image
         run: docker build --file Dockerfile.unittests --tag stock_analyzer-unit-tests .
 
