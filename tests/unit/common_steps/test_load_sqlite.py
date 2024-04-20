@@ -3,9 +3,7 @@ import unittest
 
 # First party
 from src.common_steps.load_sqlite import SQLiteLoader
-from src.factories.pipeline_factory import PipelineFactory
-from src.factories.step_factory import StepFactory
-from src.settings import Settings, PIPELINES
+from src.settings import Settings
 
 
 class TestLoadSQLite(unittest.TestCase):
