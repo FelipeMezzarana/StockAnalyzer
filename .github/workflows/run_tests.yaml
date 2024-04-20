@@ -1,0 +1,41 @@
+name: run-unit-integration-tests-and-check-style
+
+on:
+  workflow_call:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - name: checkout-code
+        uses: actions/checkout@v4
+
+      - name: build-linter-image
+        run: docker build -f Dockerfile.linting -t stock_analyzer-linting .
+
+      - name: check-linting-tests
+        run: docker run stock_analyzer-linting tox
+
+      - name: build-unit-test-image
+        run: docker build --file Dockerfile.unittests --tag stock_analyzer-unit-tests .
+
+      - name: run-unit-tests
+        run: docker run --network=host --volume="$PWD/coverage/":/var/coverage/ stock_analyzer-unit-tests
+
+      - name: build-integration-test-image
+        run: docker build --file Dockerfile.integration --tag stock_analyzer-integration-tests .
+
+      - name: run-integration-tests
+        run: >-
+          docker run 
+          -e POLYGON_KEY=${{ secrets.POLYGON_KEY }}
+          stock_analyzer-integration-tests
