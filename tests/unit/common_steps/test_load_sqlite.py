@@ -16,7 +16,11 @@ class TestLoadSQLite(unittest.TestCase):
         cls.settings.DB_PATH = "src/database/stock_database_test.db"
 
         cls.sqlite_client = SQLiteLoader(
-            {"valid_file_path": "tests/unit/data_samples/grouped_daily_sample.csv"}, cls.settings
+            {
+                "valid_file_path": "tests/unit/data_samples/grouped_daily_sample.csv",
+                "invalid_file_path": "tests/unit/data_samples/invalid_grouped_daily_sample.csv"
+            }
+            , cls.settings
         )
 
     def test_run(self) -> None:
