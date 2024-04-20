@@ -36,3 +36,5 @@ class Pipeline(ABC):
             is_success, output = steps.create(step, output, **self.kwargs).run()
             self.logger.debug(f"{is_success=} -- {output=}")
             self.logger.info(f"finished {step=}")
+
+        return True
