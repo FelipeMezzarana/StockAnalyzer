@@ -1,83 +1,84 @@
-from ..settings import Settings
-from ..util.get_logger import get_logger
-from ..util.csv_handler import clean_temp_file
+# Standard library
 import csv
-import duckdb
-from datetime import datetime, date
 import os
+from datetime import date, datetime
+from typing import Any, Dict
+
+# Third party
+import duckdb
+
+# Local
 from ..abstract.step import Step
+from ..settings import Settings
+from ..util.csv_handler import clean_temp_file
 
 
 class Validator(Step):
     """Validade file.
-     Validation based in: 
-        * Current pipeline settings
-        * previous_output["file_path"]
+    Validation based in:
+       * Current pipeline settings
+       * previous_output["file_path"]
     """
 
-    def __init__(self,previous_output: dict, settings: Settings):
+    def __init__(self, previous_output: dict, settings: Settings):
         """Init validator."""
         super(Validator, self).__init__(__name__, previous_output, settings)
 
-        self.file_path = self.previous_output.get("file_path")
-        self.pipeline = self.settings.pipeline
-        self.pipeline_table = self.settings.TABLES.get(self.pipeline)
-        self.fields_mapping = self.pipeline_table.get("fields_mapping")
-        self.required_fields = self.pipeline_table.get("required_fields")
+        self.file_path: str = self.previous_output["file_path"]
+        self.pipeline: str = self.settings.pipeline
+        self.pipeline_table: Dict[str, Any] = self.settings.PIPELINE_TABLE
+        self.fields_mapping: Dict = self.pipeline_table["fields_mapping"]
+        self.required_fields: list = self.pipeline_table["required_fields"]
 
-
-    def _get_python_type(self, sqlite_dtype) -> str:
-        """Return python data type.
-        """
+    def _get_python_type(self, sqlite_dtype) -> type:
+        """Return python data type."""
 
         dtype_mapping = {
-              "VARCHAR(255)":str,
-              "FLOAT": float,
-              "INTEGER": int,
-              "DATETIME": datetime,
-              "DATE": date
+            "VARCHAR(255)": str,
+            "FLOAT": float,
+            "INTEGER": int,
+            "DATETIME": datetime,
+            "DATE": date,
         }
 
-        return dtype_mapping.get(sqlite_dtype)
+        return dtype_mapping[sqlite_dtype]
 
     def _is_valid(self, fields: list, line: list):
-        """Checks is required fild exists.
-        """
+        """Checks is required fild exists."""
 
         for field, value in zip(fields, line):
             if field in self.required_fields and not self._is_dtype_valid(field, value):
                 return False
         return True
 
-
     def _is_dtype_valid(self, field: str, value):
-        """Validate line based on settings.py fields mappings.
-        """
-        
-        expected_dtype =  self._get_python_type(self.fields_mapping.get(field)[1])
+        """Validate line based on settings.py fields mappings."""
+
+        expected_dtype = self._get_python_type(self.fields_mapping[field][1])
         if not isinstance(value, expected_dtype):
             self.logger.info(f"Invalid data found. {field=} | {value=}")
             return False
         else:
             return True
-    
-            
+
     def run(self):
         """Run validation step."""
 
-        self.output["valid_file_path"] = self.file_path.replace(".csv","_valid.csv")
-        self.output["invalid_file_path"] = self.file_path.replace(".csv","_invalid.csv")
+        self.output["valid_file_path"] = self.file_path.replace(".csv", "_valid.csv")
+        self.output["invalid_file_path"] = self.file_path.replace(".csv", "_invalid.csv")
 
-        if not os.path.isfile(self.file_path): # pragma: no cover
+        if not os.path.isfile(self.file_path):  # pragma: no cover
             self.logger.info("No file to validade.")
             return True, self.output
 
-        raw_file = duckdb.read_csv(self.file_path, header = True)
-        header = duckdb.read_csv(self.file_path, header = False).fetchone()
+        raw_file = duckdb.read_csv(self.file_path, header=True)
+        header = duckdb.read_csv(self.file_path, header=False).fetchone()
         invalid_file_exist = os.path.isfile(self.output.get("invalid_file_path"))
-        
-        with (open(self.output["valid_file_path"], 'a', newline='') as valid_file, 
-              open(self.output["invalid_file_path"], 'a', newline='') as invalid_file):
+
+        with (
+            open(self.output["valid_file_path"], "a", newline="") as valid_file,
+            open(self.output["invalid_file_path"], "a", newline="") as invalid_file,
+        ):
             valid_csv_writer = csv.writer(valid_file)
             invalid_csv_writer = csv.writer(invalid_file)
             valid_csv_writer.writerow(header)
@@ -99,4 +100,3 @@ class Validator(Step):
         clean_temp_file(self.file_path)
         self.logger.info(f"Validation complete. {err_count} Invalid lines found.")
         return True, self.output
-

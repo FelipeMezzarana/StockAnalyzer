@@ -1,11 +1,11 @@
 # Standard library
 import logging
 from datetime import datetime
+from typing import Any, Dict
 
 # Pipelines to run, in order.
-PIPELINES = [
-    "grouped-daily-pipeline"
-    ]
+PIPELINES = ["grouped-daily-pipeline"]
+
 
 class Settings:
     """Handles settings through the application."""
@@ -16,14 +16,12 @@ class Settings:
         self.LOGGING_LEVEL = logging.DEBUG
 
         # Pipeline and step settings
-        if pipeline not in PIPELINES: # pragma: no cover
-            raise ValueError(
-                f"pipiline must be one of {PIPELINES}. {pipeline} is not valid."
-                )
+        if pipeline not in PIPELINES:  # pragma: no cover
+            raise ValueError(f"pipiline must be one of {PIPELINES}. {pipeline} is not valid.")
         self.pipeline = pipeline
         self.step_name = None  # Placeholder
         # Each pipeline generally update one table
-        self.TABLES = {
+        self.TABLES: Dict[str, Any] = {
             "grouped-daily-pipeline": {
                 "name": "GROUPED_DAILY",
                 "fields_mapping": {
@@ -39,19 +37,10 @@ class Settings:
                     "n": ("n_transaction", "INTEGER"),
                     "updated_at": ("updated_at", "DATETIME"),
                 },
-                "required_fields": [
-                    "date",
-                    "T",
-                    "o",
-                    "c",
-                    "h",
-                    "l",
-                    "t",
-                    "updated_at"
-                ]
+                "required_fields": ["date", "T", "o", "c", "h", "l", "t", "updated_at"],
             }
         }
-        self.PIPELINE_TABLE = self.TABLES.get(pipeline)
+        self.PIPELINE_TABLE: Dict[str, Any] = self.TABLES[pipeline]
 
         # Database settings
         self.DB_PATH = "src/database/stock_database.db"
@@ -63,7 +52,4 @@ class Settings:
         self.POLYGON_MAX_DAYS_HIST = 730
         self.POLYGON_CALLS_PER_MIN = 5
         # Free API allows calls only until the end of the previous day
-        self.POLYGON_UPDATE_UNTIL = datetime.today().strftime('%Y-%m-%d')
-
-        
-
+        self.POLYGON_UPDATE_UNTIL = datetime.today().strftime("%Y-%m-%d")

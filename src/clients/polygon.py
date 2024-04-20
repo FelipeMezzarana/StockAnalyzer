@@ -1,13 +1,14 @@
 # Standard library
 import os
+from time import perf_counter, sleep
 
 # Third party
 import requests
-from time import perf_counter, sleep
 
 # Local
 from ..settings import Settings
 from ..util.get_logger import get_logger
+
 
 class Polygon:
     """Handle requests to Polygon API.
@@ -25,8 +26,8 @@ class Polygon:
         self.base_url = settings.BASE_URL
         self.endpoints = settings.ENDPOINTS
         self.api_calls_per_min = settings.POLYGON_CALLS_PER_MIN
-        self.api_sleep_time = 60/self.api_calls_per_min
-        self.last_request = 0 # Placeholder
+        self.api_sleep_time = 60 / self.api_calls_per_min
+        self.last_request = 0  # Placeholder
 
     def get_grouped_daily(self, date: str, adjusted: bool = True) -> dict:
         """Return the daily open, high, low, and close (OHLC).
@@ -48,7 +49,7 @@ class Polygon:
         resp = requests.get(url)
         # We need to make sure that request is successful
         tries = 0
-        while resp.status_code != 200: # pragma: no cover
+        while resp.status_code != 200:  # pragma: no cover
             if tries == 3:
                 raise Exception(f"3 unsuccessful attempts to request {url=}")
             tries += 1

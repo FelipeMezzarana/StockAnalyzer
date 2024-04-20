@@ -8,6 +8,7 @@ from ....clients.sqlite_handler import SQLiteHandler
 from ....settings import Settings
 from ....util.csv_handler import append_to_file
 
+
 class GroupedDailyExtractor(Step):
     """Extract daily data from polygon API."""
 
@@ -31,13 +32,13 @@ class GroupedDailyExtractor(Step):
         is_successful, last_date = self.sqlite_client.query(f"SELECT MAX(DATE) FROM {table_name}")
 
         last_update_date = last_date[0][0] if last_date else None
-        if is_successful and last_update_date: # pragma: no cover
+        if is_successful and last_update_date:  # pragma: no cover
             return last_update_date
-        else: 
-            max_hist_avaiable = (datetime.today() - timedelta(days=self.max_days_hist + 1)).strftime(
-                "%Y-%m-%d"
-            )
-            if last_date:# pragma: no cover
+        else:
+            max_hist_avaiable = (
+                datetime.today() - timedelta(days=self.max_days_hist + 1)
+            ).strftime("%Y-%m-%d")
+            if last_date:  # pragma: no cover
                 return max_hist_avaiable
             else:
                 self.logger.info(f"Table {table_name} not found. Creating from scratch")
@@ -50,10 +51,10 @@ class GroupedDailyExtractor(Step):
         last_date -- last date updated(format yyyy-mm-dd)
         end_date -- end of period (format yyyy-mm-dd)
         """
-        
+
         polygon_client = Polygon(self.settings)
-        date_obj = datetime.strptime(last_date, '%Y-%m-%d')
-        request_date = (date_obj + timedelta(days=1)).strftime('%Y-%m-%d')
+        date_obj = datetime.strptime(last_date, "%Y-%m-%d")
+        request_date = (date_obj + timedelta(days=1)).strftime("%Y-%m-%d")
 
         file_path = "temp/grouped_daily_temp.csv"
         self.output["file_path"] = file_path
@@ -66,18 +67,18 @@ class GroupedDailyExtractor(Step):
                     row_count += result.get("resultsCount", 0)
                     enriched_data = self._raw_enrich(data, request_date)
                     append_to_file(file_path, enriched_data)
-            date_obj = datetime.strptime(request_date, '%Y-%m-%d')
-            request_date = (date_obj + timedelta(days=1)).strftime('%Y-%m-%d')
+            date_obj = datetime.strptime(request_date, "%Y-%m-%d")
+            request_date = (date_obj + timedelta(days=1)).strftime("%Y-%m-%d")
             api_call_count += 1
 
-    def _raw_enrich(self, data: list[dict], request_date: str) -> dict:
+    def _raw_enrich(self, data: list[dict], request_date: str) -> list[dict]:
         """initial enrichment."""
 
         enriched_data = []
         for stock_dict in data:
             enriched_stock_dict = stock_dict.copy()
             # int timestamp to datetime
-            enriched_stock_dict["t"] =  datetime.utcfromtimestamp(stock_dict["t"]/1000)
+            enriched_stock_dict["t"] = datetime.utcfromtimestamp(stock_dict["t"] / 1000)
             # Add extra filds
             enriched_stock_dict["date"] = request_date
             enriched_stock_dict["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -85,16 +86,15 @@ class GroupedDailyExtractor(Step):
 
         return enriched_data
 
-
     def _is_weekend(self, date: str) -> bool:
         """Check if string date is weekend.
         date -- format yyyy-mm-dd
         """
 
-        data_obj = datetime.strptime(date, '%Y-%m-%d')
-        if data_obj.weekday() in [5,6]:
+        data_obj = datetime.strptime(date, "%Y-%m-%d")
+        if data_obj.weekday() in [5, 6]:
             return True
-        else: 
+        else:
             return False
 
     def run(self):
@@ -103,7 +103,6 @@ class GroupedDailyExtractor(Step):
         last_update_date = self.get_last_date()
         self.logger.info(f"{last_update_date=}")
         self.update_grouped_daily(last_update_date)
-
 
         self.output["test"] = "ok"
         return True, self.output

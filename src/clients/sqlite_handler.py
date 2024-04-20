@@ -23,7 +23,7 @@ class SQLiteHandler:
 
         self.conn = sqlite3.connect(settings.DB_PATH)
         # Save a recovery copy
-        if recovery_copy: # pragma: no cover
+        if recovery_copy:  # pragma: no cover
             shutil.copy(settings.DB_PATH, settings.DB_PATH.replace(".db", ".recovery"))
         self.cur = self.conn.cursor()
         self.logger.info("conected")
@@ -37,16 +37,16 @@ class SQLiteHandler:
         table_name = pipeline_table.get("name")
         fields_mapping = pipeline_table.get("fields_mapping")
         fields = tuple(fields_mapping.keys())
-        
-        self.create_table() # Create table if not exist
+
+        self.create_table()  # Create table if not exist
         # Map fields to correct position.
         mapped_values_list = []
         for line in raw_values:
-            raw_mapped_values = {h:v for h,v in zip(header,line)}
+            raw_mapped_values = {h: v for h, v in zip(header, line)}
             mapped_values = tuple(raw_mapped_values.get(key) for key in fields)
             mapped_values_list.append(mapped_values)
 
-        query = F"INSERT INTO {table_name} VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        query = f"INSERT INTO {table_name} VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         self.cur.executemany(query, mapped_values_list)
         self.conn.commit()
 
@@ -57,7 +57,7 @@ class SQLiteHandler:
             res = self.cur.execute(query)
             is_successful = True
             return is_successful, res.fetchall()
-        except sqlite3.OperationalError as e: # pragma: no cover
+        except sqlite3.OperationalError as e:  # pragma: no cover
             self.logger.debug(f"Query failed. {e}. {query=}")
             is_successful = False
             return is_successful, None

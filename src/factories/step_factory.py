@@ -1,8 +1,9 @@
 # Local
+from ..common_steps.load_sqlite import SQLiteLoader
+from ..common_steps.validate import Validator
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
 from ..settings import Settings
-from ..common_steps.validate import Validator
-from ..common_steps.load_sqlite import SQLiteLoader
+
 
 class StepFactory:
     """Simple Processor Factory.
@@ -17,16 +18,12 @@ class StepFactory:
                     previous_output, settings, **kwargs
                 )
             ),
-            "validate": (
-                lambda previous_output, settings, **kwargs: Validator(
-                    previous_output, settings, **kwargs
-                )
+            "validate": lambda previous_output, settings, **kwargs: Validator(
+                previous_output, settings, **kwargs
             ),
-            "load-sqlite": (
-                lambda previous_output, settings, **kwargs: SQLiteLoader(
-                    previous_output, settings, **kwargs
-                )
-            )
+            "load-sqlite": lambda previous_output, settings, **kwargs: SQLiteLoader(
+                previous_output, settings, **kwargs
+            ),
         }
 
     def create(self, step, previous_output, **kwargs):
@@ -35,7 +32,7 @@ class StepFactory:
         - step: name of the step.
         """
 
-        if step not in self._steps: # pragma: no cover
+        if step not in self._steps:  # pragma: no cover
             raise ValueError(f"Step not found: {step}")
 
         return self._steps[step](previous_output, self.settings, **kwargs)

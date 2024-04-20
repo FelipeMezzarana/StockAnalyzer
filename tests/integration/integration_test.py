@@ -3,12 +3,11 @@ import unittest
 
 # First party
 from src.factories.pipeline_factory import PipelineFactory
-from src.settings import Settings, PIPELINES
+from src.settings import PIPELINES, Settings
 
 
 class TestIntegration(unittest.TestCase):
     """Test PipelineFactory."""
-
 
     def test_run(self) -> None:
         """Run pipelines.
