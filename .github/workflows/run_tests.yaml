@@ -25,14 +25,28 @@ jobs:
       - name: check-linting-tests
         run: docker run stock_analyzer-linting tox
 
-      - name: check-db-folder-exist
+      - name: check-db-directory-exist
+        env:
+          DIRECTORY: "src/database"
         run: >-
-          if [ ! -d "src/database" ]; then
-            echo "The directory $directory does not exist. Creating..."
-            mkdir "src/database"
+          if [ ! -d $DIRECTORY ]; then
+            echo "The directory $DIRECTORY does not exist. Creating..."
+            mkdir $DIRECTORY
             echo "Directory created successfully!"
           else
-              echo "The directory "src/database" already exists."
+              echo "The directory $DIRECTORY already exists."
+          fi
+
+      - name: check-temp-directory-exist
+        env:
+          DIRECTORY: "temp"
+        run: >-
+          if [ ! -d $DIRECTORY ]; then
+            echo "The directory $DIRECTORY does not exist. Creating..."
+            mkdir $DIRECTORY
+            echo "Directory created successfully!"
+          else
+              echo "The directory $DIRECTORY already exists."
           fi
 
       - name: build-unit-test-image
