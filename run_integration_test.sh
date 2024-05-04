@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Check if temp and database directory exists, create if not.
-directories=("temp" "src/database")
+directories=("temp" "database")
 for directory in "${directories[@]}"; do
     if [ ! -d "$directory" ]; then
         echo "The directory $directory does not exist. Creating..."

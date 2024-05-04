@@ -1,5 +1,6 @@
 # Standard library
 import os
+import re
 import shutil
 import sqlite3
 
@@ -17,8 +18,20 @@ class SQLiteHandler:
         # Create db file if not exist
         self.logger.debug(f"{settings.DB_PATH=}")
         if not os.path.exists(settings.DB_PATH):
-            self.logger.critical
+            self.logger.info
             (f"Database file {settings.DB_PATH} not fount. A new file will be created")
+            # Check directory
+            if re.search("/", settings.DB_PATH):
+                try:
+                    directory = re.findall(r"([^\/]*)/[^\/]*.db", settings.DB_PATH)[0]
+                    if not os.path.exists(directory):
+                        os.mkdir(directory)
+                        self.logger.info(f"DB directory not found. Created {directory}")
+                    else:
+                        self.logger.info(f"DB directory found. {directory=}")
+                except Exception as err:  # pragma: no cover
+                    raise ValueError(f"Error creating {directory=}. {err=}")
+
         self.conn = sqlite3.connect(settings.DB_PATH)
         # Save a recovery copy
         if recovery_copy:  # pragma: no cover

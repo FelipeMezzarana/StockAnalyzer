@@ -13,7 +13,7 @@ class TestLoadSQLite(unittest.TestCase):
     def setUpClass(cls):
         """Class Setup."""
         cls.settings = Settings("grouped-daily-pipeline")
-        cls.settings.DB_PATH = "src/database/stock_database_test.db"
+        cls.settings.DB_PATH = "database/stock_database_test.db"
 
         cls.sqlite_client = SQLiteLoader(
             {

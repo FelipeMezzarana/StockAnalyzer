@@ -26,7 +26,7 @@ class Settings:
         with open("src/database_config.json", "r") as file:
             self.TABLES: Dict[str, Any] = json.load(file)
         self.PIPELINE_TABLE: Dict[str, Any] = self.TABLES[pipeline]
-        self.DB_PATH = "src/database/stock_database.db"
+        self.DB_PATH = "database/stock_database.db"
         self.CHUNK_SIZE = 50000
 
         # Polygon API settings

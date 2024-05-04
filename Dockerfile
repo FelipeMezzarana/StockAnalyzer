@@ -6,6 +6,8 @@ RUN pip install -r requirements.txt
 
 # Get the app
 COPY src /src
+# Get the DB
+COPY database /database
 WORKDIR /
 
 CMD python3 -m src.run

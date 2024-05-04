@@ -2,7 +2,12 @@ FROM python:3.10
 
 RUN pip install tox
 
-COPY . /repository
+
+# Copy only req (avoid copy DB)
+COPY  src /repository/src
+COPY  tests /repository/tests
+COPY  tox.ini /repository/tox.ini
+COPY requirements.txt repository/requirements.txt
 WORKDIR /repository
 
 CMD tox
