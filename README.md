@@ -7,7 +7,7 @@ App:
 # Run through Docker 
  ./run.sh 
 # Run through Pytohn
- python3 -m src.main 
+ python3 -m src.run 
  ```
 
 Linting:
@@ -17,7 +17,7 @@ Linting:
 
 Unit tests:
 ```shell
-./run_unit_tests.sh 
+./run_unit_tests.sh
 ```
 Integration tests:
 ```shell
