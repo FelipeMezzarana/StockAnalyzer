@@ -2,7 +2,9 @@
 from ..common_steps.load_sqlite import SQLiteLoader
 from ..common_steps.validate import Validator
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
-from ..pipelines.ticker_basic_details.steps.extract_ticker_basic_details import TickerBasicDetailsExtractor
+from ..pipelines.ticker_basic_details.steps.extract_ticker_basic_details import (
+    TickerBasicDetailsExtractor,
+)
 from ..settings import Settings
 
 

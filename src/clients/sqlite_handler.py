@@ -2,7 +2,6 @@
 import os
 import shutil
 import sqlite3
-from typing import Optional
 
 # Local
 from ..settings import Settings
@@ -27,19 +26,18 @@ class SQLiteHandler:
         self.cur = self.conn.cursor()
         self.logger.info("conected")
         # Create table if not exist
-        self.create_table()  
+        self.create_table()
 
     def insert_into(self, raw_values: list[tuple], header: tuple):
         """Insert data into target table.
         Map field to expected position, see more in database_config.json
         """
 
-        pipeline_table = self.settings.TABLES.get(self.settings.pipeline)
-        table_name = pipeline_table.get("name")
-        fields_mapping = pipeline_table.get("fields_mapping")
+        pipeline_table = self.settings.TABLES[self.settings.pipeline]
+        table_name = pipeline_table["name"]
+        fields_mapping = pipeline_table["fields_mapping"]
         fields = tuple(fields_mapping.keys())
 
-        
         # Map fields to correct position.
         mapped_values_list = []
         for line in raw_values:
@@ -47,7 +45,7 @@ class SQLiteHandler:
             mapped_values = tuple(raw_mapped_values.get(key) for key in fields)
             mapped_values_list.append(mapped_values)
 
-        parameterized_fields = ("?, "*len(mapped_values_list[0])).strip(", ")
+        parameterized_fields = ("?, " * len(mapped_values_list[0])).strip(", ")
         query = f"INSERT INTO {table_name} VALUES({parameterized_fields})"
         self.cur.executemany(query, mapped_values_list)
         self.conn.commit()

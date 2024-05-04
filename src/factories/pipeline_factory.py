@@ -1,7 +1,8 @@
 # Local
 from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
-from ..pipelines.ticker_basic_details.ticker_basic_details_pipeline import TickerBasicDeatailsPipeline
-
+from ..pipelines.ticker_basic_details.ticker_basic_details_pipeline import (
+    TickerBasicDeatailsPipeline,
+)
 from ..settings import Settings
 
 

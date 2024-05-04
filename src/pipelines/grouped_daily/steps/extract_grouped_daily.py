@@ -45,7 +45,7 @@ class GroupedDailyExtractor(Step):
             else:
                 self.logger.info(f"Table {table_name} empty.")
                 return max_hist_avaiable
-            
+
     def build_request(self, request_date) -> str:
         """Return url to request daily open, high, low, and close (OHLC).
         for the entire stocks/equities markets.
@@ -56,7 +56,7 @@ class GroupedDailyExtractor(Step):
         url = (
             f"{self.base_url}"
             f"{self.endpoints.get('grouped_daily_endpoint')}"
-            f"{request_date}?adjusted=true" 
+            f"{request_date}?adjusted=true"
         )
         return url
 

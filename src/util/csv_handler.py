@@ -1,7 +1,8 @@
 # Standard library
 import csv
 import os
-from typing import Optional, List, Dict
+from typing import Dict, List, Optional
+
 
 def append_to_file(file_path: str, data: List[Dict], header: Optional[List[str]] = None):
     """Append data to csv file.
@@ -21,8 +22,9 @@ def append_to_file(file_path: str, data: List[Dict], header: Optional[List[str]]
             csv_writer.writeheader()
         # Append data
         for dictionary in data:
-            row =  {h:dictionary.get(h) for h in header} 
+            row = {h: dictionary.get(h) for h in header}
             csv_writer.writerow(row)
+
 
 def clean_temp_file(file_path: str):
     """Delete temp file."""

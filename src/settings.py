@@ -1,14 +1,11 @@
 # Standard library
+import json
 import logging
 from datetime import datetime
 from typing import Any, Dict
-import json
 
 # Pipelines to run, in order.
-PIPELINES = [
-    "grouped-daily-pipeline",
-    "ticker-basic-details-pipeline"
-    ]
+PIPELINES = ["grouped-daily-pipeline", "ticker-basic-details-pipeline"]
 
 
 class Settings:
@@ -24,7 +21,7 @@ class Settings:
             raise ValueError(f"pipiline must be one of {PIPELINES}. {pipeline} is not valid.")
         self.pipeline = pipeline
         self.step_name = None  # Placeholder
-        
+
         # Database settings
         with open("src/database_config.json", "r") as file:
             self.TABLES: Dict[str, Any] = json.load(file)
@@ -37,7 +34,7 @@ class Settings:
         self.ENDPOINTS = {
             "grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/",
             "ticker_basic_details_endpoint": "v3/reference/tickers?limit=1000",
-            }
+        }
         self.POLYGON_MAX_DAYS_HIST = 730
         self.POLYGON_CALLS_PER_MIN = 5
         self.MAX_PAGINATION = 5

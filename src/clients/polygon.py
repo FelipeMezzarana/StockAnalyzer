@@ -30,7 +30,7 @@ class Polygon:
         self.last_request = 0  # Placeholder
 
     def request(self, url: str) -> dict:
-        """Return the Polygon request
+        """Return the Polygon request response.
         Handle API Limit
 
         url -- request endpoint without API key

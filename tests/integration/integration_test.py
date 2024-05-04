@@ -2,9 +2,9 @@
 import unittest
 
 # First party
+from src.clients.sqlite_handler import SQLiteHandler
 from src.factories.pipeline_factory import PipelineFactory
 from src.settings import PIPELINES, Settings
-from src.clients.sqlite_handler import SQLiteHandler
 
 
 class TestIntegration(unittest.TestCase):
@@ -20,8 +20,8 @@ class TestIntegration(unittest.TestCase):
             # Create new DB for tests
             settings.DB_PATH = "src/database/stock_database_test.db"
             # Limit data extracted
-            settings.MAX_PAGINATION = 2 
-            settings.POLYGON_MAX_DAYS_HIST = 4 
+            settings.MAX_PAGINATION = 2
+            settings.POLYGON_MAX_DAYS_HIST = 4
 
             # Run Pipeline
             pipeline = PipelineFactory(settings).create()
@@ -32,9 +32,4 @@ class TestIntegration(unittest.TestCase):
             table_name = settings.PIPELINE_TABLE["name"]
             is_successful, rows_qty = sqlite_handler.query(f"SELECT COUNT(*) FROM {table_name}")
             self.assertTrue(is_successful)
-            self.assertGreater(rows_qty[0][0], 10) # Check if we have some data
-            
-
-
-
-
+            self.assertGreater(rows_qty[0][0], 10)  # Check if we have some data

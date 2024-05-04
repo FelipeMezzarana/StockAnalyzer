@@ -32,6 +32,8 @@ class SQLiteLoader(Step):
 
         raw_file = duckdb.read_csv(self.valid_file_path, header=True)
         header = duckdb.read_csv(self.valid_file_path, header=False).fetchone()
+        if not header:
+            raise ValueError(f"Error reading {self.valid_file_path}")
 
         next_chunk = True
         chunk, rows = 1, 0
