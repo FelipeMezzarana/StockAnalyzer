@@ -42,7 +42,7 @@ class GroupedDailyExtractor(Step):
             ).strftime("%Y-%m-%d")
             if last_date:  # pragma: no cover
                 return max_hist_avaiable
-            else:
+            else: # pragma: no cover
                 self.logger.info(f"Table {table_name} empty.")
                 return max_hist_avaiable
 

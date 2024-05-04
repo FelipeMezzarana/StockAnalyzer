@@ -34,11 +34,14 @@ class TestExtractTickerDetails(unittest.TestCase):
         with open(SAMPLE_REQUEST_FILE, "r") as file:
             sample_request_result = json.load(file)
         mock_polygon.return_value.request.return_value = sample_request_result
-        mock_tickers.return_value = [r["ticker"] for r in sample_request_result["results"]]
+        mock_tickers.return_value = (
+            [r["ticker"] for r in sample_request_result["results"]],
+            [r["ticker"] for r in sample_request_result["results"][:5]]
+            )
 
         # Extract
         extractor = TickerBasicDetailsExtractor({}, self.settings)
-        is_successful, output = extractor.run()
+        is_successful, _ = extractor.run()
         self.assertTrue(is_successful)
 
     @patch("src.pipelines.ticker_basic_details.steps.extract_ticker_basic_details.SQLiteHandler")
@@ -46,5 +49,5 @@ class TestExtractTickerDetails(unittest.TestCase):
         """ """
         mock_sql.return_value.query.return_value = True, ["ticker1", "ticker2"]
         extractor = TickerBasicDetailsExtractor({}, self.settings)
-        required_tickers = extractor.get_required_tickers()
+        required_tickers, _ = extractor.get_required_tickers()
         self.assertEqual(required_tickers, [])
