@@ -36,8 +36,8 @@ class TestExtractTickerDetails(unittest.TestCase):
         mock_polygon.return_value.request.return_value = sample_request_result
         mock_tickers.return_value = (
             [r["ticker"] for r in sample_request_result["results"]],
-            [r["ticker"] for r in sample_request_result["results"][:5]]
-            )
+            [r["ticker"] for r in sample_request_result["results"][:5]],
+        )
 
         # Extract
         extractor = TickerBasicDetailsExtractor({}, self.settings)

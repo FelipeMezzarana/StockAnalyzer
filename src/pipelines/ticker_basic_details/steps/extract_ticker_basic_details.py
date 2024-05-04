@@ -109,7 +109,7 @@ class TickerBasicDetailsExtractor(Step):
                     f"data: {len(data)} "
                     f"required_data: {len(required_data)}"
                 )
-            else: # pragma: no cover
+            else:  # pragma: no cover
                 self.logger.info("Request returned no data.")
                 required_data = None
 
@@ -122,7 +122,7 @@ class TickerBasicDetailsExtractor(Step):
             if not next_url:  # pragma: no cover
                 self.logger.info("next_url not found.")
                 break
-            if api_call_count > self.max_paginagion: # pragma: no cover
+            if api_call_count > self.max_paginagion:  # pragma: no cover
                 self.logger.info(f"{self.max_paginagion=} reached. stopping requests.")
                 break
             result = polygon_client.request(next_url)
