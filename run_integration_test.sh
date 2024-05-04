@@ -13,6 +13,7 @@ for directory in "${directories[@]}"; do
 done
 
 TAG=stock_analyzer-integration-test
-docker build --file Dockerfile.integration --tag $TAG .
+docker build --file Dockerfile.tests --tag $TAG .
 mkdir -p coverage
-docker run  --env-file secrets.env  $TAG
+docker run  --env-file secrets.env  $TAG \
+ bash -c "python3 -m pytest 'tests/integration' -s"
