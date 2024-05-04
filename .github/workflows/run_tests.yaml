@@ -29,7 +29,7 @@ jobs:
         env:
           DIRECTORIES: ("temp" "src/database")
         run: >-
-          for directory in "${directories[@]}"; do
+          for directory in "${DIRECTORIES[@]}"; do
               if [ ! -d "$directory" ]; then
                   echo "The directory $directory does not exist. Creating..."
                   mkdir -p "$directory"
