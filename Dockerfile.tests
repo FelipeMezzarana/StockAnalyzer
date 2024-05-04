@@ -3,10 +3,14 @@ FROM python:3.10
 # Install requirements
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+RUN mkdir -p /temp
 
 # Copy everything in
-COPY  . /repository
-WORKDIR /repository
+COPY  src /src
+COPY  tests /tests
+COPY  tox.ini /tox.ini
+
+WORKDIR /
 
 # Run unit tests by default
 CMD ["python3", "-m", "pytest", "tests/unit", "--cov", "src", "--cov-config", "tox.ini", "--cov-report", "html", "--cov-report", "term"]

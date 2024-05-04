@@ -17,7 +17,7 @@ class TestExtractGroupedDaily(unittest.TestCase):
     def setUpClass(cls):
         """Class Setup."""
         cls.settings = Settings("grouped-daily-pipeline")
-        cls.settings.DB_PATH = "src/database/mock_stock_database.db"
+        cls.settings.DB_PATH = "database/mock_stock_database.db"
         cls.settings.POLYGON_MAX_DAYS_HIST = 10
 
     @patch("src.pipelines.grouped_daily.steps.extract_grouped_daily.Polygon")
