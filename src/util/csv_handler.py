@@ -1,24 +1,29 @@
 # Standard library
 import csv
 import os
+from typing import Dict, List, Optional
 
 
-def append_to_file(file_path: str, data: list[dict]):
+def append_to_file(file_path: str, data: List[Dict], header: Optional[List[str]] = None):
     """Append data to csv file.
     Creates file if not exist.
+
+    If header is not specified, use dict keys.
     """
 
     file_exists = os.path.isfile(file_path)
     with open(file_path, "a", newline="") as f:
-        # Get header
-        fields = list(data[0].keys())
-        csv_writer = csv.DictWriter(f, delimiter=",", lineterminator="\n", fieldnames=fields)
+        if not header:
+            header = list(data[0].keys())
+
+        csv_writer = csv.DictWriter(f, delimiter=",", lineterminator="\n", fieldnames=header)
         # Check File
         if not file_exists:
             csv_writer.writeheader()
         # Append data
         for dictionary in data:
-            csv_writer.writerow(dictionary)
+            row = {h: dictionary.get(h) for h in header}
+            csv_writer.writerow(row)
 
 
 def clean_temp_file(file_path: str):

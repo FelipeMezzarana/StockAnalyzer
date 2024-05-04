@@ -29,24 +29,16 @@ class Polygon:
         self.api_sleep_time = 60 / self.api_calls_per_min
         self.last_request = 0  # Placeholder
 
-    def get_grouped_daily(self, date: str, adjusted: bool = True) -> dict:
-        """Return the daily open, high, low, and close (OHLC).
-        for the entire stocks/equities markets.
+    def request(self, url: str) -> dict:
+        """Return the Polygon request response.
+        Handle API Limit
 
-        -- date format yyyy-mm-dd
+        url -- request endpoint without API key
         """
 
-        adjusted_query = "?adjusted=true" if adjusted else "?adjusted=false"
-        url = (
-            f"{self.base_url}"
-            f"{self.endpoints.get('grouped_daily_endpoint')}"
-            f"{date}"
-            f"{adjusted_query}"
-            f"{self.api_key_url}"
-        )
-
+        url_with_key = url + f"{self.api_key_url}"
         self.check_api_limit()
-        resp = requests.get(url)
+        resp = requests.get(url_with_key)
         # We need to make sure that request is successful
         tries = 0
         while resp.status_code != 200:  # pragma: no cover
@@ -54,8 +46,7 @@ class Polygon:
                 raise Exception(f"3 unsuccessful attempts to request {url=}")
             tries += 1
             sleep(5)
-            resp = requests.get(url)
-        self.logger.info(f"Extracted {date=}")
+            resp = requests.get(url_with_key)
         return resp.json()
 
     def check_api_limit(self):

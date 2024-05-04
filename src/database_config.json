@@ -1,0 +1,38 @@
+{
+    "grouped-daily-pipeline": {
+        "name": "GROUPED_DAILY",
+        "fields_mapping": {
+            "date": ["date", "DATE"],
+            "T": ["exchange_symbol", "VARCHAR(255)"],
+            "v": ["trading_volume", "FLOAT"],
+            "vw": ["volume_weighted_avg", "FLOAT"],
+            "o": ["open_price", "FLOAT"],
+            "c": ["close_price", "FLOAT"],
+            "h": ["highest_price", "FLOAT"],
+            "l": ["lowest_price", "FLOAT"],
+            "t": ["end_window", "DATETIME"],
+            "n": ["n_transaction", "INTEGER"],
+            "updated_at": ["updated_at", "DATETIME"]
+        },
+        "required_fields": ["date", "T", "o", "c", "h", "l", "t", "updated_at"]
+    },
+    "ticker-basic-details-pipeline": {
+        "name": "TICKER_BASIC_DETAILS",
+        "fields_mapping": {
+            "active": ["active", "BOOLEAN"],
+            "cik": ["cik", "VARCHAR(255)"],
+            "composite_figi": ["composite_figi", "VARCHAR(255)"],
+            "currency_name": ["currency_name", "VARCHAR(255)"],
+            "last_updated_utc": ["last_updated_utc", "DATETIME"],
+            "locale": ["locale", "VARCHAR(255)"],
+            "market": ["market", "VARCHAR(255)"],
+            "name": ["name", "VARCHAR(255)"],
+            "primary_exchange": ["primary_exchange", "VARCHAR(255)"],
+            "share_class_figi": ["share_class_figi", "VARCHAR(255)"],
+            "ticker": ["exchange_symbol", "VARCHAR(255)"],
+            "type": ["type", "VARCHAR(255)"],
+            "updated_at": ["updated_at", "DATETIME"]
+        },
+        "required_fields": ["ticker", "market", "updated_at"]
+    }
+}

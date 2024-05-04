@@ -22,6 +22,8 @@ class GroupedDailyExtractor(Step):
         self.settings = settings
         self.sqlite_client = SQLiteHandler(self.settings)
         self.max_days_hist = self.settings.POLYGON_MAX_DAYS_HIST
+        self.base_url = self.settings.BASE_URL
+        self.endpoints = self.settings.ENDPOINTS
 
     def get_last_date(self):
         """Return max date for grouped_daily table.
@@ -40,10 +42,23 @@ class GroupedDailyExtractor(Step):
             ).strftime("%Y-%m-%d")
             if last_date:  # pragma: no cover
                 return max_hist_avaiable
-            else:
-                self.logger.info(f"Table {table_name} not found. Creating from scratch")
-                self.sqlite_client.create_table()
+            else:  # pragma: no cover
+                self.logger.info(f"Table {table_name} empty.")
                 return max_hist_avaiable
+
+    def build_request(self, request_date) -> str:
+        """Return url to request daily open, high, low, and close (OHLC).
+        for the entire stocks/equities markets.
+
+        -- request_date format yyyy-mm-dd
+        """
+
+        url = (
+            f"{self.base_url}"
+            f"{self.endpoints.get('grouped_daily_endpoint')}"
+            f"{request_date}?adjusted=true"
+        )
+        return url
 
     def update_grouped_daily(self, last_date: str, avoid_weeknds: bool = True):
         """Update multiple dates in GROUPED_DAILY table.
@@ -61,15 +76,19 @@ class GroupedDailyExtractor(Step):
         api_call_count, row_count = 0, 0
         while request_date != self.settings.POLYGON_UPDATE_UNTIL:
             if not avoid_weeknds or not self._is_weekend(request_date):
-                result = polygon_client.get_grouped_daily(request_date)
+                url = self.build_request(request_date)
+                result = polygon_client.request(url)
                 data = result.get("results")
                 if data:
                     row_count += result.get("resultsCount", 0)
+                    self.logger.info(f"{row_count=}")
                     enriched_data = self._raw_enrich(data, request_date)
                     append_to_file(file_path, enriched_data)
             date_obj = datetime.strptime(request_date, "%Y-%m-%d")
             request_date = (date_obj + timedelta(days=1)).strftime("%Y-%m-%d")
+            self.logger.info(f"Request Successful. {request_date=}")
             api_call_count += 1
+        self.logger.info(f"Update Finished. {api_call_count=} {row_count=}")
 
     def _raw_enrich(self, data: list[dict], request_date: str) -> list[dict]:
         """initial enrichment."""
@@ -104,5 +123,4 @@ class GroupedDailyExtractor(Step):
         self.logger.info(f"{last_update_date=}")
         self.update_grouped_daily(last_update_date)
 
-        self.output["test"] = "ok"
         return True, self.output

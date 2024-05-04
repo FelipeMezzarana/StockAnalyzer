@@ -13,11 +13,7 @@ class TestStepFactory(unittest.TestCase):
     def test_create(self) -> None:
         """Test create pipeline."""
 
-        mock_output = {
-            "file_path": "path",
-            "valid_file_path": "path",
-            "invalid_file_path": "path"
-            }
+        mock_output = {"file_path": "path", "valid_file_path": "path", "invalid_file_path": "path"}
 
         for pipeline in PIPELINES:
             settings = Settings(pipeline)

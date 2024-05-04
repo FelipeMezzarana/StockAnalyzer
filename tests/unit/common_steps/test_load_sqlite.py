@@ -18,9 +18,9 @@ class TestLoadSQLite(unittest.TestCase):
         cls.sqlite_client = SQLiteLoader(
             {
                 "valid_file_path": "tests/unit/data_samples/grouped_daily_sample.csv",
-                "invalid_file_path": "tests/unit/data_samples/invalid_grouped_daily_sample.csv"
-            }
-            , cls.settings
+                "invalid_file_path": "tests/unit/data_samples/invalid_grouped_daily_sample.csv",
+            },
+            cls.settings,
         )
 
     def test_run(self) -> None:
