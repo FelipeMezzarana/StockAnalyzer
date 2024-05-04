@@ -6,7 +6,7 @@ from ..pipelines.ticker_basic_details.steps.extract_ticker_basic_details import 
     TickerBasicDetailsExtractor,
 )
 from ..settings import Settings
-
+from ..common_steps.html_extractor import HtmlExtractor
 
 class StepFactory:
     """Simple Processor Factory.
@@ -31,6 +31,12 @@ class StepFactory:
             ),
             "load-sqlite": lambda previous_output, settings, **kwargs: SQLiteLoader(
                 previous_output, settings, **kwargs
+            ),
+            "extract-sp500-wiki-html": lambda previous_output, settings, **kwargs: HtmlExtractor(
+                "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",                
+                previous_output, 
+                settings, 
+                **kwargs
             ),
         }
 

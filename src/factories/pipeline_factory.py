@@ -16,6 +16,7 @@ class PipelineFactory:
         self._pipelines = {
             "grouped-daily-pipeline": lambda: GroupedDailyPipeline(settings),
             "ticker-basic-details-pipeline": lambda: TickerBasicDeatailsPipeline(settings),
+            "sp500-basic-details-pipeline": lambda: TickerBasicDeatailsPipeline(settings),
         }
 
     def create(self):

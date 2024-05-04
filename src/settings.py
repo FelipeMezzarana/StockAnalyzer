@@ -5,7 +5,11 @@ from datetime import datetime
 from typing import Any, Dict
 
 # Pipelines to run, in order.
-PIPELINES = ["grouped-daily-pipeline", "ticker-basic-details-pipeline"]
+PIPELINES = [
+    #"grouped-daily-pipeline", 
+    #"ticker-basic-details-pipeline",
+    "sp500-basic-details-pipeline"
+    ]
 
 
 class Settings:
