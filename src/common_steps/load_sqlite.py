@@ -51,6 +51,5 @@ class SQLiteLoader(Step):
 
         if clean_file:  # pragma: no cover
             clean_temp_file(self.valid_file_path)
-            clean_temp_file(self.invalid_file_path)
 
         return True, self.output

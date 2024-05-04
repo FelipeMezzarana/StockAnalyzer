@@ -2,6 +2,7 @@
 from ..common_steps.load_sqlite import SQLiteLoader
 from ..common_steps.validate import Validator
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
+from ..pipelines.ticker_basic_details.steps.extract_ticker_basic_details import TickerBasicDetailsExtractor
 from ..settings import Settings
 
 
@@ -15,6 +16,11 @@ class StepFactory:
         self._steps = {
             "extract-grouped-daily-polygon": (
                 lambda previous_output, settings, **kwargs: GroupedDailyExtractor(
+                    previous_output, settings, **kwargs
+                )
+            ),
+            "extract-ticker-basic-details-polygon": (
+                lambda previous_output, settings, **kwargs: TickerBasicDetailsExtractor(
                     previous_output, settings, **kwargs
                 )
             ),

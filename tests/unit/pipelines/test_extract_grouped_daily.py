@@ -27,7 +27,7 @@ class TestExtractGroupedDaily(unittest.TestCase):
         # Mock API result
         with open(SAMPLE_REQUEST_FILE, "r") as file:
             sample_request_result = json.load(file)
-        mock_polygon.return_value.get_grouped_daily.return_value = sample_request_result
+        mock_polygon.return_value.request.return_value = sample_request_result
 
         # Extract
         extractor = GroupedDailyExtractor({}, self.settings)
