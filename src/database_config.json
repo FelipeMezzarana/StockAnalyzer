@@ -34,5 +34,20 @@
             "updated_at": ["updated_at", "DATETIME"]
         },
         "required_fields": ["ticker", "market", "updated_at"]
+    },
+    "sp500-basic-details-pipeline": {
+        "name": "SP500_BASIC_DETAILS",
+        "fields_mapping": {
+            "Symbol": ["exchange_symbol",  "VARCHAR(255)"],
+            "Security": ["name", "VARCHAR(255)"],
+            "GICS Sector": ["sector", "VARCHAR(255)"],
+            "GICS Sub-Industry": ["sub_industry", "VARCHAR(255)"],
+            "Headquarters Location": ["hq_location", "DATETIME"],
+            "Date added": ["date_added", "DATETIME"],
+            "CIK": ["cik", "VARCHAR(255)"],
+            "Founded": ["founded", "VARCHAR(255)"],
+            "updated_at": ["updated_at", "DATETIME"]
+        },
+        "required_fields": ["Symbol", "Security", "GICS Sector","CIK", "updated_at"]
     }
 }
