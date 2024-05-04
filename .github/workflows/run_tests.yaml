@@ -27,7 +27,7 @@ jobs:
 
       - name: check-db-and-temp-directory-exist
         run: >-
-          directories=("temp" "src/database")
+          directories=("temp" "src/database"); 
           for directory in "${directories[@]}"; do
               if [ ! -d "$directory" ]; then
                   echo "The directory $directory does not exist. Creating..."
