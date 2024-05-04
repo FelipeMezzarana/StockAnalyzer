@@ -26,10 +26,9 @@ jobs:
         run: docker run stock_analyzer-linting tox
 
       - name: check-db-and-temp-directory-exist
-        env:
-          DIRECTORIES: ("temp" "src/database")
         run: >-
-          for directory in "${DIRECTORIES[@]}"; do
+          directories=("temp" "src/database")
+          for directory in "${directories[@]}"; do
               if [ ! -d "$directory" ]; then
                   echo "The directory $directory does not exist. Creating..."
                   mkdir -p "$directory"
