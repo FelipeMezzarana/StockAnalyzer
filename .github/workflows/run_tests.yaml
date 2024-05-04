@@ -44,8 +44,8 @@ jobs:
 
       - name: run-unit-tests
         run: >-
-        docker run --network=host --volume="$PWD/coverage/":/var/coverage/ stock_analyzer-tests
-        bash -c "python3 -m pytest 'tests/unit' --cov src --cov-config tox.ini --cov-report html --cov-report term"
+          docker run --network=host --volume="$PWD/coverage/":/var/coverage/ stock_analyzer-tests
+          bash -c "python3 -m pytest 'tests/unit' --cov src --cov-config tox.ini --cov-report html --cov-report term"
 
       - name: run-integration-tests
         run: >-
