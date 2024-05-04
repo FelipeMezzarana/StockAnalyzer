@@ -39,17 +39,17 @@ jobs:
               fi
           done
 
-      - name: build-unit-test-image
-        run: docker build --file Dockerfile.unittests --tag stock_analyzer-unit-tests .
+      - name: build-tests-image
+        run: docker build --file Dockerfile.tests --tag stock_analyzer-tests .
 
       - name: run-unit-tests
-        run: docker run --network=host --volume="$PWD/coverage/":/var/coverage/ stock_analyzer-unit-tests
-
-      - name: build-integration-test-image
-        run: docker build --file Dockerfile.integration --tag stock_analyzer-integration-tests .
+        run: >-
+        docker run --network=host --volume="$PWD/coverage/":/var/coverage/ stock_analyzer-tests
+        bash -c "python3 -m pytest 'tests/unit' --cov src --cov-config tox.ini --cov-report html --cov-report term"
 
       - name: run-integration-tests
         run: >-
           docker run 
           -e POLYGON_KEY=${{ secrets.POLYGON_KEY }}
-          stock_analyzer-integration-tests
+          stock_analyzer-tests
+          bash -c "python3 -m pytest 'tests/integration' -s"
