@@ -16,5 +16,9 @@ class SP500BasicDeatailsPipeline(Pipeline):
 
         # the order of the processors are important!
         return [
+            "check-sp500-table",
             "extract-sp500-wiki-html",
+            "transform-sp500-table",
+            "validate",
+            "load-sqlite"
         ]

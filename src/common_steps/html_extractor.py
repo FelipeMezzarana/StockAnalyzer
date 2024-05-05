@@ -1,7 +1,6 @@
 
 import requests
 from ..settings import Settings
-from ..util.get_logger import get_logger
 from time import sleep
 from ..abstract.step import Step
 from typing import Dict
@@ -21,11 +20,12 @@ class HtmlExtractor(Step):
 
         response = requests.get(self.url)
         req_count = 1
-        while response.status_code != 200:
+        while response.status_code != 200: # pragma: no cover
             if req_count >3:
                 raise Exception("Request failed 3 times.")
             self.logger.info(
-                f"Request {req_count} to {self.url} Failed. {response.status_code=}. Waiting 5 sec."
+                f"Request {req_count}/3 to {self.url} Failed. {response.status_code=}."
+                " Waiting 5 sec. and trying again."
                 )
             sleep(5)
             response = requests.get(self.url)

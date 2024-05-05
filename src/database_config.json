@@ -46,6 +46,7 @@
             "Date added": ["date_added", "DATETIME"],
             "CIK": ["cik", "VARCHAR(255)"],
             "Founded": ["founded", "VARCHAR(255)"],
+            "url": ["url", "VARCHAR(255)"],
             "updated_at": ["updated_at", "DATETIME"]
         },
         "required_fields": ["Symbol", "Security", "GICS Sector","CIK", "updated_at"]
