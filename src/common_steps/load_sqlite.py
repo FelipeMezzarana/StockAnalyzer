@@ -1,5 +1,6 @@
 # Standard library
 import os
+from typing import Dict
 
 # Third party
 import duckdb
@@ -23,7 +24,7 @@ class SQLiteLoader(Step):
         self.invalid_file_path = self.previous_output["invalid_file_path"]
         self.chunk_size = settings.CHUNK_SIZE
 
-    def run(self, clean_file: bool = True):
+    def run(self, clean_file: bool = True) -> tuple[bool, Dict]:
         """run step."""
 
         if not os.path.isfile(self.valid_file_path):  # pragma: no cover

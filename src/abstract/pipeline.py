@@ -35,5 +35,8 @@ class Pipeline(ABC):
             is_success, output = steps.create(step, output, **self.kwargs).run()
             self.logger.debug(f"{is_success=} -- {output=}")
             self.logger.info(f"finished {step=}")
+            if output.get("skip_pipeline"):
+                self.logger.info(f"Step {step} marked pipeline to skip.")
+                break
 
         return True

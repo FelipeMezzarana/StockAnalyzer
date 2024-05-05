@@ -1,7 +1,10 @@
 # Local
+from ..common_steps.html_extractor import HtmlExtractor
 from ..common_steps.load_sqlite import SQLiteLoader
 from ..common_steps.validate import Validator
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
+from ..pipelines.sp500_basic_details.steps.check_sp500_basic_details import SP500Checker
+from ..pipelines.sp500_basic_details.steps.transform_sp500_basic_details import SP500Transformer
 from ..pipelines.ticker_basic_details.steps.extract_ticker_basic_details import (
     TickerBasicDetailsExtractor,
 )
@@ -30,6 +33,18 @@ class StepFactory:
                 previous_output, settings, **kwargs
             ),
             "load-sqlite": lambda previous_output, settings, **kwargs: SQLiteLoader(
+                previous_output, settings, **kwargs
+            ),
+            "extract-sp500-wiki-html": lambda previous_output, settings, **kwargs: HtmlExtractor(
+                "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
+                previous_output,
+                settings,
+                **kwargs,
+            ),
+            "transform-sp500-table": lambda previous_output, settings, **kwargs: SP500Transformer(
+                previous_output, settings, **kwargs
+            ),
+            "check-sp500-table": lambda previous_output, settings, **kwargs: SP500Checker(
                 previous_output, settings, **kwargs
             ),
         }

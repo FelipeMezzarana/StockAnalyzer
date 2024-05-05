@@ -1,5 +1,6 @@
 # Local
 from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
+from ..pipelines.sp500_basic_details.sp500_basic_details_pipeline import SP500BasicDeatailsPipeline
 from ..pipelines.ticker_basic_details.ticker_basic_details_pipeline import (
     TickerBasicDeatailsPipeline,
 )
@@ -16,6 +17,7 @@ class PipelineFactory:
         self._pipelines = {
             "grouped-daily-pipeline": lambda: GroupedDailyPipeline(settings),
             "ticker-basic-details-pipeline": lambda: TickerBasicDeatailsPipeline(settings),
+            "sp500-basic-details-pipeline": lambda: SP500BasicDeatailsPipeline(settings),
         }
 
     def create(self):

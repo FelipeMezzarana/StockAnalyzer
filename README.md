@@ -6,7 +6,7 @@ App:
 ```shell
 # Run through Docker 
  ./run.sh 
-# Run through Pytohn
+# Run through Python
  python3 -m src.run 
  ```
 
