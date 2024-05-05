@@ -1,10 +1,11 @@
 # Local
 from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
+from ..pipelines.sp500_basic_details.sp500_basic_details_pipeline import SP500BasicDeatailsPipeline
 from ..pipelines.ticker_basic_details.ticker_basic_details_pipeline import (
     TickerBasicDeatailsPipeline,
 )
 from ..settings import Settings
-from ..pipelines.sp500_basic_details.sp500_basic_details_pipeline import SP500BasicDeatailsPipeline
+
 
 class PipelineFactory:
     """Pipeline Factory.

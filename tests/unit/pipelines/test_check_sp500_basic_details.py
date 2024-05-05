@@ -1,7 +1,8 @@
 # Standard library
 import unittest
-from unittest.mock import patch
 from datetime import datetime
+from unittest.mock import patch
+
 # First party
 from src.pipelines.sp500_basic_details.steps.check_sp500_basic_details import SP500Checker
 from src.settings import Settings
@@ -24,8 +25,8 @@ class TestSP500Transformer(unittest.TestCase):
         """Test run."""
 
         mock_sqlite.return_value.query.side_effect = [
-            (True, [(datetime.today().strftime("%Y-%m-%d %H:%M:%S"), )]), # Skip
-            (True, [(datetime(1990,1,1).strftime("%Y-%m-%d %H:%M:%S"), )]) # Run
+            (True, [(datetime.today().strftime("%Y-%m-%d %H:%M:%S"),)]),  # Skip
+            (True, [(datetime(1990, 1, 1).strftime("%Y-%m-%d %H:%M:%S"),)]),  # Run
         ]
         sp500_checker = SP500Checker({}, self.settings)
 
@@ -36,7 +37,3 @@ class TestSP500Transformer(unittest.TestCase):
         # Check run
         is_successful, output = sp500_checker.run()
         self.assertFalse(output["skip_pipeline"])
-     
-
-        
-   
