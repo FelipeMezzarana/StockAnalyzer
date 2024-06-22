@@ -50,5 +50,15 @@
             "updated_at": ["updated_at", "DATETIME"]
         },
         "required_fields": ["Symbol", "Security", "GICS Sector","CIK", "updated_at"]
+    },
+    "indexes-daily-close-pipeline": {
+        "name": "INDEXES_DAILY_CLOSE",
+        "fields_mapping": {
+            "date": ["date", "DATE"],
+            "index": ["index_code",  "VARCHAR(255)"],
+            "value": ["close_value", "FLOAT"],
+            "updated_at": ["updated_at", "DATETIME"]
+        },
+        "required_fields": ["date","index", "updated_at"]
     }
 }

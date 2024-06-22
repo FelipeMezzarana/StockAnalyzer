@@ -33,7 +33,7 @@ class SP500Checker(Step):
             raise KeyError("SP500_BASIC_DETAILS Table no found.")
 
     def run(self):
-        """Run validation step."""
+        """Run step."""
 
         last_update = self.get_last_update()
         today = datetime.today()

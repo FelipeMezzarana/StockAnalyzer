@@ -22,10 +22,10 @@ class TickerBasicDetailsExtractor(Step):
 
         self.settings = settings
         self.sqlite_client = SQLiteHandler(self.settings)
-        self.max_paginagion = self.settings.MAX_PAGINATION
-        self.max_days_hist = self.settings.POLYGON_MAX_DAYS_HIST
-        self.base_url = self.settings.BASE_URL
-        self.endpoints = self.settings.ENDPOINTS
+        self.max_paginagion = self.settings.POLYGON["MAX_PAGINATION"]
+        self.max_days_hist = self.settings.POLYGON["POLYGON_MAX_DAYS_HIST"]
+        self.base_url = self.settings.POLYGON["BASE_URL"]
+        self.endpoints = self.settings.POLYGON["ENDPOINTS"]
 
     def get_required_tickers(self) -> tuple[list[str], list[str]]:
         """Return required tickers list.

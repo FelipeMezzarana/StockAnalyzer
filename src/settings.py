@@ -9,6 +9,7 @@ PIPELINES = [
     "grouped-daily-pipeline",
     "ticker-basic-details-pipeline",
     "sp500-basic-details-pipeline",
+    "indexes-daily-close-pipeline",
 ]
 
 
@@ -34,13 +35,22 @@ class Settings:
         self.CHUNK_SIZE = 50000
 
         # Polygon API settings
-        self.BASE_URL = "https://api.polygon.io/"
-        self.ENDPOINTS = {
-            "grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/",
-            "ticker_basic_details_endpoint": "v3/reference/tickers?limit=1000",
+        self.POLYGON: dict = {
+            "BASE_URL": "https://api.polygon.io/",
+            "ENDPOINTS": {
+                "grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/",
+                "ticker_basic_details_endpoint": "v3/reference/tickers?limit=1000",
+            },
+            "POLYGON_MAX_DAYS_HIST": 730,
+            "POLYGON_CALLS_PER_MIN": 5,
+            "MAX_PAGINATION": 5,
+            # Free API allows calls only until the end of the previous day
+            "POLYGON_UPDATE_UNTIL": datetime.today().strftime("%Y-%m-%d"),
         }
-        self.POLYGON_MAX_DAYS_HIST = 730
-        self.POLYGON_CALLS_PER_MIN = 5
-        self.MAX_PAGINATION = 5
-        # Free API allows calls only until the end of the previous day
-        self.POLYGON_UPDATE_UNTIL = datetime.today().strftime("%Y-%m-%d")
+
+        # Fred API settings
+        self.FRED: dict = {
+            "BASE_URL": "https://api.stlouisfed.org/fred/",
+            "INDEXES": ["SP500", "DJIA", "NASDAQ100", "NASDAQCOM", "DJTA", "DJCA", "DJUA"],
+            "ENDPOINTS": {"index_daily_close": "series/observations?"},
+        }
