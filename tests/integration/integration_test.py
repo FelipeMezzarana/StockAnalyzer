@@ -22,6 +22,7 @@ class TestIntegration(unittest.TestCase):
             # Limit data extracted
             settings.POLYGON["MAX_PAGINATION"] = 2
             settings.POLYGON["POLYGON_MAX_DAYS_HIST"] = 4
+            settings.FRED["INDEXES"] = ["SP500"]
 
             # Run Pipeline
             pipeline = PipelineFactory(settings).create()

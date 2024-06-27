@@ -19,7 +19,7 @@ class IndexDailyCloseExtractor(Step):
         super(IndexDailyCloseExtractor, self).__init__(__name__, previous_output, settings)
 
         self.settings = settings
-        self.indexes_last_update = previous_output.get("indexes_last_update")
+        self.indexes_last_update: dict = previous_output.get("indexes_last_update", {})
         self.base_url = self.settings.FRED["BASE_URL"]
         self.endpoints: dict = self.settings.FRED["ENDPOINTS"]
         self.indexes = settings.FRED["INDEXES"]

@@ -11,7 +11,7 @@ SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_basic_details_sample.txt"
 EXPECTED_RESULT = "tests/unit/data_samples/sp500_basic_details.csv"
 
 
-class TestSP500Transformer(unittest.TestCase):
+class TestSP500Checker(unittest.TestCase):
     """Test SP500Transformer class."""
 
     @classmethod
