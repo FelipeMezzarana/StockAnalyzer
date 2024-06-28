@@ -3,6 +3,8 @@ from ..common_steps.html_extractor import HtmlExtractor
 from ..common_steps.load_sqlite import SQLiteLoader
 from ..common_steps.validate import Validator
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
+from ..pipelines.indexes_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
+from ..pipelines.indexes_daily_close.steps.extract_index_daily_close import IndexDailyCloseExtractor
 from ..pipelines.sp500_basic_details.steps.check_sp500_basic_details import SP500Checker
 from ..pipelines.sp500_basic_details.steps.transform_sp500_basic_details import SP500Transformer
 from ..pipelines.ticker_basic_details.steps.extract_ticker_basic_details import (
@@ -46,6 +48,16 @@ class StepFactory:
             ),
             "check-sp500-table": lambda previous_output, settings, **kwargs: SP500Checker(
                 previous_output, settings, **kwargs
+            ),
+            "check-index-daily-close": (
+                lambda previous_output, settings, **kwargs: IndexDailyCloseChecker(
+                    previous_output, settings, **kwargs
+                )
+            ),
+            "extract-index-daily-close": (
+                lambda previous_output, settings, **kwargs: IndexDailyCloseExtractor(
+                    previous_output, settings, **kwargs
+                )
             ),
         }
 

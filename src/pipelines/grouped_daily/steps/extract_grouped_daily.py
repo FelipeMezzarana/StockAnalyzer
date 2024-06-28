@@ -21,9 +21,9 @@ class GroupedDailyExtractor(Step):
 
         self.settings = settings
         self.sqlite_client = SQLiteHandler(self.settings)
-        self.max_days_hist = self.settings.POLYGON_MAX_DAYS_HIST
-        self.base_url = self.settings.BASE_URL
-        self.endpoints = self.settings.ENDPOINTS
+        self.max_days_hist = self.settings.POLYGON["POLYGON_MAX_DAYS_HIST"]
+        self.base_url = self.settings.POLYGON["BASE_URL"]
+        self.endpoints: dict = self.settings.POLYGON["ENDPOINTS"]
 
     def get_last_date(self):
         """Return max date for grouped_daily table.
@@ -60,8 +60,8 @@ class GroupedDailyExtractor(Step):
         )
         return url
 
-    def update_grouped_daily(self, last_date: str, avoid_weeknds: bool = True):
-        """Update multiple dates in GROUPED_DAILY table.
+    def get_grouped_daily(self, last_date: str, avoid_weeknds: bool = True):
+        """Get grouped daily datafor GROUPED_DAILY table.
 
         last_date -- last date updated(format yyyy-mm-dd)
         end_date -- end of period (format yyyy-mm-dd)
@@ -74,7 +74,7 @@ class GroupedDailyExtractor(Step):
         file_path = "temp/grouped_daily_temp.csv"
         self.output["file_path"] = file_path
         api_call_count, row_count = 0, 0
-        while request_date != self.settings.POLYGON_UPDATE_UNTIL:
+        while request_date != self.settings.POLYGON["POLYGON_UPDATE_UNTIL"]:
             if not avoid_weeknds or not self._is_weekend(request_date):
                 url = self.build_request(request_date)
                 result = polygon_client.request(url)
@@ -121,6 +121,6 @@ class GroupedDailyExtractor(Step):
 
         last_update_date = self.get_last_date()
         self.logger.info(f"{last_update_date=}")
-        self.update_grouped_daily(last_update_date)
+        self.get_grouped_daily(last_update_date)
 
         return True, self.output

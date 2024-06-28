@@ -52,7 +52,7 @@ class Validator(Step):
         return True
 
     def _is_dtype_valid(self, field: str, value):
-        """Validate line based on settings.py fields mappings."""
+        """Validate line based on src/database_config.json fields mappings."""
 
         expected_dtype = self._get_python_type(self.fields_mapping[field][1])
         if not isinstance(value, expected_dtype):

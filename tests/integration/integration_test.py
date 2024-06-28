@@ -20,8 +20,9 @@ class TestIntegration(unittest.TestCase):
             # Create new DB for tests
             settings.DB_PATH = "database/stock_database_test.db"
             # Limit data extracted
-            settings.MAX_PAGINATION = 2
-            settings.POLYGON_MAX_DAYS_HIST = 4
+            settings.POLYGON["MAX_PAGINATION"] = 2
+            settings.POLYGON["POLYGON_MAX_DAYS_HIST"] = 4
+            settings.FRED["INDEXES"] = ["SP500"]
 
             # Run Pipeline
             pipeline = PipelineFactory(settings).create()
