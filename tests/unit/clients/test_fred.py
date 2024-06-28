@@ -1,7 +1,7 @@
 # Standard library
+import os
 import unittest
 from unittest.mock import patch
-import os
 
 # First party
 from src.clients.fred import Fred
@@ -21,7 +21,7 @@ class TestFred(unittest.TestCase):
     def setUpClass(cls):
         """ """
         cls.mock_settings = Settings("indexes-daily-close-pipeline")
-        os.environ['FRED_KEY'] = "FRED_KEY"
+        os.environ["FRED_KEY"] = "FRED_KEY"
 
     @patch("src.clients.fred.requests")
     def test_get_grouped_daily(self, mock_requests) -> None:

@@ -1,7 +1,7 @@
 # Standard library
+import os
 import unittest
 from unittest.mock import patch
-import os
 
 # First party
 from src.clients.polygon import Polygon
@@ -21,8 +21,7 @@ class TestPolygon(unittest.TestCase):
     def setUpClass(cls):
         """ """
         cls.mock_settings = Settings("grouped-daily-pipeline")
-        os.environ['POLYGON_KEY'] = "POLYGON_KEY"
-
+        os.environ["POLYGON_KEY"] = "POLYGON_KEY"
 
     @patch("src.clients.polygon.requests")
     def test_get_grouped_daily(self, mock_requests) -> None:

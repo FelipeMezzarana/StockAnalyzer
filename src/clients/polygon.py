@@ -22,10 +22,10 @@ class Polygon:
 
         self.logger = get_logger(__name__, settings)
         api_key = os.getenv("POLYGON_KEY")
-        if not api_key: # pragma: no cover
+        if not api_key:  # pragma: no cover
             raise KeyError(
                 "Missing POLYGON API key. Key must be exported as env variable <POLYGON_KEY>."
-                )
+            )
         self.api_key_url = f"&apiKey={api_key}"
         self.base_url = settings.POLYGON["BASE_URL"]
         self.endpoints = settings.POLYGON["ENDPOINTS"]

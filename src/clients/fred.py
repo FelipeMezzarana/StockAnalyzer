@@ -24,9 +24,7 @@ class Fred:
         self.logger = get_logger(__name__, settings)
         api_key = os.getenv("FRED_KEY")
         if not api_key:  # pragma: no cover
-            raise KeyError(
-                "Missing FRED API key. Key must be exported as env variable <FRED_KEY>."
-                )
+            raise KeyError("Missing FRED API key. Key must be exported as env variable <FRED_KEY>.")
         self.api_key_url = f"&api_key={api_key}&file_type=json"
         self.base_url = settings.FRED["BASE_URL"]
         self.endpoints = settings.FRED["ENDPOINTS"]
