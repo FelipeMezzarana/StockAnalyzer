@@ -2,18 +2,19 @@
 from datetime import datetime
 
 # Local
+from ....abstract.client import Client
 from ....abstract.step import Step
-from ....clients.sqlite_handler import SQLiteHandler
 from ....settings import Settings
+from ....util.sql_handler import SQLHandler
 
 
 class IndexDailyCloseChecker(Step):
     """Check status of INDEXES_DAILY_CLOSE."""
 
-    def __init__(self, previous_output: dict, settings: Settings):
+    def __init__(self, previous_output: dict, settings: Settings, client: Client):
         """Init class."""
         super(IndexDailyCloseChecker, self).__init__(__name__, previous_output, settings)
-        self.sqlite_client = SQLiteHandler(settings)
+        self.sqlite_client = SQLHandler(settings, client)
         self.indexes = settings.FRED["INDEXES"]
 
     def get_last_update(self) -> dict:

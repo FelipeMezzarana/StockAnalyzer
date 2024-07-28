@@ -19,5 +19,5 @@ class GroupedDailyPipeline(Pipeline):
         return [
             "extract-grouped-daily-polygon",
             "validate",
-            "load-sqlite",
+            "load-sql",
         ]

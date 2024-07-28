@@ -2,18 +2,19 @@
 from datetime import datetime
 
 # Local
+from ....abstract.client import Client
 from ....abstract.step import Step
-from ....clients.sqlite_handler import SQLiteHandler
 from ....settings import Settings
+from ....util.sql_handler import SQLHandler
 
 
 class SP500Checker(Step):
     """Check status of SP500_BASIC_DETAILS."""
 
-    def __init__(self, previous_output: dict, settings: Settings):
+    def __init__(self, previous_output: dict, settings: Settings, client: Client):
         """Init class."""
         super(SP500Checker, self).__init__(__name__, previous_output, settings)
-        self.sqlite_client = SQLiteHandler(settings)
+        self.sqlite_client = SQLHandler(settings, client)
 
     def get_last_update(self) -> datetime:
         """Return last update date for table SP500_BASIC_DETAILS."""

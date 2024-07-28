@@ -20,7 +20,6 @@ class TestIndexDailyCloseExtractor(unittest.TestCase):
     def setUpClass(cls):
         """Class Setup."""
         cls.settings = Settings("indexes-daily-close-pipeline")
-        cls.settings.DB_PATH = "database/mock_stock_database.db"
         cls.settings.FRED["INDEXES"] = ["SP500"]  # Limit test to one prefix
 
     @patch("src.pipelines.indexes_daily_close.steps.extract_index_daily_close.Fred")

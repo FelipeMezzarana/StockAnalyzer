@@ -2,7 +2,8 @@
 import unittest
 
 # First party
-from src.common_steps.load_sqlite import SQLiteLoader
+from src.clients.sqlite_client import SQLiteClient
+from src.common_steps.load_sql import SQLLoader
 from src.settings import Settings
 
 
@@ -13,14 +14,15 @@ class TestLoadSQLite(unittest.TestCase):
     def setUpClass(cls):
         """Class Setup."""
         cls.settings = Settings("grouped-daily-pipeline")
-        cls.settings.DB_PATH = "database/stock_database_test.db"
-
-        cls.sqlite_client = SQLiteLoader(
+        cls.settings.CLIENT_CONFIG["DB_PATH"] = "database/stock_database_test.db"
+        cls.client = SQLiteClient(cls.settings)
+        cls.sqlite_client = SQLLoader(
             {
                 "valid_file_path": "tests/unit/data_samples/grouped_daily_sample.csv",
                 "invalid_file_path": "tests/unit/data_samples/invalid_grouped_daily_sample.csv",
             },
             cls.settings,
+            cls.client,
         )
 
     def test_run(self) -> None:

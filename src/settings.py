@@ -1,6 +1,7 @@
 # Standard library
 import json
 import logging
+import os
 from datetime import datetime
 from typing import Any, Dict
 
@@ -11,6 +12,8 @@ PIPELINES = [
     "sp500-basic-details-pipeline",
     "indexes-daily-close-pipeline",
 ]
+
+AVAIABLE_CLIENTS = ["SQLITE"]
 
 
 class Settings:
@@ -31,8 +34,16 @@ class Settings:
         with open("src/database_config.json", "r") as file:
             self.TABLES: Dict[str, Any] = json.load(file)
         self.PIPELINE_TABLE: Dict[str, Any] = self.TABLES[pipeline]
-        self.DB_PATH = "database/stock_database.db"
-        self.CHUNK_SIZE = 50000
+
+        # Client settings
+        self.CLIENTS_CONFIG: dict = {
+            "SQLITE": {"DB_PATH": "database/stock_database.db", "CHUNK_SIZE": 50000}
+        }
+        # Get current client config
+        self.CLIENT = os.getenv("CLIENT", "SQLITE")
+        if self.CLIENT not in AVAIABLE_CLIENTS:  # pragma: no cover
+            raise ValueError(f"You must select one of the avaiable clients: {self.CLIENT}")
+        self.CLIENT_CONFIG = self.CLIENTS_CONFIG[self.CLIENT]
 
         # Polygon API settings
         self.POLYGON: dict = {
