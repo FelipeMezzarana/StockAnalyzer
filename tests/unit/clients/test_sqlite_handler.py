@@ -6,39 +6,41 @@ import unittest
 import duckdb
 
 # First party
-from src.clients.sqlite_handler import SQLiteHandler
+from src.clients.sqlite_client import SQLiteClient
 from src.settings import Settings
+from src.util.sql_handler import SQLHandler
 
 SAMPLE_FILE = "tests/unit/data_samples/grouped_daily_sample.csv"
 
 
-class TestSQLiteHandler(unittest.TestCase):
+class TestSQLHandler(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ """
         cls.settings = Settings("grouped-daily-pipeline")
-        cls.settings.DB_PATH = "stock_database.db"
-        cls.sqlite_handler = SQLiteHandler(cls.settings)
+        cls.settings.CLIENT_CONFIG["DB_PATH"] = "stock_database.db"
+        cls.client = SQLiteClient(cls.settings)
+        cls.sqlite_handler = SQLHandler(cls.settings, cls.client)
 
     @classmethod
     def setDownClass(cls):
         """Clean test db"""
 
-        if os.path.isfile(cls.settings.DB_PATH):
-            os.remove(cls.settings.DB_PATH)
+        if os.path.isfile(cls.settings.CLIENT_CONFIG["DB_PATH"]):
+            os.remove(cls.settings.CLIENT_CONFIG["DB_PATH"])
 
     def test_create_table(self) -> None:
-        """Test SQLiteHandler.create_table() and initialization."""
+        """Test SQLHandler.create_table() and initialization."""
 
         # Assert DB Creation
-        self.assertTrue(os.path.isfile(self.settings.DB_PATH))
+        self.assertTrue(os.path.isfile(self.settings.CLIENT_CONFIG["DB_PATH"]))
         # Create table based on settings
         self.sqlite_handler.create_table()
         is_successful, result = self.sqlite_handler.query("SELECT * FROM GROUPED_DAILY")
         self.assertTrue(is_successful)
 
     def test_insert_into(self):
-        """Test SQLiteHandler.insert_into()."""
+        """Test SQLHandler.insert_into()."""
 
         raw_file = duckdb.read_csv(SAMPLE_FILE, header=True).fetchall()
         header = duckdb.read_csv(SAMPLE_FILE, header=False).fetchone()

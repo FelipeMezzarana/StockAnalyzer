@@ -4,6 +4,7 @@ import unittest
 from unittest.mock import patch
 
 # First party
+from src.clients.sqlite_client import SQLiteClient
 from src.pipelines.ticker_basic_details.steps.extract_ticker_basic_details import (
     TickerBasicDetailsExtractor,
 )
@@ -19,8 +20,9 @@ class TestExtractTickerDetails(unittest.TestCase):
     def setUpClass(cls):
         """Class Setup."""
         cls.settings = Settings("ticker-basic-details-pipeline")
-        cls.settings.DB_PATH = "database/mock_stock_database.db"
-        cls.settings.POLYGON_MAX_DAYS_HIST = 10
+        cls.settings.CLIENT_CONFIG["DB_PATH"] = "database/mock_stock_database.db"
+        cls.client = SQLiteClient(cls.settings)
+        cls.settings.POLYGON["POLYGON_MAX_DAYS_HIST"] = 10
 
     @patch(
         "src.pipelines.ticker_basic_details.steps.extract_ticker_basic_details."
@@ -40,14 +42,14 @@ class TestExtractTickerDetails(unittest.TestCase):
         )
 
         # Extract
-        extractor = TickerBasicDetailsExtractor({}, self.settings)
+        extractor = TickerBasicDetailsExtractor({}, self.settings, self.client)
         is_successful, _ = extractor.run()
         self.assertTrue(is_successful)
 
-    @patch("src.pipelines.ticker_basic_details.steps.extract_ticker_basic_details.SQLiteHandler")
+    @patch("src.pipelines.ticker_basic_details.steps.extract_ticker_basic_details.SQLHandler")
     def test_get_required_tickers(self, mock_sql):
         """ """
         mock_sql.return_value.query.return_value = True, ["ticker1", "ticker2"]
-        extractor = TickerBasicDetailsExtractor({}, self.settings)
+        extractor = TickerBasicDetailsExtractor({}, self.settings, self.client)
         required_tickers, _ = extractor.get_required_tickers()
         self.assertEqual(required_tickers, [])

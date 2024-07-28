@@ -19,5 +19,5 @@ class IndexDailyClosePipeline(Pipeline):
             "check-index-daily-close",
             "extract-index-daily-close",
             "validate",
-            "load-sqlite",
+            "load-sql",
         ]

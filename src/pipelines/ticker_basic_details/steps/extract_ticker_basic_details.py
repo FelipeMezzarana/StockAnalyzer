@@ -3,17 +3,18 @@ import random
 from datetime import datetime
 
 # Local
+from ....abstract.client import Client
 from ....abstract.step import Step
 from ....clients.polygon import Polygon
-from ....clients.sqlite_handler import SQLiteHandler
 from ....settings import Settings
 from ....util.csv_handler import append_to_file
+from ....util.sql_handler import SQLHandler
 
 
 class TickerBasicDetailsExtractor(Step):
     """Extract daily data from polygon API."""
 
-    def __init__(self, previous_output: dict, settings: Settings):
+    def __init__(self, previous_output: dict, settings: Settings, client: Client):
         """Initiate clients and settings.
 
         max_days_hist -- max historical data covered by API plan, in days.
@@ -21,7 +22,7 @@ class TickerBasicDetailsExtractor(Step):
         super(TickerBasicDetailsExtractor, self).__init__(__name__, previous_output, settings)
 
         self.settings = settings
-        self.sqlite_client = SQLiteHandler(self.settings)
+        self.sqlite_client = SQLHandler(self.settings, client)
         self.max_paginagion = self.settings.POLYGON["MAX_PAGINATION"]
         self.max_days_hist = self.settings.POLYGON["POLYGON_MAX_DAYS_HIST"]
         self.base_url = self.settings.POLYGON["BASE_URL"]

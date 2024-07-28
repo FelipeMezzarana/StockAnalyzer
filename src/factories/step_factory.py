@@ -1,6 +1,7 @@
 # Local
+from ..clients.sqlite_client import SQLiteClient
 from ..common_steps.html_extractor import HtmlExtractor
-from ..common_steps.load_sqlite import SQLiteLoader
+from ..common_steps.load_sql import SQLLoader
 from ..common_steps.validate import Validator
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
 from ..pipelines.indexes_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
@@ -20,22 +21,26 @@ class StepFactory:
 
     def __init__(self, settings: Settings):
         self.settings = settings
+
+        self.clients = {"SQLITE": lambda settings: SQLiteClient(settings)}
+        client = self.clients[self.settings.CLIENT](self.settings)
+
         self._steps = {
             "extract-grouped-daily-polygon": (
                 lambda previous_output, settings, **kwargs: GroupedDailyExtractor(
-                    previous_output, settings, **kwargs
+                    previous_output, settings, client, **kwargs
                 )
             ),
             "extract-ticker-basic-details-polygon": (
-                lambda previous_output, settings, **kwargs: TickerBasicDetailsExtractor(
-                    previous_output, settings, **kwargs
+                lambda previous_output, settings, **kwargss: TickerBasicDetailsExtractor(
+                    previous_output, settings, client, **kwargss
                 )
             ),
-            "validate": lambda previous_output, settings, **kwargs: Validator(
-                previous_output, settings, **kwargs
+            "validate": lambda previous_output, settings, **kwargss: Validator(
+                previous_output, settings, **kwargss
             ),
-            "load-sqlite": lambda previous_output, settings, **kwargs: SQLiteLoader(
-                previous_output, settings, **kwargs
+            "load-sql": lambda previous_output, settings, **kwargss: SQLLoader(
+                previous_output, settings, client, **kwargss
             ),
             "extract-sp500-wiki-html": lambda previous_output, settings, **kwargs: HtmlExtractor(
                 "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
@@ -43,20 +48,20 @@ class StepFactory:
                 settings,
                 **kwargs,
             ),
-            "transform-sp500-table": lambda previous_output, settings, **kwargs: SP500Transformer(
-                previous_output, settings, **kwargs
+            "transform-sp500-table": lambda previous_output, settings, **kwargss: SP500Transformer(
+                previous_output, settings, **kwargss
             ),
-            "check-sp500-table": lambda previous_output, settings, **kwargs: SP500Checker(
-                previous_output, settings, **kwargs
+            "check-sp500-table": lambda previous_output, settings, **kwargss: SP500Checker(
+                previous_output, settings, client, **kwargss
             ),
             "check-index-daily-close": (
-                lambda previous_output, settings, **kwargs: IndexDailyCloseChecker(
-                    previous_output, settings, **kwargs
+                lambda previous_output, settings, **kwargss: IndexDailyCloseChecker(
+                    previous_output, settings, client, **kwargss
                 )
             ),
             "extract-index-daily-close": (
-                lambda previous_output, settings, **kwargs: IndexDailyCloseExtractor(
-                    previous_output, settings, **kwargs
+                lambda previous_output, settings, **kwargss: IndexDailyCloseExtractor(
+                    previous_output, settings, **kwargss
                 )
             ),
         }

@@ -19,5 +19,5 @@ class TickerBasicDeatailsPipeline(Pipeline):
         return [
             "extract-ticker-basic-details-polygon",
             "validate",
-            "load-sqlite",
+            "load-sql",
         ]

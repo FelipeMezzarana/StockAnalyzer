@@ -1,9 +1,11 @@
 # Standard library
 import json
+import os
 import unittest
 from unittest.mock import patch
 
 # First party
+from src.clients.sqlite_client import SQLiteClient
 from src.pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
 from src.settings import Settings
 
@@ -17,8 +19,9 @@ class TestExtractGroupedDaily(unittest.TestCase):
     def setUpClass(cls):
         """Class Setup."""
         cls.settings = Settings("grouped-daily-pipeline")
-        cls.settings.DB_PATH = "database/mock_stock_database.db"
-        cls.settings.POLYGON_MAX_DAYS_HIST = 10
+        cls.settings.CLIENT_CONFIG["DB_PATH"] = "database/mock_stock_database.db"
+        cls.client = SQLiteClient(cls.settings)
+        cls.settings.POLYGON["POLYGON_MAX_DAYS_HIST"] = 10
 
     @patch("src.pipelines.grouped_daily.steps.extract_grouped_daily.Polygon")
     def test_run(self, mock_polygon) -> None:
@@ -30,6 +33,6 @@ class TestExtractGroupedDaily(unittest.TestCase):
         mock_polygon.return_value.request.return_value = sample_request_result
 
         # Extract
-        extractor = GroupedDailyExtractor({}, self.settings)
+        extractor = GroupedDailyExtractor({}, self.settings, self.client)
         is_successful, output = extractor.run()
         self.assertTrue(is_successful)

@@ -1,44 +1,21 @@
 # Standard library
-import os
-import re
-import shutil
 import sqlite3
 
 # Local
+from .get_logger import get_logger
+from ..abstract.client import Client
 from ..settings import Settings
-from ..util.get_logger import get_logger
 
 
-class SQLiteHandler:
+class SQLHandler:
     """SQLLite db operations handler."""
 
-    def __init__(self, settings: Settings, recovery_copy: bool = False):
+    def __init__(self, settings: Settings, client: Client):
         self.logger = get_logger(__name__, settings)
         self.settings = settings
-        # Create db file if not exist
-        self.logger.debug(f"{settings.DB_PATH=}")
-        if not os.path.exists(settings.DB_PATH):
-            self.logger.info
-            (f"Database file {settings.DB_PATH} not fount. A new file will be created")
-            # Check directory
-            if re.search("/", settings.DB_PATH):
-                try:
-                    directory = re.findall(r"([^\/]*)/[^\/]*.db", settings.DB_PATH)[0]
-                    if not os.path.exists(directory):
-                        os.mkdir(directory)
-                        self.logger.info(f"DB directory not found. Created {directory}")
-                    else:
-                        self.logger.info(f"DB directory found. {directory=}")
-                except Exception as err:  # pragma: no cover
-                    raise ValueError(f"Error creating {directory=}. {err=}")
+        self.client = client
+        self.client.connect()
 
-        self.conn = sqlite3.connect(settings.DB_PATH)
-        # Save a recovery copy
-        if recovery_copy:  # pragma: no cover
-            shutil.copy(settings.DB_PATH, settings.DB_PATH.replace(".db", ".recovery"))
-        self.cur = self.conn.cursor()
-        self.logger.info("conected")
-        # Create table if not exist
         self.create_table()
 
     def insert_into(self, raw_values: list[tuple], header: tuple):
@@ -60,14 +37,13 @@ class SQLiteHandler:
 
         parameterized_fields = ("?, " * len(mapped_values_list[0])).strip(", ")
         query = f"INSERT INTO {table_name} VALUES({parameterized_fields})"
-        self.cur.executemany(query, mapped_values_list)
-        self.conn.commit()
+        self.client.executemany(query, mapped_values_list)
 
     def query(self, query: str) -> tuple[bool, list]:
         """Return if query is successful and result of a SQL query."""
 
         try:
-            res = self.cur.execute(query)
+            res = self.client.execute(query)
             return True, res.fetchall()
         except sqlite3.OperationalError as e:  # pragma: no cover
             self.logger.debug(f"Query failed. {e}. {query=}")
@@ -88,5 +64,4 @@ class SQLiteHandler:
         self.logger.debug(f"{create_table_sql=}")
 
         # Create Table
-        self.cur.execute(create_table_sql)
-        self.conn.commit()
+        self.client.execute(create_table_sql)

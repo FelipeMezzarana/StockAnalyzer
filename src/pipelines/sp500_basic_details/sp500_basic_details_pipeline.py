@@ -20,5 +20,5 @@ class SP500BasicDeatailsPipeline(Pipeline):
             "extract-sp500-wiki-html",
             "transform-sp500-table",
             "validate",
-            "load-sqlite",
+            "load-sql",
         ]

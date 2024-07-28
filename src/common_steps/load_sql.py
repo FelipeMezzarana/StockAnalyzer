@@ -6,23 +6,24 @@ from typing import Dict
 import duckdb
 
 # Local
+from ..abstract.client import Client
 from ..abstract.step import Step
-from ..clients.sqlite_handler import SQLiteHandler
 from ..settings import Settings
 from ..util.csv_handler import clean_temp_file
+from ..util.sql_handler import SQLHandler
 
 
-class SQLiteLoader(Step):
+class SQLLoader(Step):
     """Load data into SQLite DB."""
 
-    def __init__(self, previous_output: dict, settings: Settings) -> None:
+    def __init__(self, previous_output: dict, settings: Settings, client: Client) -> None:
         """Init loader."""
-        super(SQLiteLoader, self).__init__(__name__, previous_output, settings)
+        super(SQLLoader, self).__init__(__name__, previous_output, settings)
 
-        self.sqlite_client = SQLiteHandler(settings)
+        self.sqlite_client = SQLHandler(settings, client)
         self.valid_file_path = self.previous_output["valid_file_path"]
         self.invalid_file_path = self.previous_output["invalid_file_path"]
-        self.chunk_size = settings.CHUNK_SIZE
+        self.chunk_size = settings.CLIENT_CONFIG["CHUNK_SIZE"]
 
     def run(self, clean_file: bool = True) -> tuple[bool, Dict]:
         """run step."""
