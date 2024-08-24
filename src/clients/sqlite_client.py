@@ -13,7 +13,7 @@ class SQLiteClient(Client):
     """SQLite Client."""
 
     def __init__(self, settings: Settings):
-        """Connect with DB."""
+        """Setup settings."""
 
         self.logger = get_logger(__name__, settings)
         self.settings = settings
@@ -28,13 +28,13 @@ class SQLiteClient(Client):
         self.cur = self.conn.cursor()
         self.logger.info("conected")
 
-    def execute(self, query: str) -> sqlite3.Cursor:
+    def execute(self, query: str) -> list[tuple]:
         """Execute query."""
 
         resp = self.cur.execute(query)
         self.conn.commit()
 
-        return resp
+        return resp.fetchall()
 
     def executemany(self, query: str, mapped_values: list[tuple]):
         """Execute parameterized query."""

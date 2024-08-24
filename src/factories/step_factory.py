@@ -1,4 +1,5 @@
 # Local
+from ..clients.postgres_client import PostgresClient
 from ..clients.sqlite_client import SQLiteClient
 from ..common_steps.html_extractor import HtmlExtractor
 from ..common_steps.load_sql import SQLLoader
@@ -22,7 +23,10 @@ class StepFactory:
     def __init__(self, settings: Settings):
         self.settings = settings
 
-        self.clients = {"SQLITE": lambda settings: SQLiteClient(settings)}
+        self.clients = {
+            "SQLITE": lambda settings: SQLiteClient(settings),
+            "POSTGRES": lambda settings: PostgresClient(settings),
+        }
         client = self.clients[self.settings.CLIENT](self.settings)
 
         self._steps = {
