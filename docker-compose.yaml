@@ -1,0 +1,27 @@
+services:
+  pgdatabase:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=STOCK_ANALYZER 
+    volumes:
+      - "${HOME}/Documents/postgres/stock_analyzer_volume:/var/lib/postgresql/data"
+    ports:
+      - 5432:5432
+    networks:
+      - stock_network
+
+  pgadmim:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=root
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+    ports:
+      - 8080:80
+    networks:
+      - stock_network
+
+networks:
+  stock_network:
+    driver: bridge

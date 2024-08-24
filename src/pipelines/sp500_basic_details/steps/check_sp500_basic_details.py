@@ -23,10 +23,17 @@ class SP500Checker(Step):
             "SELECT max(updated_at) as last_update FROM SP500_BASIC_DETAILS"
         )
         if is_successful:
-            last_update = last_update_result[0][0]
-            if last_update:
+            if last_update_result and last_update_result[0][0]:
+                last_update = last_update_result[0][0]
                 self.logger.info(f"SP500_BASIC_DETAILS {last_update=}")
-                return datetime.strptime(last_update, "%Y-%m-%d %H:%M:%S")
+                if isinstance(last_update, str):
+                    return datetime.strptime(last_update, "%Y-%m-%d %H:%M:%S")
+                elif isinstance(last_update, datetime):  # pragma: no cover
+                    return last_update
+                else:  # pragma: no cover
+                    raise ValueError(
+                        f"Unexpected date type for: {last_update} type: {type(last_update)}"
+                    )
             else:  # pragma: no cover
                 self.logger.info("SP500_BASIC_DETAILS Table empty.")
                 return datetime(1990, 1, 1)

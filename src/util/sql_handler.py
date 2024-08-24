@@ -13,6 +13,7 @@ class SQLHandler:
     def __init__(self, settings: Settings, client: Client):
         self.logger = get_logger(__name__, settings)
         self.settings = settings
+        self.client_config = self.settings.CLIENT_CONFIG
         self.client = client
         self.client.connect()
 
@@ -35,7 +36,8 @@ class SQLHandler:
             mapped_values = tuple(raw_mapped_values.get(key) for key in fields)
             mapped_values_list.append(mapped_values)
 
-        parameterized_fields = ("?, " * len(mapped_values_list[0])).strip(", ")
+        parameter_placeholder = self.client_config["PARAMETER_PLACEHOLDER"]
+        parameterized_fields = (parameter_placeholder * len(mapped_values_list[0])).strip(", ")
         query = f"INSERT INTO {table_name} VALUES({parameterized_fields})"
         self.client.executemany(query, mapped_values_list)
 
@@ -44,7 +46,11 @@ class SQLHandler:
 
         try:
             res = self.client.execute(query)
-            return True, res.fetchall()
+            if res:
+                return True, res
+            else:
+                self.logger.debug(f"None results for query: {query}.")
+                return True, []
         except sqlite3.OperationalError as e:  # pragma: no cover
             self.logger.debug(f"Query failed. {e}. {query=}")
             return False, []
@@ -57,7 +63,12 @@ class SQLHandler:
         table_fields = self.settings.PIPELINE_TABLE["fields_mapping"]
         create_table_sql = f"CREATE TABLE IF NOT EXISTS {table_name} \n ("
         for v in table_fields.values():
-            create_table_sql += f"{v[0]} {v[1]}\n, "
+            field_name = v[0]
+            if self.client_config.get("TYPE_MAPPING"):  # pragma: no cover
+                data_type = self.client_config["TYPE_MAPPING"][v[1]]
+            else:
+                data_type = v[1]
+            create_table_sql += f"{field_name} {data_type}\n, "
 
         create_table_sql = create_table_sql.strip(", ")
         create_table_sql += " )"

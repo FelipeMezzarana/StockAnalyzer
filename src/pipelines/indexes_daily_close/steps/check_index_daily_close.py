@@ -26,6 +26,9 @@ class IndexDailyCloseChecker(Step):
         if is_successful:
             last_update = dict(result)
             indexes_last_update = {k: last_update.get(k, "1600-01-01") for k in self.indexes}
+            for k, v in indexes_last_update.items():
+                if isinstance(v, datetime):  # pragma: no cover
+                    indexes_last_update[k] = v.strftime("%Y-%m-%d")
             self.logger.debug(f"Indexes last updated: {indexes_last_update}")
             return indexes_last_update
         else:  # pragma: no cover

@@ -13,7 +13,7 @@ PIPELINES = [
     "indexes-daily-close-pipeline",
 ]
 
-AVAIABLE_CLIENTS = ["SQLITE"]
+AVAIABLE_CLIENTS = ["SQLITE", "POSTGRES"]
 
 
 class Settings:
@@ -37,8 +37,29 @@ class Settings:
 
         # Client settings
         self.CLIENTS_CONFIG: dict = {
-            "SQLITE": {"DB_PATH": "database/stock_database.db", "CHUNK_SIZE": 50000}
+            "SQLITE": {
+                "DB_PATH": "database/stock_database.db",
+                "CHUNK_SIZE": 50000,
+                "PARAMETER_PLACEHOLDER": "?, ",
+            },
+            "POSTGRES": {
+                "POSTGRES_USER": os.getenv("POSTGRES_USER"),
+                "POSTGRES_PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+                "POSTGRES_DB": os.getenv("POSTGRES_DB"),
+                "POSTGRES_HOST": os.getenv("POSTGRES_HOST"),
+                "CHUNK_SIZE": 50000,
+                "PARAMETER_PLACEHOLDER": r"%s, ",
+                "TYPE_MAPPING": {
+                    "VARCHAR(255)": "text",
+                    "FLOAT": "float",
+                    "DATETIME": "timestamp",
+                    "DATE": "timestamp",
+                    "INTEGER": "int",
+                    "BOOLEAN": "bool",
+                },
+            },
         }
+
         # Get current client config
         self.CLIENT = os.getenv("CLIENT", "SQLITE")
         if self.CLIENT not in AVAIABLE_CLIENTS:  # pragma: no cover

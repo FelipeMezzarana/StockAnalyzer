@@ -1,4 +1,5 @@
 # Standard library
+import os
 import unittest
 
 # First party
@@ -15,6 +16,7 @@ class TestIntegration(unittest.TestCase):
         """Run pipelines.
         Mock few settings to load less data.
         """
+        os.environ["CLIENT"] = "SQLITE"
         for pipeline in PIPELINES:
             settings = Settings(pipeline)
             # Create new DB for tests

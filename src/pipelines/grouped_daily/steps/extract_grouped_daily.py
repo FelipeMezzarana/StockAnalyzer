@@ -26,8 +26,8 @@ class GroupedDailyExtractor(Step):
         self.base_url = self.settings.POLYGON["BASE_URL"]
         self.endpoints: dict = self.settings.POLYGON["ENDPOINTS"]
 
-    def get_last_date(self):
-        """Return max date for grouped_daily table.
+    def get_last_date(self) -> str:
+        """Return max date [%Y-%m-%d] for grouped_daily table.
         Query SQLite DB defined in src.settings.
         """
 
@@ -36,6 +36,8 @@ class GroupedDailyExtractor(Step):
 
         last_update_date = last_date[0][0] if last_date else None
         if is_successful and last_update_date:  # pragma: no cover
+            if isinstance(last_update_date, datetime):
+                last_update_date = last_update_date.strftime("%Y-%m-%d")
             return last_update_date
         else:
             max_hist_avaiable = (

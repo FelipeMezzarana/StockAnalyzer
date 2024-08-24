@@ -18,6 +18,7 @@ docker run \
  --volume="./database/":/database \
  --volume="./temp/":/temp \
  --env-file secrets.env \
+ --network stockanalyzer_stock_network \
    $TAG 
 
 
