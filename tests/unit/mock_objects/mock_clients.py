@@ -36,3 +36,13 @@ class MockPolygon:
     def request(self, url: str) -> dict:
         """Mock request method."""
         return self.response
+
+
+class MockResponse:
+    def __init__(self, text: str) -> None:
+        self.status_code = 200
+        self.text = text
+
+    def json(self) -> dict:
+        """Mock json method."""
+        return {"parse": {"text": {"*": self.text}}}

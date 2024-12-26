@@ -1,6 +1,7 @@
 # Local
 from .factories.pipeline_factory import PipelineFactory
-from .settings import PIPELINES, Settings
+from .settings import Settings
+from .utils.constants import PIPELINES
 
 
 def run():

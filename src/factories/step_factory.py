@@ -1,11 +1,12 @@
 # Local
 from ..clients.postgres_client import PostgresClient
 from ..clients.sqlite_client import SQLiteClient
-from ..common_steps.html_extractor import HtmlExtractor
 from ..common_steps.load_sql import SQLLoader
 from ..common_steps.load_sql_many import SQLManyLoader
 from ..common_steps.validate import Validator
 from ..common_steps.validate_many import ManyValidator
+from ..common_steps.wikipedia_extractor import WikipediaExtractor
+from ..exceptions import StepNotFoundError
 from ..pipelines.financials.steps.check_financials_tables import FinancialsChecker
 from ..pipelines.financials.steps.extract_financials_data import FinancialsExtractor
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
@@ -50,11 +51,13 @@ class StepFactory:
             "load-sql": lambda previous_output, settings, **kwargss: SQLLoader(
                 previous_output, settings, client, **kwargss
             ),
-            "extract-sp500-wiki-html": lambda previous_output, settings, **kwargs: HtmlExtractor(
-                "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies",
-                previous_output,
-                settings,
-                **kwargs,
+            "extract-sp500-wiki-html": (
+                lambda previous_output, settings, **kwargs: WikipediaExtractor(
+                    "List_of_S&P_500_companies",
+                    previous_output,
+                    settings,
+                    **kwargs,
+                )
             ),
             "transform-sp500-table": lambda previous_output, settings, **kwargss: SP500Transformer(
                 previous_output, settings, **kwargss
@@ -97,6 +100,6 @@ class StepFactory:
         """
 
         if step not in self._steps:  # pragma: no cover
-            raise ValueError(f"Step not found: {step}")
+            raise StepNotFoundError(step, list(self._steps.keys()))
 
         return self._steps[step](previous_output, self.settings, **kwargs)

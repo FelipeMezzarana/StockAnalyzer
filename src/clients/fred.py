@@ -6,6 +6,7 @@ from time import sleep
 import requests
 
 # Local
+from ..exceptions import MaxRetriesExceededError, MissingAPIKeyError
 from ..settings import Settings
 from ..utils.get_logger import get_logger
 
@@ -24,7 +25,9 @@ class Fred:
         self.logger = get_logger(__name__, settings)
         api_key = os.getenv("FRED_KEY")
         if not api_key:  # pragma: no cover
-            raise KeyError("Missing FRED API key. Key must be exported as env variable <FRED_KEY>.")
+            raise MissingAPIKeyError(
+                "FRED_KEY", "https://fred.stlouisfed.org/docs/api/api_key.html"
+            )
         self.api_key_url = f"&api_key={api_key}&file_type=json"
         self.base_url = settings.FRED["BASE_URL"]
         self.endpoints = settings.FRED["ENDPOINTS"]
@@ -41,7 +44,7 @@ class Fred:
         tries = 0
         while resp.status_code != 200:  # pragma: no cover
             if tries == 3:
-                raise Exception(f"3 unsuccessful attempts to request {url=}")
+                raise MaxRetriesExceededError(url, 3)
             tries += 1
             sleep(5)
             resp = requests.get(url_with_key)

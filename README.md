@@ -1167,3 +1167,26 @@ Linting:
 Showing Pk and Fk fields only. 
 
 ![png](readme/stock_db_diagram.png)
+
+
+# Sources
+
+### Polygon API 
+
+https://polygon.io/ 
+
+Provides financial market data for stocks, options, crypto, and forex. We use endpoints included in the free tier (limited to 5 Calls/Minute). 
+
+### FRED API
+
+https://fred.stlouisfed.org/docs/api/fred/
+
+
+The FRED API provides access to economic data, including historical data on economic indicators, interest rates, and more. The API is hosted by the Economic Research Division of the Federal Reserve Bank of St. Louis, and is entirely free.
+
+
+### MediaWiki
+
+https://www.mediawiki.org/wiki/API:Main_page#Quick_Start
+
+MediaWiki is the official Wikipedia API. Currently we use it only to retrieve an table with details about S&P 500 companies.

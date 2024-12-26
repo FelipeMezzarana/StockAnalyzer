@@ -1,4 +1,5 @@
 # Local
+from ..exceptions import InvalidPipelineError
 from ..pipelines.financials.financials_pipeline import FinancialsPipeline
 from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
 from ..pipelines.indexes_daily_close.indexes_daily_close_pipeline import IndexDailyClosePipeline
@@ -33,7 +34,7 @@ class PipelineFactory:
         """
 
         if self.pipeline not in self._pipelines:  # pragma: no cover
-            raise ValueError(f"Pipeline not found: {self.pipeline}")
+            raise InvalidPipelineError(self.pipeline, self._pipelines.keys())
 
         # lazy initialization
         self.logger.info(f"Creating pipeline: {self.pipeline}")
