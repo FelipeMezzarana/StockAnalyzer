@@ -1,6 +1,6 @@
 # Standard library
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 # Third party
 import duckdb
@@ -9,18 +9,24 @@ import duckdb
 from ..abstract.client import Client
 from ..abstract.step import Step
 from ..settings import Settings
-from ..util.csv_handler import clean_temp_file
-from ..util.sql_handler import SQLHandler
+from ..utils.csv_handler import clean_temp_file
+from ..utils.sql_handler import SQLHandler
 
 
 class SQLLoader(Step):
-    """Load data into SQLite DB."""
+    """Load data into one client db table."""
 
-    def __init__(self, previous_output: dict, settings: Settings, client: Client) -> None:
+    def __init__(
+        self,
+        previous_output: dict,
+        settings: Settings,
+        client: Client,
+        table_config: Optional[dict] = None,
+    ) -> None:
         """Init loader."""
         super(SQLLoader, self).__init__(__name__, previous_output, settings)
 
-        self.sqlite_client = SQLHandler(settings, client)
+        self.sqlite_client = SQLHandler(settings, client, table_config)
         self.valid_file_path = self.previous_output["valid_file_path"]
         self.invalid_file_path = self.previous_output["invalid_file_path"]
         self.chunk_size = settings.CLIENT_CONFIG["CHUNK_SIZE"]

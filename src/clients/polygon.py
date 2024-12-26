@@ -7,9 +7,11 @@ import requests
 
 # Local
 from ..settings import Settings
-from ..util.get_logger import get_logger
+from ..utils.decorators import singleton
+from ..utils.get_logger import get_logger
 
 
+@singleton
 class Polygon:
     """Handle requests to Polygon API.
     https://polygon.io/
@@ -18,7 +20,7 @@ class Polygon:
     """
 
     def __init__(self, settings: Settings):
-        """Initialize cretencials and settings."""
+        """Initialize credentials and settings."""
 
         self.logger = get_logger(__name__, settings)
         api_key = os.getenv("POLYGON_KEY")
@@ -27,8 +29,7 @@ class Polygon:
                 "Missing POLYGON API key. Key must be exported as env variable <POLYGON_KEY>."
             )
         self.api_key_url = f"&apiKey={api_key}"
-        self.base_url = settings.POLYGON["BASE_URL"]
-        self.endpoints = settings.POLYGON["ENDPOINTS"]
+
         self.api_calls_per_min: int = settings.POLYGON["POLYGON_CALLS_PER_MIN"]
         self.api_sleep_time = 60 / self.api_calls_per_min
         self.last_request = 0  # Placeholder
@@ -46,7 +47,9 @@ class Polygon:
         # We need to make sure that request is successful
         tries = 0
         while resp.status_code != 200:  # pragma: no cover
-            if tries == 3:
+            tries += 1
+            self.logger.info(f"Request {tries} failed: {resp.status_code=}, {resp.json()} ")
+            if tries > 3:
                 raise Exception(f"3 unsuccessful attempts to request {url=}")
             tries += 1
             sleep(5)
@@ -61,7 +64,7 @@ class Polygon:
         now = perf_counter()
         if now - self.last_request < 12:
             sleep_time = 12 - (now - self.last_request)
-            self.logger.debug(f"{sleep_time=}")
+            self.logger.debug(f"{sleep_time=:.2f}")
             sleep(sleep_time)
             # Update last request time
             self.last_request = perf_counter()

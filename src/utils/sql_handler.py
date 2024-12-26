@@ -1,5 +1,6 @@
 # Standard library
 import sqlite3
+from typing import Optional
 
 # Local
 from .get_logger import get_logger
@@ -10,13 +11,20 @@ from ..settings import Settings
 class SQLHandler:
     """SQLLite db operations handler."""
 
-    def __init__(self, settings: Settings, client: Client):
+    def __init__(self, settings: Settings, client: Client, table_config: Optional[dict] = None):
+        """Settings setup.
+        client_config -- Using this replaces the default settings config.
+        """
         self.logger = get_logger(__name__, settings)
         self.settings = settings
+        if table_config:
+            self.pipeline_table = table_config
+        else:
+            self.pipeline_table = self.settings.PIPELINE_TABLE
+
         self.client_config = self.settings.CLIENT_CONFIG
         self.client = client
         self.client.connect()
-
         self.create_table()
 
     def insert_into(self, raw_values: list[tuple], header: tuple):
@@ -24,9 +32,8 @@ class SQLHandler:
         Map field to expected position, see more in database_config.json
         """
 
-        pipeline_table = self.settings.TABLES[self.settings.pipeline]
-        table_name = pipeline_table["name"]
-        fields_mapping = pipeline_table["fields_mapping"]
+        table_name = self.pipeline_table["name"]
+        fields_mapping = self.pipeline_table["fields_mapping"]
         fields = tuple(fields_mapping.keys())
 
         # Map fields to correct position.
@@ -59,8 +66,8 @@ class SQLHandler:
         """Create table based on pipeline settings."""
 
         # Build SQL statement
-        table_name = self.settings.PIPELINE_TABLE["name"]
-        table_fields = self.settings.PIPELINE_TABLE["fields_mapping"]
+        table_name = self.pipeline_table["name"]
+        table_fields = self.pipeline_table["fields_mapping"]
         create_table_sql = f"CREATE TABLE IF NOT EXISTS {table_name} \n ("
         for v in table_fields.values():
             field_name = v[0]
@@ -72,7 +79,7 @@ class SQLHandler:
 
         create_table_sql = create_table_sql.strip(", ")
         create_table_sql += " )"
-        self.logger.debug(f"{create_table_sql=}")
+        self.logger.debug(f"Creating table if not exist: {table_name}")
 
         # Create Table
         self.client.execute(create_table_sql)

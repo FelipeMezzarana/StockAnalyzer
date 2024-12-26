@@ -1,11 +1,13 @@
 # Local
+from ..pipelines.financials.financials_pipeline import FinancialsPipeline
 from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
 from ..pipelines.indexes_daily_close.indexes_daily_close_pipeline import IndexDailyClosePipeline
-from ..pipelines.sp500_basic_details.sp500_basic_details_pipeline import SP500BasicDeatailsPipeline
+from ..pipelines.sp500_basic_details.sp500_basic_details_pipeline import SP500BasicDetailsPipeline
 from ..pipelines.ticker_basic_details.ticker_basic_details_pipeline import (
-    TickerBasicDeatailsPipeline,
+    TickerBasicDetailsPipeline,
 )
 from ..settings import Settings
+from ..utils.get_logger import get_logger
 
 
 class PipelineFactory:
@@ -14,12 +16,14 @@ class PipelineFactory:
     """
 
     def __init__(self, settings: Settings):
+        self.logger = get_logger(__name__, settings)
         self.pipeline = settings.pipeline
         self._pipelines = {
             "grouped-daily-pipeline": lambda: GroupedDailyPipeline(settings),
-            "ticker-basic-details-pipeline": lambda: TickerBasicDeatailsPipeline(settings),
-            "sp500-basic-details-pipeline": lambda: SP500BasicDeatailsPipeline(settings),
+            "ticker-basic-details-pipeline": lambda: TickerBasicDetailsPipeline(settings),
+            "sp500-basic-details-pipeline": lambda: SP500BasicDetailsPipeline(settings),
             "indexes-daily-close-pipeline": lambda: IndexDailyClosePipeline(settings),
+            "financials-pipeline": lambda: FinancialsPipeline(settings),
         }
 
     def create(self):
@@ -32,4 +36,5 @@ class PipelineFactory:
             raise ValueError(f"Pipeline not found: {self.pipeline}")
 
         # lazy initialization
+        self.logger.info(f"Creating pipeline: {self.pipeline}")
         return self._pipelines[self.pipeline]()

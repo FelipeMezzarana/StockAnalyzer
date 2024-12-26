@@ -6,8 +6,8 @@ from ....abstract.client import Client
 from ....abstract.step import Step
 from ....clients.polygon import Polygon
 from ....settings import Settings
-from ....util.csv_handler import append_to_file
-from ....util.sql_handler import SQLHandler
+from ....utils.csv_handler import append_to_file
+from ....utils.sql_handler import SQLHandler
 
 
 class GroupedDailyExtractor(Step):

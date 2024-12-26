@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 # Local
 from ..settings import Settings
-from ..util.get_logger import get_logger
+from ..utils.get_logger import get_logger
 
 
 class Step(ABC):

@@ -5,7 +5,7 @@ from datetime import datetime
 from ....abstract.client import Client
 from ....abstract.step import Step
 from ....settings import Settings
-from ....util.sql_handler import SQLHandler
+from ....utils.sql_handler import SQLHandler
 
 
 class IndexDailyCloseChecker(Step):

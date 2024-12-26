@@ -4,7 +4,7 @@ import os
 import unittest
 
 # First party
-from src.util import csv_handler
+from src.utils import csv_handler
 
 SAMPLE_REQUEST_FILE = "tests/unit/data_samples/request_grouped_daily_sample.json"
 

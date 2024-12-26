@@ -546,7 +546,7 @@ The <a href="/wiki/S%26P_500" title="S&amp;P 500">S&amp;P 500</a> is a <a href="
 <meta property="mw:PageProp/toc" />
 <h2><span id="S.26P_500_component_stocks"></span><span class="mw-headline" id="S&amp;P_500_component_stocks">S&amp;P 500 component stocks</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=List_of_S%26P_500_companies&amp;action=edit&amp;section=1" title="Edit section: S&amp;P 500 component stocks"><span>edit</span></a><span class="mw-editsection-bracket">]</span></span></h2>
 <style data-mw-deduplicate="TemplateStyles:r1194321681">.mw-parser-output .is-sticky{position:sticky;top:0;z-index:10}body.vector-sticky-header-visible .mw-parser-output .is-sticky{top:3.125rem}.mw-parser-output .is-sticky-head>thead{position:sticky;top:0;z-index:10}body.vector-sticky-header-visible .mw-parser-output .is-sticky-head>thead{top:3.125rem}</style>
-<table class="wikitable sortable" id="constituents">
+<table class="wikitable sortable sticky-header" id="constituents">
 
 <tbody><tr class="is-sticky">
 <th><a href="/wiki/Ticker_symbol" title="Ticker symbol">Symbol</a>
@@ -6176,7 +6176,7 @@ The <a href="/wiki/S%26P_500" title="S&amp;P 500">S&amp;P 500</a> is a <a href="
 <h2><span id="Selected_changes_to_the_list_of_S.26P_500_components"></span><span class="mw-headline" id="Selected_changes_to_the_list_of_S&amp;P_500_components">Selected changes to the list of S&amp;P 500 components</span><span class="mw-editsection"><span class="mw-editsection-bracket">[</span><a href="/w/index.php?title=List_of_S%26P_500_companies&amp;action=edit&amp;section=2" title="Edit section: Selected changes to the list of S&amp;P 500 components"><span>edit</span></a><span class="mw-editsection-bracket">]</span></span></h2>
 <p>S&amp;P Dow Jones Indices updates the components of the <a href="/wiki/S%26P_500_Index" class="mw-redirect" title="S&amp;P 500 Index">S&amp;P 500</a> periodically, typically in response to acquisitions, or to keep the index up to date as various companies grow or shrink in value.<sup id="cite_ref-3" class="reference"><a href="#cite_note-3">&#91;3&#93;</a></sup> Between January 1, 1963, and December 31, 2014, 1,186 index components were replaced by other components.
 </p>
-<table class="wikitable sortable" id="changes">
+<table class="wikitable sortable sticky-header" id="changes">
 
 <tbody><tr>
 <th data-sort-type="date" rowspan="2">Date

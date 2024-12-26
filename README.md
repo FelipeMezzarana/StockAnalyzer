@@ -1,24 +1,87 @@
 # StockAnalyzer
 
-**Runs multiple ETL pipelines, each updating a table related to the US stock market in an SQLite database.**
+**Runs multiple ETL pipelines, each updating one or more tables related to the US stock market in an PostgreSQL or SQLite database.**
 
-The app can run at any frequency. Each execution ensures all tables are updated with the latest data, regardless of when the last update occurred. This makes the app suitable for ad-hoc studies; you can dynamically update the database and analyze the most up-to-date data.
 
+The app is designed to provide accurate and reliable US financial stock market data by leveraging publicly available APIs and free-tier services instead of resorting to web scraping. This approach ensures compliance with data usage policies while delivery a more sustainable, easy to maintain solution.
+
+The app can run at any frequency. Each execution ensures all tables are updated with the latest data, regardless of when the last update occurred. This means that you can either use an orchestrator to keep the data up to date at a desired frequency, or run it manually, on-demand, to perform ad-hoc analyses.
 
 # Usage 
 
-App:
-```shell
-# Run through Docker 
- ./run.sh 
-# Run through Python
- python3 -m src.run 
- ```
+## Setup:
 
-Linting:
+To use the application locally simply clone this repository:
 ```shell
-./run_linting.sh 
+git clone https://github.com/FelipeMezzarana/StockAnalyzer.git
 ```
+
+## Requirements:
+
+### Secrets  
+
+Before running the application create a copy of the file secrets.example and rename it to secrets.env. Then, replace the values with you keys. Note that if you pretend to use a local Postgres instance (see more bellow) you can keep the default values for client related variables. 
+
+Variables required for all clients:
+```shell
+POLYGON_KEY=your_polygon_key
+FRED_KEY=your_fred_key
+CLIENT=<POSTGRES or SQLITE>
+```
+
+For POSTGRES:
+```shell
+POSTGRES_USER=root
+POSTGRES_PASSWORD=root
+POSTGRES_DB=STOCK_ANALYZER
+POSTGRES_HOST=pgdatabase
+```
+For SQLITE: 
+```shell
+# Path to folder you have/want to create your .db file.
+DB_PATH=folder1/folder2/
+```
+
+### Dependencies 
+
+The recommended approach is to run the app through docker. In this case, it is not necessary to install dependencies. 
+
+If you want to run locally just be sure to install the dependencies in requirements.txt in you environment.
+
+
+## Set up a local Postgres DB (Optional)
+
+As for the database, although SQLLite is supported, we recommend using Postgres. So if you don't pretend to set up a cloud instance, you can use the shell script bellow to set up an local instance and easily query it.:
+
+```shell
+./setup_local_db.sh 
+```
+The script will 
+* Setup a dockernized Postgres database "STOCK_ANALYZER" with volume mapped to /Documents/postgres/stock_analyzer_volume
+* Setup PgAdmin local server, to easily query "STOCK_ANALYZER". It that can be accessed at http://localhost:8080/ with credentials:
+
+  * PgAdmin e-mail: admin@admin.com
+  * PgAdmin password: root
+  * host: pgdatabase
+  * Postgres username: root
+  * Postgres password: root
+
+Remember to shutdown services with:
+```shell
+docker compose down
+```
+
+
+## Running the application:
+
+**Important**: Due to APIs rate limits the first run should take a long time to finish (~6h) and the lower the update frequency, the longer the execution time for subsequent updates. Other factors can also influence runtime. For example, financial data will be updated every four months, increasing this specific runtime considerable. Note that each pipeline ends with loading data in the DB, so the "progress is saved" after finishing a pipeline.
+
+```shell
+# Run through Docker (recommended)
+ ./run.sh 
+# Run through terminal
+source secrets.env && python3 -m src.run
+ ```
 
 Unit tests:
 ```shell
@@ -26,8 +89,14 @@ Unit tests:
 ```
 Integration tests:
 ```shell
-./run_integration_tests.sh 
+./run_integration_test.sh 
 ```
+
+Linting:
+```shell
+./run_linting.sh 
+```
+
 
 # Database
 
@@ -308,11 +377,793 @@ Integration tests:
   </tbody>
 </table>
 
+ <br />
 </details>
+
+
+
+ <details>
+<summary>FINANCIALS_BALANCE_SHEET</summary>
+
+<th>This table includes key financial information such as assets, liabilities, equity, and company details, covering both current and non-current items For S&P500 companies.</th>
+
+<br />
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>start_date</th>
+      <td>Start date of the financial report period.</td>
+      <td>2024-04-01 00:00:00</td>
+    </tr>
+    <tr>
+      <th>end_date</th>
+      <td>End date of the financial report period.</td>
+      <td>2024-06-30 00:00:00</td>
+    </tr>
+    <tr>
+      <th>timeframe</th>
+      <td>The timeframe of the report.</td>
+      <td>quarterly</td>
+    </tr>
+    <tr>
+      <th>fiscal_period</th>
+      <td>Fiscal period covered by the report.</td>
+      <td>Q2</td>
+    </tr>
+    <tr>
+      <th>fiscal_year</th>
+      <td>Fiscal year associated with the financial data.</td>
+      <td>2024</td>
+    </tr>
+    <tr>
+      <th>exchange_symbol_search</th>
+      <td>Exchange symbol or ticker used in search to identify the company (tickers).</td>
+      <td>RSG</td>
+    </tr>
+    <tr>
+      <th>tickers</th>
+      <td>The list of ticker symbols for the company.</td>
+      <td>['RSG']</td>
+    </tr>
+    <tr>
+      <th>company_name</th>
+      <td>Company name.</td>
+      <td>REPUBLIC SERVICES, INC.</td>
+    </tr>
+    <tr>
+      <th>updated_at</th>
+      <td>Date and time when the row data was updated.</td>
+      <td>2024-01-15 10:00:00</td>
+    </tr>
+    <tr>
+      <th>assets</th>
+      <td>Total assets of the company, combining current and non-current assets.</td>
+      <td>31934100000.00</td>
+    </tr>
+    <tr>
+      <th>current_assets</th>
+      <td>Assets that can be converted into cash within one year.</td>
+      <td>2659700000.00</td>
+    </tr>
+    <tr>
+      <th>cash</th>
+      <td>Cash and cash equivalents held by the company.</td>
+      <td>50000000.00</td>
+    </tr>
+    <tr>
+      <th>accounts_receivable</th>
+      <td>Amounts owed to the company by customers or other entities.</td>
+      <td>20000000.00</td>
+    </tr>
+    <tr>
+      <th>inventory</th>
+      <td>Value of raw materials, work-in-progress, and finished goods.</td>
+      <td>25000000.00</td>
+    </tr>
+    <tr>
+      <th>prepaid_expenses</th>
+      <td>Payments made in advance for services or goods.</td>
+      <td>1000000.00</td>
+    </tr>
+    <tr>
+      <th>other_current_assets</th>
+      <td>Other current assets not classified in standard categories.</td>
+      <td>2000000.00</td>
+    </tr>
+    <tr>
+      <th>noncurrent_assets</th>
+      <td>Assets expected to provide value beyond one year.</td>
+      <td>230000000.00</td>
+    </tr>
+    <tr>
+      <th>long_term_investments</th>
+      <td>Long-term investments, including securities or bonds.</td>
+      <td>50000000.00</td>
+    </tr>
+    <tr>
+      <th>fixed_assets</th>
+      <td>Fixed assets like property, plant, and equipment (PPE).</td>
+      <td>100000000.00</td>
+    </tr>
+    <tr>
+      <th>intangible_assets</th>
+      <td>Intangible assets, such as patents, trademarks, or goodwill.</td>
+      <td>30000000.00</td>
+    </tr>
+    <tr>
+      <th>noncurrent_prepaid_expense</th>
+      <td>Prepaid expenses expected to be consumed beyond one year.</td>
+      <td>2000000.00</td>
+    </tr>
+    <tr>
+      <th>other_noncurrent_assets</th>
+      <td>Non-current assets not classified under standard categories.</td>
+      <td>3000000.00</td>
+    </tr>
+    <tr>
+      <th>liabilities</th>
+      <td>Total liabilities of the company, including current and non-current.</td>
+      <td>200000000.00</td>
+    </tr>
+    <tr>
+      <th>current_liabilities</th>
+      <td>Short-term liabilities expected to be settled within one year.</td>
+      <td>80000000.00</td>
+    </tr>
+    <tr>
+      <th>accounts_payable</th>
+      <td>Outstanding amounts payable to suppliers or vendors.</td>
+      <td>35000000.00</td>
+    </tr>
+    <tr>
+      <th>interest_payable</th>
+      <td>Interest expenses incurred but not yet paid.</td>
+      <td>5000000.00</td>
+    </tr>
+    <tr>
+      <th>wages</th>
+      <td>Salaries and wages payable to employees.</td>
+      <td>4000000.00</td>
+    </tr>
+    <tr>
+      <th>other_current_liabilities</th>
+      <td>Other current liabilities not falling under standard categories.</td>
+      <td>36000000.00</td>
+    </tr>
+    <tr>
+      <th>noncurrent_liabilities</th>
+      <td>Liabilities due beyond one year.</td>
+      <td>120000000.00</td>
+    </tr>
+    <tr>
+      <th>long_term_debt</th>
+      <td>Long-term debt obligations like bonds or loans.</td>
+      <td>80000000.00</td>
+    </tr>
+    <tr>
+      <th>other_noncurrent_liabilities</th>
+      <td>Other non-current liabilities not classified elsewhere.</td>
+      <td>20000000.00</td>
+    </tr>
+    <tr>
+      <th>commitments_and_contingencies</th>
+      <td>Contingencies or commitments affecting financial position.</td>
+      <td>3000000.00</td>
+    </tr>
+    <tr>
+      <th>redeemable_noncontrolling_interest</th>
+      <td>Non-controlling interest in a redeemable equity instrument.</td>
+      <td>15000000.00</td>
+    </tr>
+    <tr>
+      <th>redeemable_noncontrolling_interest_common</th>
+      <td>Redeemable non-controlling interest in common shares.</td>
+      <td>50000000.00</td>
+    </tr>
+    <tr>
+      <th>redeemable_noncontrolling_interest_other</th>
+      <td>Redeemable non-controlling interest in other securities.</td>
+      <td>15000000.00</td>
+    </tr>
+    <tr>
+      <th>redeemable_noncontrolling_interest_preferred</th>
+      <td>Redeemable non-controlling interest in preferred stock.</td>
+      <td>20000000.00</td>
+    </tr>
+    <tr>
+      <th>equity</th>
+      <td>Ownership equity of the company.</td>
+      <td>2500000.00</td>
+    </tr>
+    <tr>
+      <th>equity_attributable_to_noncontrolling_interest</th>
+      <td>Equity attributable to minority or non-controlling interest.</td>
+      <td>4500000.00</td>
+    </tr>
+    <tr>
+      <th>equity_attributable_to_parent</th>
+      <td>Equity attributable to the parent company.</td>
+      <td>5500000.00</td>
+    </tr>
+    <tr>
+      <th>temporary_equity</th>
+      <td>Temporary equity not classified as permanent equity.</td>
+      <td>3500000.00</td>
+    </tr>
+    <tr>
+      <th>temporary_equity_attributable_to_parent</th>
+      <td>Temporary equity attributable to the parent company.</td>
+      <td>2500000.00</td>
+    </tr>
+    <tr>
+      <th>liabilities_and_equity</th>
+      <td>Sum of liabilities and equity, ensuring the balance sheet equation.</td>
+      <td>320000000.00</td>
+    </tr>
+  </tbody>
+</table>
+
+ <br />
+</details>
+
+
+ <details>
+<summary>FINANCIALS_CASH_FLOW_STATEMENT</summary>
+
+<th>This table tracks the cash flow from operating, investing, and financing activities, including both continuing and discontinued operations, along with exchange gains/losses For S&P500 companies.</th>
+ <br />
+ 
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>start_date</th>
+      <td>Start date of the financial report period.</td>
+      <td>2024-04-01 00:00:00</td>
+    </tr>
+    <tr>
+      <th>end_date</th>
+      <td>End date of the financial report period.</td>
+      <td>2024-06-30 00:00:00</td>
+    </tr>
+    <tr>
+      <th>timeframe</th>
+      <td>The timeframe of the report.</td>
+      <td>quarterly</td>
+    </tr>
+    <tr>
+      <th>fiscal_period</th>
+      <td>Fiscal period covered by the report.</td>
+      <td>Q2</td>
+    </tr>
+    <tr>
+      <th>fiscal_year</th>
+      <td>Fiscal year associated with the financial data.</td>
+      <td>2024</td>
+    </tr>
+    <tr>
+      <th>exchange_symbol_search</th>
+      <td>Exchange symbol or ticker used in search to identify the company (tickers).</td>
+      <td>RSG</td>
+    </tr>
+    <tr>
+      <th>tickers</th>
+      <td>The list of ticker symbols for the company.</td>
+      <td>['RSG']</td>
+    </tr>
+    <tr>
+      <th>company_name</th>
+      <td>Full legal name of the company.</td>
+      <td>REPUBLIC SERVICES, INC.</td>
+    </tr>
+    <tr>
+      <th>updated_at</th>
+      <td>Date and time when the financial data was last updated.</td>
+      <td>2024-01-15 10:00:00</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow</th>
+      <td>Net cash flow generated or used by the company during the period.</td>
+      <td>318800000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_continuing</th>
+      <td>Net cash flow from continuing operations during the period.</td>
+      <td>318800000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_discontinued</th>
+      <td>Net cash flow from discontinued operations during the period.</td>
+      <td>200000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_operating_activities</th>
+      <td>Net cash flow from operating activities during the period.</td>
+      <td>400000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_operating_activities_continuing</th>
+      <td>Net cash flow from continuing operating activities during the period.</td>
+      <td>250000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_operating_activities_discontinued</th>
+      <td>Net cash flow from discontinued operating activities during the period.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_investing_activities</th>
+      <td>Net cash flow from investing activities during the period.</td>
+      <td>100000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_investing_activities_continuing</th>
+      <td>Net cash flow from continuing investing activities during the period.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_investing_activities_discontinued</th>
+      <td>Net cash flow from discontinued investing activities during the period.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_financing_activities</th>
+      <td>Net cash flow from financing activities during the period.</td>
+      <td>100000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_financing_activities_continuing</th>
+      <td>Net cash flow from continuing financing activities during the period.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>net_cash_flow_from_financing_activities_discontinued</th>
+      <td>Net cash flow from discontinued financing activities during the period.</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>exchange_gains_losses</th>
+      <td>Gains or losses due to changes in exchange rates.</td>
+      <td>40000</td>
+    </tr>
+  </tbody>
+</table>
+
+ <br />
+</details>
+
+
+
+ <details>
+<summary>FINANCIALS_INCOME_STATEMENT</summary>
+
+<th>This table contains detailed financial data related to a company's income and expenses during a specific period. It includes key metrics such as revenues, cost of goods sold, operating expenses, and net income, providing insights into the company’s profitability and financial performance. For S&P500 companies.</th>
+
  <br />
 
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>start_date</th>
+      <td>Start date of the financial report period.</td>
+      <td>2024-04-01 00:00:00</td>
+    </tr>
+    <tr>
+      <th>end_date</th>
+      <td>End date of the financial report period.</td>
+      <td>2024-06-30 00:00:00</td>
+    </tr>
+    <tr>
+      <th>timeframe</th>
+      <td>The timeframe of the report.</td>
+      <td>quarterly</td>
+    </tr>
+    <tr>
+      <th>fiscal_period</th>
+      <td>Fiscal period covered by the report.</td>
+      <td>Q2</td>
+    </tr>
+    <tr>
+      <th>fiscal_year</th>
+      <td>Fiscal year associated with the financial data.</td>
+      <td>2024</td>
+    </tr>
+    <tr>
+      <th>exchange_symbol_search</th>
+      <td>Exchange symbol or ticker used in search to identify the company (tickers).</td>
+      <td>RSG</td>
+    </tr>
+    <tr>
+      <th>tickers</th>
+      <td>The list of ticker symbols for the company.</td>
+      <td>['RSG']</td>
+    </tr>
+    <tr>
+      <th>company_name</th>
+      <td>Full legal name of the company.</td>
+      <td>REPUBLIC SERVICES, INC.</td>
+    </tr>
+    <tr>
+      <th>updated_at</th>
+      <td>Date and time when the financial data was last updated.</td>
+      <td>2024-01-15 10:00:00</td>
+    </tr>
+    <tr>
+      <th>revenues</th>
+      <td>The total revenues earned by the company.</td>
+      <td>17912600000</td>
+    </tr>
+    <tr>
+      <th>benefits_costs_expenses</th>
+      <td>The benefits, costs, and expenses of the company.</td>
+      <td>15570500000</td>
+    </tr>
+    <tr>
+      <th>cost_of_revenue</th>
+      <td>The total cost of revenue, including both goods and services.</td>
+      <td>9214300000</td>
+    </tr>
+    <tr>
+      <th>cost_of_revenue_goods</th>
+      <td>The cost associated with revenue from goods sold.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>cost_of_revenue_services</th>
+      <td>The cost associated with revenue from services provided.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>costs_and_expenses</th>
+      <td>The total costs and expenses of the company.</td>
+      <td>300000</td>
+    </tr>
+    <tr>
+      <th>gain_loss_on_sale_properties_net_tax</th>
+      <td>Gain or loss on sale of properties, net of tax.</td>
+      <td>400000</td>
+    </tr>
+    <tr>
+      <th>gross_profit</th>
+      <td>The profit made after deducting cost of goods and services sold.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>nonoperating_income_loss</th>
+      <td>Income or loss not related to core operations.</td>
+      <td>75000</td>
+    </tr>
+    <tr>
+      <th>operating_expenses</th>
+      <td>Expenses related to the core business operations.</td>
+      <td>60000</td>
+    </tr>
+    <tr>
+      <th>selling_general_and_administrative_expenses</th>
+      <td>General and administrative expenses, including selling and marketing.</td>
+      <td>20000</td>
+    </tr>
+    <tr>
+      <th>depreciation_and_amortization</th>
+      <td>The depreciation and amortization expenses.</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>research_and_development</th>
+      <td>Expenditures on research and development activities.</td>
+      <td>500000</td>
+    </tr>
+    <tr>
+      <th>other_operating_expenses</th>
+      <td>Other operating expenses outside core activities.</td>
+      <td>100000</td>
+    </tr>
+    <tr>
+      <th>operating_income_loss</th>
+      <td>Income or loss resulting from core operating activities.</td>
+      <td>200000</td>
+    </tr>
+    <tr>
+      <th>other_operating_income_expenses</th>
+      <td>Other income or expenses not related to core activities.</td>
+      <td>300000</td>
+    </tr>
+    <tr>
+      <th>income_loss_before_equity_method_investments</th>
+      <td>Income or loss before equity method investments.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_continuing_operations_after_tax</th>
+      <td>Income or loss from continuing operations after tax.</td>
+      <td>100000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_continuing_operations_before_tax</th>
+      <td>Income or loss from continuing operations before tax.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_discontinued_operations_net_of_tax</th>
+      <td>Income or loss from discontinued operations after tax.</td>
+      <td>20000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_discontinued_operations_net_of_tax_adjustment_to_prior_year_gain_loss_on_disposal</th>
+      <td>Adjustment to prior year gain/loss on disposal of discontinued operations.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_discontinued_operations_net_of_tax_during_phase_out</th>
+      <td>Income or loss from discontinued operations during phase-out.</td>
+      <td>30000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_discontinued_operations_net_of_tax_gain_loss_on_disposal</th>
+      <td>Gain or loss on disposal of discontinued operations.</td>
+      <td>200000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_discontinued_operations_net_of_tax_provision_for_gain_loss_on_disposal</th>
+      <td>Provision for gain/loss on disposal of discontinued operations.</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>income_loss_from_equity_method_investments</th>
+      <td>Income or loss from equity method investments.</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>income_tax_expense_benefit</th>
+      <td>Income tax expense or benefit.</td>
+      <td>15000</td>
+    </tr>
+    <tr>
+      <th>income_tax_expense_benefit_current</th>
+      <td>Current income tax expense or benefit.</td>
+      <td>25000</td>
+    </tr>
+    <tr>
+      <th>income_tax_expense_benefit_deferred</th>
+      <td>Deferred income tax expense or benefit.</td>
+      <td>40000</td>
+    </tr>
+    <tr>
+      <th>interest_and_debt_expense</th>
+      <td>Interest and debt-related expenses.</td>
+      <td>100000</td>
+    </tr>
+    <tr>
+      <th>interest_and_dividend_income_operating</th>
+      <td>Income from interest and dividends related to operations.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>interest_expense_operating</th>
+      <td>Interest expenses related to operations.</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>interest_income_expense_after_provision_for_losses</th>
+      <td>Interest income/expense after provision for losses.</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>interest_income_expense_operating_net</th>
+      <td>Net operating interest income/expenses.</td>
+      <td>500000</td>
+    </tr>
+    <tr>
+      <th>noninterest_expense</th>
+      <td>Noninterest-related expenses.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>noninterest_income</th>
+      <td>Noninterest-related income.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>net_income_loss</th>
+      <td>The net income or loss for the company.</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>net_income_loss_attributable_to_noncontrolling_interest</th>
+      <td>Net income or loss attributable to noncontrolling interest.</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>net_income_loss_attributable_to_nonredeemable_noncontrolling_interest</th>
+      <td>Net income or loss attributable to nonredeemable noncontrolling interest.</td>
+      <td>500000</td>
+    </tr>
+    <tr>
+      <th>net_income_loss_attributable_to_parent</th>
+      <td>Net income or loss attributable to the parent company.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>net_income_loss_attributable_to_redeemable_noncontrolling_interest</th>
+      <td>Net income or loss attributable to redeemable noncontrolling interest.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>net_income_loss_available_to_common_stockholders_basic</th>
+      <td>Net income available to common stockholders, basic.</td>
+      <td>5000</td>
+    </tr>
+    <tr>
+      <th>participating_securities_distributed_and_undistributed_earnings_loss_basic</th>
+      <td>Distributed and undistributed earnings/loss from participating securities.</td>
+      <td>10000</td>
+    </tr>
+    <tr>
+      <th>preferred_stock_dividends_and_other_adjustments</th>
+      <td>Dividends and adjustments for preferred stock.</td>
+      <td>500000</td>
+    </tr>
+    <tr>
+      <th>provision_for_loan_lease_and_other_losses</th>
+      <td>Provisions for losses from loans, leases, and other obligations.</td>
+      <td>150000</td>
+    </tr>
+    <tr>
+      <th>undistributed_earnings_loss_allocated_to_participating_securities_basic</th>
+      <td>Undistributed earnings/loss allocated to participating securities.</td>
+      <td>50000</td>
+    </tr>
+    <tr>
+      <th>basic_earnings_per_share</th>
+      <td>Basic earnings per share (EPS).</td>
+      <td>300000</td>
+    </tr>
+    <tr>
+      <th>diluted_earnings_per_share</th>
+      <td>Diluted earnings per share (EPS).</td>
+      <td>100000</td>
+    </tr>
+    <tr>
+      <th>basic_average_shares</th>
+      <td>The basic average number of shares outstanding.</td>
+      <td>3000</td>
+    </tr>
+    <tr>
+      <th>diluted_average_shares</th>
+      <td>The diluted average number of shares outstanding.</td>
+      <td>300000</td>
+    </tr>
+    <tr>
+      <th>common_stock_dividends</th>
+      <td>Dividends paid on common stock.</td>
+      <td>100000</td>
+    </tr>
+  </tbody>
+</table>
 
-## Diagram
 
+</details>
+
+
+ <details>
+<summary>FINANCIALS_COMPREHENSIVE_INCOME</summary>
+
+<th>This table contains a company's total financial performance during a specific period, combining net income (from regular operations) with other comprehensive income items, which include unrealized gains or losses. For S&P500 companies.</th>
+
+ <br />
+
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>start_date</th>
+      <td>Start date of the financial report period.</td>
+      <td>2024-04-01 00:00:00</td>
+    </tr>
+    <tr>
+      <th>end_date</th>
+      <td>End date of the financial report period.</td>
+      <td>2024-06-30 00:00:00</td>
+    </tr>
+    <tr>
+      <th>timeframe</th>
+      <td>The timeframe of the report.</td>
+      <td>quarterly</td>
+    </tr>
+    <tr>
+      <th>fiscal_period</th>
+      <td>Fiscal period covered by the report.</td>
+      <td>Q2</td>
+    </tr>
+    <tr>
+      <th>fiscal_year</th>
+      <td>Fiscal year associated with the financial data.</td>
+      <td>2024</td>
+    </tr>
+    <tr>
+      <th>exchange_symbol_search</th>
+      <td>Exchange symbol or ticker used in search to identify the company (tickers).</td>
+      <td>RSG</td>
+    </tr>
+    <tr>
+      <th>tickers</th>
+      <td>Ticker symbols for the company.</td>
+      <td>['RSG']</td>
+    </tr>
+    <tr>
+      <th>company_name</th>
+      <td>Full legal name of the company.</td>
+      <td>REPUBLIC SERVICES, INC.</td>
+    </tr>
+    <tr>
+      <th>updated_at</th>
+      <td>Date and time when the financial data was last updated.</td>
+      <td>2024-01-15 10:00:00</td>
+    </tr>
+    <tr>
+      <th>comprehensive_income_loss</th>
+      <td>Net income plus unrealized profits (or losses) in the same period.</td>
+      <td>460500000</td>
+    </tr>
+    <tr>
+      <th>comprehensive_income_loss_attributable_to_noncontrolling_interest</th>
+      <td>The comprehensive income or loss attributable to noncontrolling interest.</td>
+      <td>-100000</td>
+    </tr>
+    <tr>
+      <th>comprehensive_income_loss_attributable_to_parent</th>
+      <td>The comprehensive income or loss attributable to the parent company.</td>
+      <td>460600000</td>
+    </tr>
+    <tr>
+      <th>other_comprehensive_income_loss</th>
+      <td>Other comprehensive income or loss.</td>
+      <td>6800000</td>
+    </tr>
+    <tr>
+      <th>other_comprehensive_income_loss_attributable_to_noncontrolling_interest</th>
+      <td>Other comprehensive income or loss attributable to noncontrolling interest.</td>
+      <td>2800000</td>
+    </tr>
+    <tr>
+      <th>other_comprehensive_income_loss_attributable_to_parent</th>
+      <td>Other comprehensive income or loss attributable to the parent company.</td>
+      <td>3800000</td>
+    </tr>
+  </tbody>
+</table>
+
+</details>
+
+
+## Linage Diagram
+
+Showing Pk and Fk fields only. 
 
 ![png](readme/stock_db_diagram.png)
