@@ -2,7 +2,6 @@
 import csv
 import os
 from datetime import date, datetime
-from typing import Any, Dict
 
 # Third party
 import duckdb
@@ -10,25 +9,30 @@ import duckdb
 # Local
 from ..abstract.step import Step
 from ..settings import Settings
-from ..util.csv_handler import clean_temp_file
+from ..utils.csv_handler import clean_temp_file
 
 
 class Validator(Step):
-    """Validade file.
+    """Validate file.
     Validation based in:
        * Current pipeline settings
        * previous_output["file_path"]
     """
 
-    def __init__(self, previous_output: dict, settings: Settings):
-        """Init validator."""
+    def __init__(self, previous_output: dict, settings: Settings, table_config: dict = {}):
+        """Init validator.
+        table_config -- Optional. If not provided, will use settings.PIPELINE_TABLE.
+        Must have fields_mapping and required_fields as keys.
+        """
         super(Validator, self).__init__(__name__, previous_output, settings)
 
         self.file_path: str = self.previous_output["file_path"]
         self.pipeline: str = self.settings.pipeline
-        self.pipeline_table: Dict[str, Any] = self.settings.PIPELINE_TABLE
-        self.fields_mapping: Dict = self.pipeline_table["fields_mapping"]
-        self.required_fields: list = self.pipeline_table["required_fields"]
+        if not table_config:
+            table_config = self.settings.PIPELINE_TABLE
+
+        self.fields_mapping: dict = table_config["fields_mapping"]
+        self.required_fields: list = table_config["required_fields"]
 
     def _get_python_type(self, sqlite_dtype) -> type:
         """Return python data type."""
@@ -44,7 +48,7 @@ class Validator(Step):
         return dtype_mapping[sqlite_dtype]
 
     def _is_valid(self, fields: list, line: list):
-        """Checks is required fild exists."""
+        """Checks is required field exists."""
 
         for field, value in zip(fields, line):
             if field in self.required_fields and not self._is_dtype_valid(field, value):
@@ -98,5 +102,6 @@ class Validator(Step):
                 n_lines += 1
 
         clean_temp_file(self.file_path)
+
         self.logger.info(f"Validation complete. {err_count} Invalid lines found.")
         return True, self.output

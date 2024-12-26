@@ -7,7 +7,7 @@ import requests
 
 # Local
 from ..settings import Settings
-from ..util.get_logger import get_logger
+from ..utils.get_logger import get_logger
 
 
 class Fred:
@@ -19,7 +19,7 @@ class Fred:
     """
 
     def __init__(self, settings: Settings):
-        """Initialize cretencials and settings."""
+        """Initialize credentials and settings."""
 
         self.logger = get_logger(__name__, settings)
         api_key = os.getenv("FRED_KEY")

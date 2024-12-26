@@ -11,9 +11,10 @@ PIPELINES = [
     "ticker-basic-details-pipeline",
     "sp500-basic-details-pipeline",
     "indexes-daily-close-pipeline",
+    "financials-pipeline",
 ]
 
-AVAIABLE_CLIENTS = ["SQLITE", "POSTGRES"]
+AVAILABLE_CLIENTS = ["SQLITE", "POSTGRES"]
 
 
 class Settings:
@@ -23,22 +24,22 @@ class Settings:
         """Defines general app settings."""
 
         self.LOGGING_LEVEL = logging.DEBUG
-
+        self.is_integration_test = False
         # Pipeline and step settings
         if pipeline not in PIPELINES:  # pragma: no cover
-            raise ValueError(f"pipiline must be one of {PIPELINES}. {pipeline} is not valid.")
+            raise ValueError(f"pipeline must be one of {PIPELINES}. {pipeline} is not valid.")
         self.pipeline = pipeline
         self.step_name = None  # Placeholder
 
         # Database settings
         with open("src/database_config.json", "r") as file:
             self.TABLES: Dict[str, Any] = json.load(file)
-        self.PIPELINE_TABLE: Dict[str, Any] = self.TABLES[pipeline]
+        self.PIPELINE_TABLE = self.TABLES[pipeline]
 
         # Client settings
         self.CLIENTS_CONFIG: dict = {
             "SQLITE": {
-                "DB_PATH": "database/stock_database.db",
+                "DB_PATH": os.getenv("DB_PATH", "") + "stock_database.db",
                 "CHUNK_SIZE": 50000,
                 "PARAMETER_PLACEHOLDER": "?, ",
             },
@@ -62,8 +63,8 @@ class Settings:
 
         # Get current client config
         self.CLIENT = os.getenv("CLIENT", "SQLITE")
-        if self.CLIENT not in AVAIABLE_CLIENTS:  # pragma: no cover
-            raise ValueError(f"You must select one of the avaiable clients: {self.CLIENT}")
+        if self.CLIENT not in AVAILABLE_CLIENTS:  # pragma: no cover
+            raise ValueError(f"You must select one of the available clients: {self.CLIENT}")
         self.CLIENT_CONFIG = self.CLIENTS_CONFIG[self.CLIENT]
 
         # Polygon API settings
@@ -72,6 +73,7 @@ class Settings:
             "ENDPOINTS": {
                 "grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/",
                 "ticker_basic_details_endpoint": "v3/reference/tickers?limit=1000",
+                "financials_endpoint": "vX/reference/financials?",
             },
             "POLYGON_MAX_DAYS_HIST": 730,
             "POLYGON_CALLS_PER_MIN": 5,

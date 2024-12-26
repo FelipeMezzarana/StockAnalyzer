@@ -3,7 +3,11 @@ from ..clients.postgres_client import PostgresClient
 from ..clients.sqlite_client import SQLiteClient
 from ..common_steps.html_extractor import HtmlExtractor
 from ..common_steps.load_sql import SQLLoader
+from ..common_steps.load_sql_many import SQLManyLoader
 from ..common_steps.validate import Validator
+from ..common_steps.validate_many import ManyValidator
+from ..pipelines.financials.steps.check_financials_tables import FinancialsChecker
+from ..pipelines.financials.steps.extract_financials_data import FinancialsExtractor
 from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
 from ..pipelines.indexes_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
 from ..pipelines.indexes_daily_close.steps.extract_index_daily_close import IndexDailyCloseExtractor
@@ -67,6 +71,22 @@ class StepFactory:
                 lambda previous_output, settings, **kwargss: IndexDailyCloseExtractor(
                     previous_output, settings, **kwargss
                 )
+            ),
+            "check-financials-tables": (
+                lambda previous_output, settings, **kwargss: FinancialsChecker(
+                    previous_output, settings, client, **kwargss
+                )
+            ),
+            "extract-financials-data": (
+                lambda previous_output, settings, **kwargss: FinancialsExtractor(
+                    previous_output, settings, **kwargss
+                )
+            ),
+            "validate-many": lambda previous_output, settings, **kwargss: ManyValidator(
+                previous_output, settings, **kwargss
+            ),
+            "load-sql-many": lambda previous_output, settings, **kwargss: SQLManyLoader(
+                previous_output, settings, client, **kwargss
             ),
         }
 

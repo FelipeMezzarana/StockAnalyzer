@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 from ....abstract.step import Step
 from ....clients.fred import Fred
 from ....settings import Settings
-from ....util.csv_handler import append_to_file
+from ....utils.csv_handler import append_to_file
 
 
 class IndexDailyCloseExtractor(Step):

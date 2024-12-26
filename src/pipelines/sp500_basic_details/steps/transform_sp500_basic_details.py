@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 # Local
 from ....abstract.step import Step
 from ....settings import Settings
-from ....util.csv_handler import append_to_file, clean_temp_file
+from ....utils.csv_handler import append_to_file, clean_temp_file
 
 
 class SP500Transformer(Step):
@@ -52,7 +52,7 @@ class SP500Transformer(Step):
         ]
 
         if header != expected_header:  # pragma: no cover
-            self.logger.critial(f"Unexpected Header: {header=}. {expected_header=}")
+            self.logger.critical(f"Unexpected Header: {header=}. {expected_header=}")
             self.logger.info("Trying to continue with expected.")
             return expected_header
         else:
@@ -62,7 +62,7 @@ class SP500Transformer(Step):
     def get_sp500_table(self, bs: BeautifulSoup) -> tuple[List[Dict], List[str]]:
         """Extract sp500 table from bs element."""
 
-        s_p_500_table = bs.find_all("table", {"class": "wikitable sortable"})[0]
+        s_p_500_table = bs.find_all("table", {"class": "wikitable sortable sticky-header"})[0]
         header = self.check_header(s_p_500_table)
         # Extra fields
         header.append("url")

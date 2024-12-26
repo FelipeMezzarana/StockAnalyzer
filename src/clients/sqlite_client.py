@@ -6,7 +6,7 @@ import sqlite3
 # Local
 from ..abstract.client import Client
 from ..settings import Settings
-from ..util.get_logger import get_logger
+from ..utils.get_logger import get_logger
 
 
 class SQLiteClient(Client):
@@ -16,6 +16,7 @@ class SQLiteClient(Client):
         """Setup settings."""
 
         self.logger = get_logger(__name__, settings)
+        self.logger.debug(f"Initializing SQLiteClient for pipeline {settings.pipeline}")
         self.settings = settings
         self.DB_PATH = settings.CLIENT_CONFIG["DB_PATH"]
         # Create db file if not exist

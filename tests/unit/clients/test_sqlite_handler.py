@@ -8,7 +8,7 @@ import duckdb
 # First party
 from src.clients.sqlite_client import SQLiteClient
 from src.settings import Settings
-from src.util.sql_handler import SQLHandler
+from src.utils.sql_handler import SQLHandler
 
 SAMPLE_FILE = "tests/unit/data_samples/grouped_daily_sample.csv"
 

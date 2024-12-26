@@ -16,4 +16,4 @@ TAG=stock_analyzer-integration-test
 docker build --file Dockerfile.tests --tag $TAG .
 mkdir -p coverage
 docker run  --env-file secrets.env  $TAG \
- bash -c "python3 -m pytest 'tests/integration' -s"
+ bash -c "python3 -m pytest -v 'tests/integration' "

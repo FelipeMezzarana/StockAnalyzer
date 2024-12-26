@@ -1,0 +1,57 @@
+{
+    "params": "required_tickers, expected_query_results, expected_result", 
+    "test_cases": {
+        "no_tickers": {
+            "required_tickers": [],
+            "expected_query_results": [[]],
+            "expected_result": {}
+        },
+        "one_ticker": {
+            "required_tickers": ["TICKER_1"],
+            "expected_query_results": [
+                [["TICKER_1", "2024-01-01"]]
+            ],
+            "expected_result": {
+                "TICKER_1": {
+                    "next_date": "2024-03-31",
+                    "last_date": "2024-01-01"
+                }
+            }
+        },
+        "one_new_ticker": {
+            "required_tickers": ["TICKER_1"],
+            "expected_query_results": [[]],
+            "expected_result": {
+                "TICKER_1": {
+                    "next_date": "1600-03-31",
+                    "last_date": "1600-01-01"
+                }
+            }
+        },
+        "multiple_cases": {
+            "required_tickers": ["TICKER_1", "TICKER_2", "TICKER_3"],
+            "expected_query_results": [
+                [
+                    ["TICKER_1", "2024-01-01"],
+                    ["TICKER_2", "2023-01-01"]
+                ]
+            ],
+            "expected_result": {
+                "TICKER_1": {
+                    "next_date": "2024-03-31",
+                    "last_date": "2024-01-01"
+                },
+                "TICKER_2": {
+                    "next_date": "2023-04-01",
+                    "last_date": "2023-01-01"
+                },
+                "TICKER_3": {
+                    "next_date": "1600-03-31",
+                    "last_date": "1600-01-01"
+                }                                
+            }
+        }                         
+    }
+}
+
+

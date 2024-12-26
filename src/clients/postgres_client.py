@@ -4,9 +4,11 @@ import psycopg2
 # Local
 from ..abstract.client import Client
 from ..settings import Settings
-from ..util.get_logger import get_logger
+from ..utils.decorators import singleton
+from ..utils.get_logger import get_logger
 
 
+@singleton
 class PostgresClient(Client):
     """Postgres Client."""
 
