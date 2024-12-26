@@ -5,6 +5,7 @@ import sqlite3
 
 # Local
 from ..abstract.client import Client
+from ..exceptions import DirectoryCreationError
 from ..settings import Settings
 from ..utils.get_logger import get_logger
 
@@ -58,4 +59,4 @@ class SQLiteClient(Client):
                     else:
                         self.logger.info(f"DB directory found. {directory=}")
                 except Exception as err:  # pragma: no cover
-                    raise ValueError(f"Error creating {directory=}. {err=}")
+                    raise DirectoryCreationError(directory, err)

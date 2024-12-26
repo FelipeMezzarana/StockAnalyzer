@@ -5,16 +5,9 @@ import os
 from datetime import datetime
 from typing import Any, Dict
 
-# Pipelines to run, in order.
-PIPELINES = [
-    "grouped-daily-pipeline",
-    "ticker-basic-details-pipeline",
-    "sp500-basic-details-pipeline",
-    "indexes-daily-close-pipeline",
-    "financials-pipeline",
-]
-
-AVAILABLE_CLIENTS = ["SQLITE", "POSTGRES"]
+# Local
+from .exceptions import InvalidClientError, InvalidPipelineError
+from .utils.constants import AVAILABLE_CLIENTS, PIPELINES
 
 
 class Settings:
@@ -27,7 +20,7 @@ class Settings:
         self.is_integration_test = False
         # Pipeline and step settings
         if pipeline not in PIPELINES:  # pragma: no cover
-            raise ValueError(f"pipeline must be one of {PIPELINES}. {pipeline} is not valid.")
+            raise InvalidPipelineError(pipeline)
         self.pipeline = pipeline
         self.step_name = None  # Placeholder
 
@@ -64,7 +57,7 @@ class Settings:
         # Get current client config
         self.CLIENT = os.getenv("CLIENT", "SQLITE")
         if self.CLIENT not in AVAILABLE_CLIENTS:  # pragma: no cover
-            raise ValueError(f"You must select one of the available clients: {self.CLIENT}")
+            raise InvalidClientError(self.CLIENT)
         self.CLIENT_CONFIG = self.CLIENTS_CONFIG[self.CLIENT]
 
         # Polygon API settings

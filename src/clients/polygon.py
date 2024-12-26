@@ -6,6 +6,7 @@ from time import perf_counter, sleep
 import requests
 
 # Local
+from ..exceptions import MaxRetriesExceededError, MissingAPIKeyError
 from ..settings import Settings
 from ..utils.decorators import singleton
 from ..utils.get_logger import get_logger
@@ -25,8 +26,8 @@ class Polygon:
         self.logger = get_logger(__name__, settings)
         api_key = os.getenv("POLYGON_KEY")
         if not api_key:  # pragma: no cover
-            raise KeyError(
-                "Missing POLYGON API key. Key must be exported as env variable <POLYGON_KEY>."
+            raise MissingAPIKeyError(
+                "POLYGON_KEY", "https://polygon.io/dashboard/signup?redirect=%2Fdashboard%3F"
             )
         self.api_key_url = f"&apiKey={api_key}"
 
@@ -50,7 +51,7 @@ class Polygon:
             tries += 1
             self.logger.info(f"Request {tries} failed: {resp.status_code=}, {resp.json()} ")
             if tries > 3:
-                raise Exception(f"3 unsuccessful attempts to request {url=}")
+                raise MaxRetriesExceededError(url, 3)
             tries += 1
             sleep(5)
             resp = requests.get(url_with_key)
