@@ -36,7 +36,9 @@ class TestSQLHandler(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.settings.CLIENT_CONFIG["DB_PATH"]))
         # Create table based on settings
         self.sqlite_handler.create_table()
-        is_successful, result = self.sqlite_handler.query("SELECT * FROM GROUPED_DAILY")
+        is_successful, result = self.sqlite_handler.query(
+            "SELECT * FROM BRONZE_LAYER.GROUPED_DAILY"
+        )
         self.assertTrue(is_successful)
 
     def test_insert_into(self):
@@ -46,5 +48,7 @@ class TestSQLHandler(unittest.TestCase):
         header = duckdb.read_csv(SAMPLE_FILE, header=False).fetchone()
 
         self.sqlite_handler.insert_into(raw_file, header)
-        is_successful, result = self.sqlite_handler.query("SELECT count(*) FROM GROUPED_DAILY")
+        is_successful, result = self.sqlite_handler.query(
+            "SELECT count(*) FROM BRONZE_LAYER.GROUPED_DAILY"
+        )
         self.assertEqual(result[0][0], 32)

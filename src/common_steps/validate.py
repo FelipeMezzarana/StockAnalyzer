@@ -72,7 +72,7 @@ class Validator(Step):
         self.output["invalid_file_path"] = self.file_path.replace(".csv", "_invalid.csv")
 
         if not os.path.isfile(self.file_path):  # pragma: no cover
-            self.logger.info("No file to validade.")
+            self.logger.info("No file to validate.")
             return True, self.output
 
         raw_file = duckdb.read_csv(self.file_path, header=True)

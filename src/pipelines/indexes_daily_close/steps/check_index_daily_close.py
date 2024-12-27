@@ -21,7 +21,8 @@ class IndexDailyCloseChecker(Step):
         """Return last update date each index in table INDEXES_DAILY_CLOSE."""
 
         is_successful, result = self.sqlite_client.query(
-            "SELECT index_code, max(date) as last_DATE FROM INDEXES_DAILY_CLOSE GROUP BY index_code"
+            "SELECT index_code, max(date) as last_DATE FROM "
+            "BRONZE_LAYER.INDEXES_DAILY_CLOSE GROUP BY index_code"
         )
         if is_successful:
             last_update = dict(result)

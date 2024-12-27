@@ -50,13 +50,13 @@ def test_integration(
     if multiple_tables:
         for table in settings.PIPELINE_TABLE:
             sqlite_handler = SQLHandler(settings, client, table)
-            table_name = table["name"]
+            table_name = table["schema"] + "." + table["name"]
             is_successful, rows_qty = sqlite_handler.query(f"SELECT COUNT(*) FROM {table_name}")
             assert is_successful
             assert rows_qty[0][0] > 10
     else:
         sqlite_handler = SQLHandler(settings, client)
-        table_name = settings.PIPELINE_TABLE["name"]
+        table_name = settings.PIPELINE_TABLE["schema"] + "." + settings.PIPELINE_TABLE["name"]
         is_successful, rows_qty = sqlite_handler.query(f"SELECT COUNT(*) FROM {table_name}")
         assert is_successful
         assert rows_qty[0][0] > 10  # Check if we have some data

@@ -18,7 +18,8 @@ class FinancialsChecker(Step):
         # The pipeline has 4 tables, but we only need one to check status
         self.pipeline_table = settings.PIPELINE_TABLE[0]
         self.sqlite_client = SQLHandler(settings, client, table_config=self.pipeline_table)
-        self.table = self.pipeline_table["name"]
+
+        self.table = self.pipeline_table["schema"] + "." + self.pipeline_table["name"]
 
     def get_last_update(self, required_tickers: list[str]) -> dict:
         """Return last update date each ticker in required_tickers."""
@@ -58,7 +59,7 @@ class FinancialsChecker(Step):
         """Get valid tickers from SP500_BASIC_DETAILS."""
 
         is_successful, result = self.sqlite_client.query(
-            "SELECT distinct(exchange_symbol) FROM  SP500_BASIC_DETAILS"
+            "SELECT distinct(exchange_symbol) FROM  BRONZE_LAYER.SP500_BASIC_DETAILS"
         )
 
         return [row[0] for row in result]

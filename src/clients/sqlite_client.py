@@ -7,6 +7,7 @@ import sqlite3
 from ..abstract.client import Client
 from ..exceptions import DirectoryCreationError
 from ..settings import Settings
+from ..utils.constants import SCHEMAS
 from ..utils.get_logger import get_logger
 
 
@@ -23,6 +24,9 @@ class SQLiteClient(Client):
         # Create db file if not exist
         self._check_db(self.DB_PATH)
         self.logger.debug(f"{self.DB_PATH=}")
+        self.connect()
+        for schema in SCHEMAS:
+            self._create_schema(schema)
 
     def connect(self):
         """Connect to db."""
@@ -60,3 +64,25 @@ class SQLiteClient(Client):
                         self.logger.info(f"DB directory found. {directory=}")
                 except Exception as err:  # pragma: no cover
                     raise DirectoryCreationError(directory, err)
+
+    def _schema_exist(self, schema_name: str) -> bool:
+        """Check if schema exists."""
+        query = f"""
+        SELECT name
+        FROM sqlite_master
+        WHERE type='table' AND name='{schema_name}';
+        """
+        result = self.execute(query)
+        return len(result) > 0
+
+    def _create_schema(self, schema_name: str):
+        """Create schema."""
+
+        if not self._schema_exist(schema_name):
+            query = f"""
+            ATTACH DATABASE '{schema_name}' AS '{schema_name}';
+            """
+            self.execute(query)
+            self.logger.info(f"Created schema {schema_name}")
+        else:  # pragma: no cover
+            self.logger.info(f"Schema {schema_name} already exists")

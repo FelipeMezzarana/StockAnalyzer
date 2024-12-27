@@ -30,8 +30,9 @@ class GroupedDailyExtractor(Step):
         """Return max date [%Y-%m-%d] for grouped_daily table.
         Query SQLite DB defined in src.settings.
         """
-
-        table_name = self.settings.PIPELINE_TABLE["name"]
+        table_name = (
+            self.settings.PIPELINE_TABLE["schema"] + "." + self.settings.PIPELINE_TABLE["name"]
+        )
         is_successful, last_date = self.sqlite_client.query(f"SELECT MAX(DATE) FROM {table_name}")
 
         last_update_date = last_date[0][0] if last_date else None
@@ -39,15 +40,15 @@ class GroupedDailyExtractor(Step):
             if isinstance(last_update_date, datetime):
                 last_update_date = last_update_date.strftime("%Y-%m-%d")
             return last_update_date
-        else:
-            max_hist_avaiable = (
+        else:  # pragma: no cover
+            max_hist_available = (
                 datetime.today() - timedelta(days=self.max_days_hist + 1)
             ).strftime("%Y-%m-%d")
-            if last_date:  # pragma: no cover
-                return max_hist_avaiable
-            else:  # pragma: no cover
+            if last_date:
+                return max_hist_available
+            else:
                 self.logger.info(f"Table {table_name} empty.")
-                return max_hist_avaiable
+                return max_hist_available
 
     def build_request(self, request_date) -> str:
         """Return url to request daily open, high, low, and close (OHLC).

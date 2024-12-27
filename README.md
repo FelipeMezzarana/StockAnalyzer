@@ -1,11 +1,48 @@
 # StockAnalyzer
 
-**Runs multiple ETL pipelines, each updating one or more tables related to the US stock market in an PostgreSQL or SQLite database.**
+**Build and maintain a data warehouse with U.S. stock market data by running multiple ETL pipelines.**
 
+
+# Table of Contents
+1. [Introduction](#introduction)  
+   - [The Warehouse](#the-warehouse)
+   - [The Application](#the-application)
+2. [Usage](#usage)  
+   - [Setup](##setup)  
+   - [Requirements](##requirements)
+      - [Secrets](###secrets)  
+      - [Dependencies](###dependencies)  
+   - [Set up a local Postgres DB (Optional)](#set-up-a-local-postgres-db-optional)
+   - [Running the application](#running-the-application)
+6. [Data Catalog](#data-catalog)
+7. [Relationship Diagrams](#relationship-diagrams)
+7. [Sources](#sources)
+
+# Introduction
 
 The app is designed to provide accurate and reliable US financial stock market data by leveraging publicly available APIs and free-tier services instead of resorting to web scraping. This approach ensures compliance with data usage policies while delivery a more sustainable, easy to maintain solution.
 
 The app can run at any frequency. Each execution ensures all tables are updated with the latest data, regardless of when the last update occurred. This means that you can either use an orchestrator to keep the data up to date at a desired frequency, or run it manually, on-demand, to perform ad-hoc analyses.
+
+## The Warehouse
+
+The warehouse was designed following the medallion architecture, each layer is isolated in a different DB schema:
+
+* ***BRONZE_LAYER***: This is the ingestion layer. Tables here have the data in the most close to raw state. For example, API responses flattened with some extra metadata. Here, data is only incremented (inserted only, not merged or deleted) ensuring an immutable and easily auditable history.
+
+* ***SILVER_LAYER***: Transformation layer, prepared for analytical consumption.  **(Not yet implemented)**
+
+* ***GOLD_LAYER***: Distribution layer - Business-ready data, optimized for reporting and decision-making. **(Not yet implemented)**
+
+## The Application
+
+The application uses the Factory Design Pattern to create pipelines. Note that there is one [pipeline factory](src/factories/pipeline_factory.py) and one [step factory](src/factories/step_factory.py) - each pipeline is composed of multiple steps, and different pipelines can share the same steps. This design allows us to build isolated and reusable modules, improving code reusability, scalability and maintainability.
+
+This pattern works particularly well for implementing multiple ETL pipelines, as many steps can be abstracted and reused across different workflows. Examples include common tasks like data validation and loading. This approach reduces duplication, simplifies the development of new pipelines, and ensures consistency in shared processes.
+
+The application has 100% unit test coverage, ensuring high reliability and quick identification of issues. There is also integration tests for every pipeline, validating that all components work as expected. Additionally, the app is fully dockerized, ensuring consistency across environments by containerizing all dependencies and services. 
+
+Finally, we use GitHub Actions for the CI/CD pipeline, ensuring that unit and integration tests pass successfully, along with linting checks for code consistency, formatting, and type checking. Deployment is not present in the CI/CD pipeline, as the application can be executed locally at any frequency.
 
 # Usage 
 
@@ -20,7 +57,7 @@ git clone https://github.com/FelipeMezzarana/StockAnalyzer.git
 
 ### Secrets  
 
-Before running the application create a copy of the file secrets.example and rename it to secrets.env. Then, replace the values with you keys. Note that if you pretend to use a local Postgres instance (see more bellow) you can keep the default values for client related variables. 
+Before running the application create a copy of the file secrets.example and rename it to secrets.env. Then, replace the values with you keys. Note that if you pretend to use a local Postgres instance (see more bellow) you can keep the default values for client specific variables. 
 
 Variables required for all clients:
 ```shell
@@ -44,14 +81,14 @@ DB_PATH=folder1/folder2/
 
 ### Dependencies 
 
-The recommended approach is to run the app through docker. In this case, it is not necessary to install dependencies. 
+The recommended approach is to run the app through Docker. In this case, it is not necessary to install dependencies. 
 
 If you want to run locally just be sure to install the dependencies in requirements.txt in you environment.
 
 
 ## Set up a local Postgres DB (Optional)
 
-As for the database, although SQLLite is supported, we recommend using Postgres. So if you don't pretend to set up a cloud instance, you can use the shell script bellow to set up an local instance and easily query it.:
+As for the database, although SQLLite is supported, we recommend using Postgres. So if you don't pretend to set up a cloud instance, you can use the shell script bellow to set up an local instance and easily query it:
 
 ```shell
 ./setup_local_db.sh 
@@ -97,10 +134,9 @@ Linting:
 ./run_linting.sh 
 ```
 
+# Data Catalog
 
-# Database
-
-## Catalog
+### BRONZE LAYER
 
 <details>
 <summary>GROUPED_DAILY</summary>
@@ -1162,9 +1198,11 @@ Linting:
 </details>
 
 
-## Linage Diagram
+# Relationship Diagrams
 
 Showing Pk and Fk fields only. 
+
+### BRONZE LAYER
 
 ![png](readme/stock_db_diagram.png)
 
