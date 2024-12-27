@@ -8,3 +8,9 @@ PIPELINES = [
 ]
 
 AVAILABLE_CLIENTS = ["SQLITE", "POSTGRES"]
+
+SCHEMAS = [
+    "bronze_layer",
+    "silver_layer",
+    "gold_layer",
+]

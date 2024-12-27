@@ -9,7 +9,7 @@ from ..settings import Settings
 
 
 class SQLHandler:
-    """SQLLite db operations handler."""
+    """Handle SQL operations for Postgres ans SQLite clients."""
 
     def __init__(self, settings: Settings, client: Client, table_config: Optional[dict] = None):
         """Settings setup.
@@ -24,7 +24,6 @@ class SQLHandler:
 
         self.client_config = self.settings.CLIENT_CONFIG
         self.client = client
-        self.client.connect()
         self.create_table()
 
     def insert_into(self, raw_values: list[tuple], header: tuple):
@@ -32,7 +31,7 @@ class SQLHandler:
         Map field to expected position, see more in database_config.json
         """
 
-        table_name = self.pipeline_table["name"]
+        table_name = self.pipeline_table["schema"] + "." + self.pipeline_table["name"]
         fields_mapping = self.pipeline_table["fields_mapping"]
         fields = tuple(fields_mapping.keys())
 
@@ -66,7 +65,7 @@ class SQLHandler:
         """Create table based on pipeline settings."""
 
         # Build SQL statement
-        table_name = self.pipeline_table["name"]
+        table_name = self.pipeline_table["schema"] + "." + self.pipeline_table["name"]
         table_fields = self.pipeline_table["fields_mapping"]
         create_table_sql = f"CREATE TABLE IF NOT EXISTS {table_name} \n ("
         for v in table_fields.values():

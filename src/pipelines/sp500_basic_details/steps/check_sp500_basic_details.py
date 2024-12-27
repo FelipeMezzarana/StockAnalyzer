@@ -20,7 +20,7 @@ class SP500Checker(Step):
         """Return last update date for table SP500_BASIC_DETAILS."""
 
         is_successful, last_update_result = self.sqlite_client.query(
-            "SELECT max(updated_at) as last_update FROM SP500_BASIC_DETAILS"
+            "SELECT max(updated_at) as last_update FROM BRONZE_LAYER.SP500_BASIC_DETAILS"
         )
         if is_successful:
             if last_update_result and last_update_result[0][0]:

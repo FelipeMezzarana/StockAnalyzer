@@ -1,6 +1,7 @@
 {
     "grouped-daily-pipeline": {
         "name": "GROUPED_DAILY",
+        "schema": "bronze_layer",
         "fields_mapping": {
             "date": ["date", "DATE"],
             "T": ["exchange_symbol", "VARCHAR(255)"],
@@ -18,6 +19,7 @@
     },
     "ticker-basic-details-pipeline": {
         "name": "TICKER_BASIC_DETAILS",
+        "schema": "bronze_layer",
         "fields_mapping": {
             "active": ["active", "BOOLEAN"],
             "cik": ["cik", "VARCHAR(255)"],
@@ -37,6 +39,7 @@
     },
     "sp500-basic-details-pipeline": {
         "name": "SP500_BASIC_DETAILS",
+        "schema": "bronze_layer",
         "fields_mapping": {
             "Symbol": ["exchange_symbol",  "VARCHAR(255)"],
             "Security": ["name", "VARCHAR(255)"],
@@ -53,6 +56,7 @@
     },
     "indexes-daily-close-pipeline": {
         "name": "INDEXES_DAILY_CLOSE",
+        "schema": "bronze_layer",
         "fields_mapping": {
             "date": ["date", "DATE"],
             "index": ["index_code",  "VARCHAR(255)"],
@@ -64,6 +68,7 @@
     "financials-pipeline": [
         {
             "name": "FINANCIALS_BALANCE_SHEET",
+            "schema": "bronze_layer",
             "endpoint_path": "balance_sheet",
             "fields_mapping": {
                 "start_date": ["start_date", "DATE"],
@@ -113,6 +118,7 @@
         },
         {
             "name": "FINANCIALS_CASH_FLOW_STATEMENT",
+            "schema": "bronze_layer",
             "endpoint_path": "cash_flow_statement",
             "fields_mapping": {
                 "start_date": ["start_date", "DATE"],
@@ -142,6 +148,7 @@
         },
         {
             "name": "FINANCIALS_INCOME_STATEMENT",
+            "schema": "bronze_layer",
             "endpoint_path": "income_statement",
             "fields_mapping": {
                 "start_date": ["start_date", "DATE"],
@@ -208,6 +215,7 @@
         },
         {
             "name": "FINANCIALS_COMPREHENSIVE_INCOME",
+            "schema": "bronze_layer",
             "endpoint_path": "comprehensive_income",
             "fields_mapping": {
                 "start_date": ["start_date", "DATE"],

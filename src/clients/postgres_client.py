@@ -4,6 +4,7 @@ import psycopg2
 # Local
 from ..abstract.client import Client
 from ..settings import Settings
+from ..utils.constants import SCHEMAS
 from ..utils.decorators import singleton
 from ..utils.get_logger import get_logger
 
@@ -22,8 +23,10 @@ class PostgresClient(Client):
         pwd = config["POSTGRES_PASSWORD"]
         host = config["POSTGRES_HOST"]
         db = config["POSTGRES_DB"]
-
         self.conn_string = f"host={host} dbname={db} user={uid} password={pwd}"
+        self.connect()
+        for schema in SCHEMAS:
+            self._create_schema(schema)
 
     def connect(self):
         """Connect to db."""
@@ -47,3 +50,28 @@ class PostgresClient(Client):
         """Execute parameterized query."""
         self.cur.executemany(query, mapped_values)
         self.conn.commit()
+
+    def _schema_exist(self, schema_name: str) -> bool:
+        """Check if schemas exists."""
+        query = f"""
+        SELECT EXISTS (
+            SELECT 1
+            FROM   information_schema.schemata
+            WHERE  schema_name = '{schema_name}'
+        );
+        """
+        schema_exist = self.execute(query)
+
+        return schema_exist[0][0]
+
+    def _create_schema(self, schema_name: str):
+        """Create schema."""
+
+        if not self._schema_exist(schema_name):
+            query = f"""
+            CREATE SCHEMA IF NOT EXISTS {schema_name};
+            """
+            self.execute(query)
+            self.logger.info(f"Created schema {schema_name}")
+        else:
+            self.logger.info(f"Schema {schema_name} already exists")

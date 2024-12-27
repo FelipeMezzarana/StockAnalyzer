@@ -35,11 +35,11 @@ class TickerBasicDetailsExtractor(Step):
         """
 
         _, all_tickers = self.sqlite_client.query(
-            "SELECT DISTINCT(exchange_symbol) FROM GROUPED_DAILY"
+            "SELECT DISTINCT(exchange_symbol) FROM BRONZE_LAYER.GROUPED_DAILY"
         )
 
         _, registered_tickers = self.sqlite_client.query(
-            "SELECT DISTINCT(exchange_symbol) FROM TICKER_BASIC_DETAILS"
+            "SELECT DISTINCT(exchange_symbol) FROM BRONZE_LAYER.TICKER_BASIC_DETAILS"
         )
         registered_tickers_list = [r[0] for r in registered_tickers]
         required_tickers = [t[0] for t in all_tickers if t[0] not in registered_tickers_list]
@@ -51,7 +51,7 @@ class TickerBasicDetailsExtractor(Step):
         return required_tickers, registered_tickers_list
 
     def _get_initial_url(self):
-        """Build initial url request with randon sorting order."""
+        """Build initial url request with random sorting order."""
 
         sorting_op = [
             "ticker",
