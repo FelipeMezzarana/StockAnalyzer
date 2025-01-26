@@ -28,7 +28,7 @@ The app can run at any frequency. Each execution ensures all tables are updated 
 
 The warehouse was designed following the medallion architecture, each layer is isolated in a different DB schema:
 
-* ***BRONZE_LAYER***: This is the ingestion layer. Tables here have the data in the most close to raw state. For example, API responses flattened with some extra metadata. Here, data is only incremented (inserted only, not merged or deleted) ensuring an immutable and easily auditable history.
+* ***BRONZE_LAYER***: This is the ingestion layer. Tables here have the data in the most close to raw state. For example, API responses flattened with some extra metadata. Here, data is only incremented (inserts only, no updates or deletions) ensuring an immutable and easily auditable history.
 
 * ***SILVER_LAYER***: Transformation layer, prepared for analytical consumption.  **(Not yet implemented)**
 
@@ -88,7 +88,7 @@ If you want to run locally just be sure to install the dependencies in requireme
 
 ## Set up a local Postgres DB (Optional)
 
-As for the database, although SQLLite is supported, we recommend using Postgres. So if you don't pretend to set up a cloud instance, you can use the shell script bellow to set up an local instance and easily query it:
+As for the database, although SQLLite is supported, we recommend using Postgres. If you intend to use a local instance you can use the boilerplate solution provided. Use the shell script bellow to set up an local Postgres instance and easily query it:
 
 ```shell
 ./setup_local_db.sh 
@@ -96,6 +96,7 @@ As for the database, although SQLLite is supported, we recommend using Postgres.
 The script will 
 * Setup a dockernized Postgres database "STOCK_ANALYZER" with volume mapped to /Documents/postgres/stock_analyzer_volume
 * Setup PgAdmin local server, to easily query "STOCK_ANALYZER". It that can be accessed at http://localhost:8080/ with credentials:
+* Setup a network to run the app through Docker.
 
   * PgAdmin e-mail: admin@admin.com
   * PgAdmin password: root
@@ -111,25 +112,43 @@ docker compose down
 
 ## Running the application:
 
-**Important**: Due to APIs rate limits the first run should take a long time to finish (~6h) and the lower the update frequency, the longer the execution time for subsequent updates. Other factors can also influence runtime. For example, financial data will be updated every four months, increasing this specific runtime considerable. Note that each pipeline ends with loading data in the DB, so the "progress is saved" after finishing a pipeline.
+
+The application is executed via a CLI command. To run use:
 
 ```shell
 # Run through Docker (recommended)
- ./run.sh 
-# Run through terminal
-source secrets.env && python3 -m src.run
+ ./run.sh <scope> <sub_scope>
+# Run without Docker
+source secrets.env && python3 -m src.run <scope> <sub_scope>
  ```
 
-Unit tests:
+ \<scope> and <sub_scope> defines which table(s) will be updated. We have tree main options: 
+ * \<scope> = **table** -> 
+In this case <sub_scope> must be a valid table name, and this single table will be updated.
+ * \<scope> = **schema** -> 
+In this case <sub_scope> must be a valid schema name (bronze_layer, silver_layer or gold_layer), and all tables under the schema will be updated.
+ * \<scope> = **all** -> 
+In this case <sub_scope> can be omitted and all tables under all schemas will be updated.
+
+
+**Notes**: 
+
+* Due to APIs rate limits the first bronze_layer update should take a long time to finish (~6h). Also, the lower the update frequency the longer the execution time for subsequent updates. Other factors can also influence runtime. For example, financial data will be updated every four months, increasing this specific runtime considerable. Therefore, for the first run it is recommended to updates tables individually.
+* When using the table scope it is important to note that pipelines can have dependencies between themselves, which may affect the target table update if the dependency is not updated. Dependencies can be found below:
+  * BRONZE_LAYER.TICKER_BASIC_DETAILS -> Depends on GROUPED_DAILY to know which ticker get details from;
+  * BRONZE_LAYER.FINANCIALS_[BALANCE_SHEET, CASH_FLOW_STATEMENT, INCOME_STATEMENT, COMPREHENSIVE_INCOME] -> Depends on SP500_BASIC_DETAILS to know which ticker get financials data from;
+
+
+To run unit tests:
 ```shell
 ./run_unit_tests.sh
 ```
-Integration tests:
+To run integration tests:
 ```shell
 ./run_integration_test.sh 
 ```
 
-Linting:
+To run linting checks:
 ```shell
 ./run_linting.sh 
 ```

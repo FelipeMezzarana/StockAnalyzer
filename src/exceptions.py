@@ -18,7 +18,7 @@ class InvalidPipelineError(CustomException):  # pragma: no cover
 
     key = "INVALID_PIPELINE"
 
-    def __init__(self, pipeline: str, allowed_pipelines: list[str] = PIPELINES):
+    def __init__(self, pipeline: str, allowed_pipelines: tuple = PIPELINES.get_all_pipelines()):
         message = f"Invalid pipeline '{pipeline}'. Must be one of {allowed_pipelines}."
 
         super(InvalidPipelineError, self).__init__(message)

@@ -7,7 +7,7 @@ import sqlite3
 from ..abstract.client import Client
 from ..exceptions import DirectoryCreationError
 from ..settings import Settings
-from ..utils.constants import SCHEMAS
+from ..utils.constants import PIPELINES
 from ..utils.get_logger import get_logger
 
 
@@ -25,7 +25,7 @@ class SQLiteClient(Client):
         self._check_db(self.DB_PATH)
         self.logger.debug(f"{self.DB_PATH=}")
         self.connect()
-        for schema in SCHEMAS:
+        for schema in PIPELINES.schemas:
             self._create_schema(schema)
 
     def connect(self):
