@@ -106,7 +106,13 @@ class FinancialsExtractor(Step):
             required_tickers = required_tickers[:3]
         # Request data for each ticker.
         # Each request return all reports (for all financials tables) for the ticker.
+        counter = 0
         for ticker in required_tickers:
+            counter+=1
+            self.logger.info(
+                f"Getting financial data for ticker {ticker}. "
+                f"{counter}/{len(required_tickers)}"
+                )
             data = self.request_ticker(ticker)
             if data.get("results"):
                 # Filter results that already exists in db

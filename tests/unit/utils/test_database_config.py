@@ -2,7 +2,7 @@
 import json
 
 # First party
-from src.utils.constants import SCHEMAS
+from src.utils.constants import PIPELINES
 
 
 def test_database_config():
@@ -10,7 +10,7 @@ def test_database_config():
 
     def assert_table_config(table: dict):
         assert all(key in table.keys() for key in ["schema", "name", "fields_mapping"])
-        assert table["schema"] in SCHEMAS
+        assert table["schema"] in PIPELINES.schemas
 
     with open("src/database_config.json", "r") as file:
         tables_config = json.load(file)

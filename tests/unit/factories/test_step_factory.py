@@ -20,7 +20,7 @@ class TestStepFactory(unittest.TestCase):
             "invalid_file_path": "path",
         }
 
-        for pipeline in PIPELINES:
+        for pipeline in PIPELINES.get_all_pipelines():
             settings = Settings(pipeline)
             pipeline_obj = PipelineFactory(settings).create()
             steps = pipeline_obj.build_steps()

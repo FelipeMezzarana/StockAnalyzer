@@ -16,10 +16,10 @@ class Settings:
     def __init__(self, pipeline: str) -> None:
         """Defines general app settings."""
 
-        self.LOGGING_LEVEL = logging.DEBUG
+        self.LOGGING_LEVEL = logging.INFO
         self.is_integration_test = False
         # Pipeline and step settings
-        if pipeline not in PIPELINES:  # pragma: no cover
+        if pipeline not in PIPELINES.get_all_pipelines():  # pragma: no cover
             raise InvalidPipelineError(pipeline)
         self.pipeline = pipeline
         self.step_name = None  # Placeholder

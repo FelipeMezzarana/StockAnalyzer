@@ -4,7 +4,7 @@ import psycopg2
 # Local
 from ..abstract.client import Client
 from ..settings import Settings
-from ..utils.constants import SCHEMAS
+from ..utils.constants import PIPELINES
 from ..utils.decorators import singleton
 from ..utils.get_logger import get_logger
 
@@ -25,7 +25,7 @@ class PostgresClient(Client):
         db = config["POSTGRES_DB"]
         self.conn_string = f"host={host} dbname={db} user={uid} password={pwd}"
         self.connect()
-        for schema in SCHEMAS:
+        for schema in PIPELINES.schemas:
             self._create_schema(schema)
 
     def connect(self):

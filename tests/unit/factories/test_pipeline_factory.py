@@ -12,7 +12,7 @@ class TestPipelineFactory(unittest.TestCase):
     def test_create(self) -> None:
         """Test create pipeline."""
 
-        for pipeline in PIPELINES:
+        for pipeline in PIPELINES.get_all_pipelines():
             settings = Settings(pipeline)
             pipeline_obj = PipelineFactory(settings).create()
             self.assertIsNotNone(pipeline_obj)
