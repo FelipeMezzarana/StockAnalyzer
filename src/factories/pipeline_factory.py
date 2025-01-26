@@ -1,4 +1,5 @@
 # Local
+from ..abstract.pipeline import Pipeline
 from ..exceptions import InvalidPipelineError
 from ..pipelines.financials.financials_pipeline import FinancialsPipeline
 from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
@@ -27,14 +28,14 @@ class PipelineFactory:
             "financials-pipeline": lambda: FinancialsPipeline(settings),
         }
 
-    def create(self):
+    def create(self) -> Pipeline:
         """Returns instance of pipeline if name is found.
 
         - pipeline: name of the pipeline.
         """
 
         if self.pipeline not in self._pipelines:  # pragma: no cover
-            raise InvalidPipelineError(self.pipeline, self._pipelines.keys())
+            raise InvalidPipelineError(self.pipeline, tuple(self._pipelines.keys()))
 
         # lazy initialization
         self.logger.info(f"Creating pipeline: {self.pipeline}")

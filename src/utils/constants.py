@@ -13,7 +13,7 @@ class Pipelines:
     silver_layer = ()
     gold_layer = ()
 
-    table_pipeline_mapping = {
+    table_pipeline_mapping: dict[str, dict] = {
         "bronze_layer": {
             "grouped_daily": "grouped-daily-pipeline",
             "ticker_basic_details": "ticker-basic-details-pipeline",
@@ -25,24 +25,24 @@ class Pipelines:
             "financials_comprehensive_income": "financials-pipeline",
         },
         "silver_layer": {},
-        "gold_layer": {}
+        "gold_layer": {},
     }
 
     @classmethod
-    def get_all_pipelines(cls) -> list[str]:
+    def get_all_pipelines(cls) -> tuple:
         """Get all pipelines for all layers."""
-        return cls.bronze_layer + cls.silver_layer + cls.gold_layer  
+        return cls.bronze_layer + cls.silver_layer + cls.gold_layer
 
     @classmethod
-    def get_all_tables(cls):
+    def get_all_tables(cls) -> list[str]:
         """Get all tables for all layers."""
-        all_tables = []
+        all_tables: list[str] = []
         for layer in cls.table_pipeline_mapping.values():
             all_tables += layer.keys()
         return all_tables
 
     @classmethod
-    def get_layer(cls, obj: str) -> list[str]:
+    def get_layer(cls, obj: str) -> tuple:
         """Get pipelines for a specific layer."""
         layers = {
             "bronze_layer": cls.bronze_layer,
@@ -50,7 +50,7 @@ class Pipelines:
             "gold_layer": cls.gold_layer,
         }
 
-        return layers.get(obj.lower(), [])
+        return layers.get(obj.lower(), ())
 
     @classmethod
     def get_pipeline_from_table(cls, table_name: str) -> str:
@@ -63,7 +63,7 @@ class Pipelines:
         pipeline = all_layers_table_pipeline_mapping.get(table_name)
         if not pipeline:
             raise ValueError(f"Pipeline not found for table: {table_name}.")
-        
+
         return pipeline
 
 
@@ -73,8 +73,8 @@ AVAILABLE_CLIENTS = ["SQLITE", "POSTGRES"]
 SCOPE_HELP_TEXT = (
     "Defines the update scope. Use 'table' to update a specific table "
     "or 'schema' to update all tables under the schema. To update all tables, use 'all'."
-    )
+)
 SUB_SCOPE_HELP_TEXT = (
     "Specifies the sub-scope to update: Name of the table if scope = 'pipeline'; "
     "name of schema if scope = 'schema'; not required if scope = 'all'."
-    )
+)
