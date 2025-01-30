@@ -8,7 +8,7 @@ from typing_extensions import Annotated
 # Local
 from .factories.pipeline_factory import PipelineFactory
 from .settings import Settings
-from .utils.constants import PIPELINES, SCOPE_HELP_TEXT, SUB_SCOPE_HELP_TEXT, SKIP_HELP_TEXT
+from .utils.constants import PIPELINES, SCOPE_HELP_TEXT, SKIP_HELP_TEXT, SUB_SCOPE_HELP_TEXT
 
 app = typer.Typer()
 
@@ -17,7 +17,7 @@ app = typer.Typer()
 def run(
     scope: Annotated[str, typer.Argument(help=SCOPE_HELP_TEXT)],
     sub_scope: Annotated[Optional[str], typer.Option(help=SUB_SCOPE_HELP_TEXT)] = None,
-    skip: Annotated[Optional[str], typer.Option(help=SKIP_HELP_TEXT)] = ""
+    skip: Annotated[Optional[str], typer.Option(help=SKIP_HELP_TEXT)] = None,
 ):
     """Run app.
     Try 'python -m src.run --help' for help.
@@ -53,22 +53,18 @@ def validate_and_get_scope(scope: str, sub_scope: Optional[str]) -> tuple:
         return PIPELINES.get_all_pipelines()
 
 
-def filter_skip(pipelines: tuple, skip: str) -> tuple:
+def filter_skip(pipelines: tuple, skip: Optional[str]) -> tuple:
     """Select pipelines to skip from table names in --skip."""
-    
+
     if not skip:
         return pipelines
     else:
-        tables_to_skip = skip.split(',')
+        tables_to_skip = skip.split(",")
         pipelines_to_skip = []
         for table_name in tables_to_skip:
             if table_name.lower() not in PIPELINES.get_all_tables():
-                raise typer.BadParameter(
-                    f"Error trying to skip table {table_name}: not found."
-                    )
-            pipelines_to_skip.append(
-                PIPELINES.get_pipeline_from_table(table_name.lower())
-                )
+                raise typer.BadParameter(f"Error trying to skip table {table_name}: not found.")
+            pipelines_to_skip.append(PIPELINES.get_pipeline_from_table(table_name.lower()))
         return tuple([p for p in pipelines if p not in pipelines_to_skip])
 
 

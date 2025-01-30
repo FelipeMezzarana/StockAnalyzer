@@ -5,9 +5,7 @@ import unittest
 from unittest.mock import patch
 
 # First party
-from src.pipelines.index_daily_close.steps.extract_index_daily_close import (
-    IndexDailyCloseExtractor,
-)
+from src.pipelines.index_daily_close.steps.extract_index_daily_close import IndexDailyCloseExtractor
 from src.settings import Settings
 
 SAMPLE_REQUEST_FILE = "tests/unit/data_samples/extract_index_daily_close_sample.json"

@@ -2,12 +2,14 @@
 from ..abstract.pipeline import Pipeline
 from ..exceptions import InvalidPipelineError
 from ..pipelines.financials.financials_pipeline import FinancialsPipeline
-from ..pipelines.stock_daily_prices.stock_daily_prices_pipeline import StockDailyPricesPipeline
 from ..pipelines.index_daily_close.index_daily_close_pipeline import IndexDailyClosePipeline
-from ..pipelines.sp500_company_details.sp500_company_details_pipeline import SP500CompanyDetailsPipeline
+from ..pipelines.sp500_company_details.sp500_company_details_pipeline import (
+    SP500CompanyDetailsPipeline,
+)
 from ..pipelines.stock_company_details.stock_company_details_pipeline import (
     StockCompanyDetailsPipeline,
 )
+from ..pipelines.stock_daily_prices.stock_daily_prices_pipeline import StockDailyPricesPipeline
 from ..settings import Settings
 from ..utils.get_logger import get_logger
 

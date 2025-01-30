@@ -6,7 +6,9 @@ from unittest.mock import patch
 
 # First party
 from src.clients.sqlite_client import SQLiteClient
-from src.pipelines.stock_daily_prices.steps.extract_stock_daily_prices import StockDailyPriceExtractor
+from src.pipelines.stock_daily_prices.steps.extract_stock_daily_prices import (
+    StockDailyPriceExtractor,
+)
 from src.settings import Settings
 
 SAMPLE_REQUEST_FILE = "tests/unit/data_samples/request_stock_daily_prices_sample.json"

@@ -6,7 +6,9 @@ import unittest
 import duckdb
 
 # First party
-from src.pipelines.sp500_company_details.steps.transform_sp500_company_details import SP500Transformer
+from src.pipelines.sp500_company_details.steps.transform_sp500_company_details import (
+    SP500Transformer,
+)
 from src.settings import Settings
 
 SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_company_details_sample.txt"

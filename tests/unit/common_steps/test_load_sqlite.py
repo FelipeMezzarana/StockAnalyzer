@@ -19,7 +19,9 @@ class TestLoadSQLite(unittest.TestCase):
         cls.sqlite_client = SQLLoader(
             {
                 "valid_file_path": "tests/unit/data_samples/stock_daily_prices_sample.csv",
-                "invalid_file_path": "tests/unit/data_samples/invalid_stock_daily_prices_sample.csv",
+                "invalid_file_path": (
+                    "tests/unit/data_samples/invalid_stock_daily_prices_sample.csv"
+                ),
             },
             cls.settings,
             cls.client,

@@ -9,7 +9,6 @@ from ..common_steps.wikipedia_extractor import WikipediaExtractor
 from ..exceptions import StepNotFoundError
 from ..pipelines.financials.steps.check_financials_tables import FinancialsChecker
 from ..pipelines.financials.steps.extract_financials_data import FinancialsExtractor
-from ..pipelines.stock_daily_prices.steps.extract_stock_daily_prices import StockDailyPriceExtractor
 from ..pipelines.index_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
 from ..pipelines.index_daily_close.steps.extract_index_daily_close import IndexDailyCloseExtractor
 from ..pipelines.sp500_company_details.steps.check_sp500_company_details import SP500Checker
@@ -17,6 +16,7 @@ from ..pipelines.sp500_company_details.steps.transform_sp500_company_details imp
 from ..pipelines.stock_company_details.steps.extract_stock_company_details import (
     TickerBasicDetailsExtractor,
 )
+from ..pipelines.stock_daily_prices.steps.extract_stock_daily_prices import StockDailyPriceExtractor
 from ..settings import Settings
 
 

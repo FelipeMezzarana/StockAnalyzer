@@ -79,6 +79,4 @@ SUB_SCOPE_HELP_TEXT = (
     "name of schema if scope = 'schema'; not required if scope = 'all'."
 )
 
-SKIP_HELP_TEXT = (
-    "Table name. Use to skip the specified table update."
-)
+SKIP_HELP_TEXT = "Table name. Use to skip the specified table update."

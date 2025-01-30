@@ -63,8 +63,8 @@ class Polygon:
         """
 
         now = perf_counter()
-        if now - self.last_request < self.api_sleep_time :
-            sleep_time = self.api_sleep_time  - (now - self.last_request)
+        if now - self.last_request < self.api_sleep_time:
+            sleep_time = self.api_sleep_time - (now - self.last_request)
             self.logger.debug(f"{sleep_time=:.2f}")
             sleep(sleep_time)
             # Update last request time
