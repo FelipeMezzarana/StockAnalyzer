@@ -10,14 +10,14 @@ from src.clients.sqlite_client import SQLiteClient
 from src.settings import Settings
 from src.utils.sql_handler import SQLHandler
 
-SAMPLE_FILE = "tests/unit/data_samples/grouped_daily_sample.csv"
+SAMPLE_FILE = "tests/unit/data_samples/stock_daily_prices_sample.csv"
 
 
 class TestSQLHandler(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """ """
-        cls.settings = Settings("grouped-daily-pipeline")
+        cls.settings = Settings("stock-daily-prices-pipeline")
         cls.settings.CLIENT_CONFIG["DB_PATH"] = "stock_database.db"
         cls.client = SQLiteClient(cls.settings)
         cls.sqlite_handler = SQLHandler(cls.settings, cls.client)
@@ -37,7 +37,7 @@ class TestSQLHandler(unittest.TestCase):
         # Create table based on settings
         self.sqlite_handler.create_table()
         is_successful, result = self.sqlite_handler.query(
-            "SELECT * FROM BRONZE_LAYER.GROUPED_DAILY"
+            "SELECT * FROM BRONZE_LAYER.STOCK_DAILY_PRICES"
         )
         self.assertTrue(is_successful)
 
@@ -49,6 +49,6 @@ class TestSQLHandler(unittest.TestCase):
 
         self.sqlite_handler.insert_into(raw_file, header)
         is_successful, result = self.sqlite_handler.query(
-            "SELECT count(*) FROM BRONZE_LAYER.GROUPED_DAILY"
+            "SELECT count(*) FROM BRONZE_LAYER.STOCK_DAILY_PRICES"
         )
         self.assertEqual(result[0][0], 32)

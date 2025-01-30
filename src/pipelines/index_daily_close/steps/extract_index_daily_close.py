@@ -49,7 +49,7 @@ class IndexDailyCloseExtractor(Step):
 
         fred = Fred(self.settings)
         url = self.build_request(index)
-        file_path = "temp/indexes_daily_close_temp.csv"
+        file_path = "temp/index_daily_close_temp.csv"
         self.output["file_path"] = file_path
         resp = fred.request(url)
         data = resp.get("observations")

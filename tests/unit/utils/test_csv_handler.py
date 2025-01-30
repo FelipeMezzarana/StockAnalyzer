@@ -6,7 +6,7 @@ import unittest
 # First party
 from src.utils import csv_handler
 
-SAMPLE_REQUEST_FILE = "tests/unit/data_samples/request_grouped_daily_sample.json"
+SAMPLE_REQUEST_FILE = "tests/unit/data_samples/request_stock_daily_prices_sample.json"
 
 
 class TestCSVHandler(unittest.TestCase):

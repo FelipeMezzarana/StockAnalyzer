@@ -13,13 +13,15 @@ class TestLoadSQLite(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Class Setup."""
-        cls.settings = Settings("grouped-daily-pipeline")
+        cls.settings = Settings("stock-daily-prices-pipeline")
         cls.settings.CLIENT_CONFIG["DB_PATH"] = "database/stock_database_test.db"
         cls.client = SQLiteClient(cls.settings)
         cls.sqlite_client = SQLLoader(
             {
-                "valid_file_path": "tests/unit/data_samples/grouped_daily_sample.csv",
-                "invalid_file_path": "tests/unit/data_samples/invalid_grouped_daily_sample.csv",
+                "valid_file_path": "tests/unit/data_samples/stock_daily_prices_sample.csv",
+                "invalid_file_path": (
+                    "tests/unit/data_samples/invalid_stock_daily_prices_sample.csv"
+                ),
             },
             cls.settings,
             cls.client,

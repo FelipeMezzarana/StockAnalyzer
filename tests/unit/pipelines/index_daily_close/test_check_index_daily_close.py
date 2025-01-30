@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 # First party
 from src.clients.sqlite_client import SQLiteClient
-from src.pipelines.indexes_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
+from src.pipelines.index_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
 from src.settings import Settings
 
 
@@ -15,12 +15,12 @@ class TestIndexDailyCloseChecker(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Class Setup."""
-        cls.settings = Settings("indexes-daily-close-pipeline")
+        cls.settings = Settings("index-daily-close-pipeline")
         cls.settings.DB_PATH = "database/mock_stock_database.db"
         cls.client = SQLiteClient(cls.settings)
         cls.indexes = cls.settings.FRED["INDEXES"]
 
-    @patch("src.pipelines.indexes_daily_close.steps.check_index_daily_close.SQLHandler")
+    @patch("src.pipelines.index_daily_close.steps.check_index_daily_close.SQLHandler")
     def test_run(self, mock_sqlite) -> None:
         """Test run."""
 

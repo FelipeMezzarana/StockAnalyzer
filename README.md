@@ -117,9 +117,10 @@ The application is executed via a CLI command. To run use:
 
 ```shell
 # Run through Docker (recommended)
- ./run.sh <scope> <sub_scope>
+ ./run.sh <scope> --sub-scope <sub_scope> --skip <table_name>
+
 # Run without Docker
-source secrets.env && python3 -m src.run <scope> <sub_scope>
+source secrets.env && python3 -m src.run --sub-scope <scope> --skip <sub_scope>
  ```
 
  \<scope> and <sub_scope> defines which table(s) will be updated. We have tree main options: 
@@ -130,13 +131,22 @@ In this case <sub_scope> must be a valid schema name (bronze_layer, silver_layer
  * \<scope> = **all** -> 
 In this case <sub_scope> can be omitted and all tables under all schemas will be updated.
 
+\<skip> is an optional argument that may be used for skipping table(s) update. Tables names must be separated by comma.
+
+Usage examples:
+```shell
+# Update all tables
+./run.sh all 
+# Updata bronze layer tables skipping two tables.
+./run.sh schema --sub-scope bronze_layer --skip 'index_daily_close, stock_company_details'
+ ```
 
 **Notes**: 
 
 * Due to APIs rate limits the first bronze_layer update should take a long time to finish (~6h). Also, the lower the update frequency the longer the execution time for subsequent updates. Other factors can also influence runtime. For example, financial data will be updated every four months, increasing this specific runtime considerable. Therefore, for the first run it is recommended to updates tables individually.
 * When using the table scope it is important to note that pipelines can have dependencies between themselves, which may affect the target table update if the dependency is not updated. Dependencies can be found below:
-  * BRONZE_LAYER.TICKER_BASIC_DETAILS -> Depends on GROUPED_DAILY to know which ticker get details from;
-  * BRONZE_LAYER.FINANCIALS_[BALANCE_SHEET, CASH_FLOW_STATEMENT, INCOME_STATEMENT, COMPREHENSIVE_INCOME] -> Depends on SP500_BASIC_DETAILS to know which ticker get financials data from;
+  * BRONZE_LAYER.STOCK_COMPANY_DETAILS -> Depends on STOCK_DAILY_PRICES to know which ticker get details from;
+  * BRONZE_LAYER.FINANCIALS_[BALANCE_SHEET, CASH_FLOW_STATEMENT, INCOME_STATEMENT, COMPREHENSIVE_INCOME] -> Depends on SP500_COMPANY_DETAILS to know which ticker get financials data from;
 
 
 To run unit tests:
@@ -158,7 +168,7 @@ To run linting checks:
 ### BRONZE LAYER
 
 <details>
-<summary>GROUPED_DAILY</summary>
+<summary>STOCK_DAILY_PRICES</summary>
 
 <th>Daily open, high, low, and close (OHLC) for the entire stocks/equities markets.</th>
 
@@ -235,9 +245,9 @@ To run linting checks:
 
 
 <details>
-<summary>TICKER_BASIC_DETAILS</summary>
+<summary>STOCK_COMPANY_DETAILS</summary>
 
-<th>Basic information about tickers found in GROUPED_DAILY.</th>
+<th>Basic information about tickers found in STOCK_DAILY_PRICES.</th>
 
 <br />
 
@@ -323,7 +333,7 @@ To run linting checks:
 
 
 <details>
-<summary>SP500_BASIC_DETAILS</summary>
+<summary>SP500_COMPANY_DETAILS</summary>
 
 <th>Basic details about S&P500 companies.</th>
 
@@ -394,7 +404,7 @@ To run linting checks:
 </details>
 
 <details>
-<summary>INDEXES_DAILY_CLOSE</summary>
+<summary>INDEX_DAILY_CLOSE</summary>
 
 <th>Daily closing value of the most popular stock indexes to track US market performance.</th>
 
@@ -438,7 +448,7 @@ To run linting checks:
 
 
  <details>
-<summary>FINANCIALS_BALANCE_SHEET</summary>
+<summary>SP500_FINANCIALS_BALANCE_SHEET</summary>
 
 <th>This table includes key financial information such as assets, liabilities, equity, and company details, covering both current and non-current items For S&P500 companies.</th>
 
@@ -670,7 +680,7 @@ To run linting checks:
 
 
  <details>
-<summary>FINANCIALS_CASH_FLOW_STATEMENT</summary>
+<summary>SP500_FINANCIALS_CASH_FLOW</summary>
 
 <th>This table tracks the cash flow from operating, investing, and financing activities, including both continuing and discontinued operations, along with exchange gains/losses For S&P500 companies.</th>
  <br />
@@ -803,7 +813,7 @@ To run linting checks:
 
 
  <details>
-<summary>FINANCIALS_INCOME_STATEMENT</summary>
+<summary>SP500_FINANCIALS_INCOME</summary>
 
 <th>This table contains detailed financial data related to a company's income and expenses during a specific period. It includes key metrics such as revenues, cost of goods sold, operating expenses, and net income, providing insights into the company’s profitability and financial performance. For S&P500 companies.</th>
 
@@ -1121,7 +1131,7 @@ To run linting checks:
 
 
  <details>
-<summary>FINANCIALS_COMPREHENSIVE_INCOME</summary>
+<summary>SP500_FINANCIALS_COMPREHENSIVE_INCOME</summary>
 
 <th>This table contains a company's total financial performance during a specific period, combining net income (from regular operations) with other comprehensive income items, which include unrealized gains or losses. For S&P500 companies.</th>
 

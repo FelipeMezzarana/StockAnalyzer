@@ -10,7 +10,7 @@ from ....utils.csv_handler import append_to_file
 from ....utils.sql_handler import SQLHandler
 
 
-class GroupedDailyExtractor(Step):
+class StockDailyPriceExtractor(Step):
     """Extract daily data from polygon API."""
 
     def __init__(self, previous_output: dict, settings: Settings, client: Client):
@@ -18,7 +18,7 @@ class GroupedDailyExtractor(Step):
 
         max_days_hist -- max historical data covered by API plan, in days.
         """
-        super(GroupedDailyExtractor, self).__init__(__name__, previous_output, settings)
+        super(StockDailyPriceExtractor, self).__init__(__name__, previous_output, settings)
 
         self.settings = settings
         self.sqlite_client = SQLHandler(self.settings, client)
@@ -27,7 +27,7 @@ class GroupedDailyExtractor(Step):
         self.endpoints: dict = self.settings.POLYGON["ENDPOINTS"]
 
     def get_last_date(self) -> str:
-        """Return max date [%Y-%m-%d] for grouped_daily table.
+        """Return max date [%Y-%m-%d] for stock_daily_prices table.
         Query SQLite DB defined in src.settings.
         """
         table_name = (
@@ -59,13 +59,13 @@ class GroupedDailyExtractor(Step):
 
         url = (
             f"{self.base_url}"
-            f"{self.endpoints.get('grouped_daily_endpoint')}"
+            f"{self.endpoints.get('stock_daily_prices_endpoint')}"
             f"{request_date}?adjusted=true"
         )
         return url
 
-    def get_grouped_daily(self, last_date: str, avoid_weeknds: bool = True):
-        """Get grouped daily datafor GROUPED_DAILY table.
+    def get_stock_daily_prices(self, last_date: str, avoid_weeknds: bool = True):
+        """Get grouped daily datafor STOCK_DAILY_PRICES table.
 
         last_date -- last date updated(format yyyy-mm-dd)
         end_date -- end of period (format yyyy-mm-dd)
@@ -75,7 +75,7 @@ class GroupedDailyExtractor(Step):
         date_obj = datetime.strptime(last_date, "%Y-%m-%d")
         request_date = (date_obj + timedelta(days=1)).strftime("%Y-%m-%d")
 
-        file_path = "temp/grouped_daily_temp.csv"
+        file_path = "temp/stock_daily_prices_temp.csv"
         self.output["file_path"] = file_path
         api_call_count, row_count = 0, 0
         while request_date != self.settings.POLYGON["POLYGON_UPDATE_UNTIL"]:
@@ -125,6 +125,6 @@ class GroupedDailyExtractor(Step):
 
         last_update_date = self.get_last_date()
         self.logger.info(f"{last_update_date=}")
-        self.get_grouped_daily(last_update_date)
+        self.get_stock_daily_prices(last_update_date)
 
         return True, self.output

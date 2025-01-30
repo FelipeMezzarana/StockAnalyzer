@@ -16,19 +16,19 @@ def test_load_sql_many():
     settings = Settings("financials-pipeline")
     client = SQLiteClient(settings)
     previous_output = {
-        "FINANCIALS_BALANCE_SHEET": {
+        "SP500_FINANCIALS_BALANCE_SHEET": {
             "valid_file_path": "mock_valid_file_path",
             "invalid_file_path": "mock_invalid_file_path",
         },
-        "FINANCIALS_CASH_FLOW_STATEMENT": {
+        "SP500_FINANCIALS_CASH_FLOW": {
             "valid_file_path": "mock_valid_file_path",
             "invalid_file_path": "mock_invalid_file_path",
         },
-        "FINANCIALS_INCOME_STATEMENT": {
+        "SP500_FINANCIALS_INCOME": {
             "valid_file_path": "mock_valid_file_path",
             "invalid_file_path": "mock_invalid_file_path",
         },
-        "FINANCIALS_COMPREHENSIVE_INCOME": {
+        "SP500_FINANCIALS_COMPREHENSIVE_INCOME": {
             "valid_file_path": "mock_valid_file_path",
             "invalid_file_path": "mock_invalid_file_path",
         },

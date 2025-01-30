@@ -2,12 +2,14 @@
 from ..abstract.pipeline import Pipeline
 from ..exceptions import InvalidPipelineError
 from ..pipelines.financials.financials_pipeline import FinancialsPipeline
-from ..pipelines.grouped_daily.grouped_daily_pipeline import GroupedDailyPipeline
-from ..pipelines.indexes_daily_close.indexes_daily_close_pipeline import IndexDailyClosePipeline
-from ..pipelines.sp500_basic_details.sp500_basic_details_pipeline import SP500BasicDetailsPipeline
-from ..pipelines.ticker_basic_details.ticker_basic_details_pipeline import (
-    TickerBasicDetailsPipeline,
+from ..pipelines.index_daily_close.index_daily_close_pipeline import IndexDailyClosePipeline
+from ..pipelines.sp500_company_details.sp500_company_details_pipeline import (
+    SP500CompanyDetailsPipeline,
 )
+from ..pipelines.stock_company_details.stock_company_details_pipeline import (
+    StockCompanyDetailsPipeline,
+)
+from ..pipelines.stock_daily_prices.stock_daily_prices_pipeline import StockDailyPricesPipeline
 from ..settings import Settings
 from ..utils.get_logger import get_logger
 
@@ -21,10 +23,10 @@ class PipelineFactory:
         self.logger = get_logger(__name__, settings)
         self.pipeline = settings.pipeline
         self._pipelines = {
-            "grouped-daily-pipeline": lambda: GroupedDailyPipeline(settings),
-            "ticker-basic-details-pipeline": lambda: TickerBasicDetailsPipeline(settings),
-            "sp500-basic-details-pipeline": lambda: SP500BasicDetailsPipeline(settings),
-            "indexes-daily-close-pipeline": lambda: IndexDailyClosePipeline(settings),
+            "stock-daily-prices-pipeline": lambda: StockDailyPricesPipeline(settings),
+            "stock-company-details-pipeline": lambda: StockCompanyDetailsPipeline(settings),
+            "sp500-company-details-pipeline": lambda: SP500CompanyDetailsPipeline(settings),
+            "index-daily-close-pipeline": lambda: IndexDailyClosePipeline(settings),
             "financials-pipeline": lambda: FinancialsPipeline(settings),
         }
 

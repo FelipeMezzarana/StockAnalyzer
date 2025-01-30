@@ -89,7 +89,7 @@ class SP500Transformer(Step):
     def run(self, clean_file: bool = True):
         """Run validation step."""
 
-        self.output["file_path"] = "temp/sp500_basic_details_temp.csv"
+        self.output["file_path"] = "temp/sp500_company_details_temp.csv"
         bs_element = self.get_bs4_element()
         sp500_table, header = self.get_sp500_table(bs_element)
         append_to_file(self.output["file_path"], sp500_table, header)

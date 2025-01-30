@@ -3,10 +3,10 @@ class Pipelines:
 
     schemas = ("bronze_layer", "silver_layer", "gold_layer")
     bronze_layer = (
-        "grouped-daily-pipeline",
-        "ticker-basic-details-pipeline",
-        "sp500-basic-details-pipeline",
-        "indexes-daily-close-pipeline",
+        "stock-daily-prices-pipeline",
+        "stock-company-details-pipeline",
+        "sp500-company-details-pipeline",
+        "index-daily-close-pipeline",
         "financials-pipeline",
     )
     # Placeholder
@@ -15,14 +15,14 @@ class Pipelines:
 
     table_pipeline_mapping: dict[str, dict] = {
         "bronze_layer": {
-            "grouped_daily": "grouped-daily-pipeline",
-            "ticker_basic_details": "ticker-basic-details-pipeline",
-            "sp500_basic_details": "sp500-basic-details-pipeline",
-            "indexes_daily_close": "indexes-daily-close-pipeline",
-            "financials_balance_sheet": "financials-pipeline",
-            "financials_cash_flow_statement": "financials-pipeline",
-            "financials_income_statement": "financials-pipeline",
-            "financials_comprehensive_income": "financials-pipeline",
+            "stock_daily_prices": "stock-daily-prices-pipeline",
+            "stock_company_details": "stock-company-details-pipeline",
+            "sp500_company_details": "sp500-company-details-pipeline",
+            "index_daily_close": "index-daily-close-pipeline",
+            "sp500_financials_balance_sheet": "financials-pipeline",
+            "sp500_financials_cash_flow": "financials-pipeline",
+            "sp500_financials_income": "financials-pipeline",
+            "sp500_financials_comprehensive_income": "financials-pipeline",
         },
         "silver_layer": {},
         "gold_layer": {},
@@ -78,3 +78,5 @@ SUB_SCOPE_HELP_TEXT = (
     "Specifies the sub-scope to update: Name of the table if scope = 'pipeline'; "
     "name of schema if scope = 'schema'; not required if scope = 'all'."
 )
+
+SKIP_HELP_TEXT = "Table name. Use to skip the specified table update."

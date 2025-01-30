@@ -5,11 +5,11 @@ from unittest.mock import patch
 
 # First party
 from src.clients.sqlite_client import SQLiteClient
-from src.pipelines.sp500_basic_details.steps.check_sp500_basic_details import SP500Checker
+from src.pipelines.sp500_company_details.steps.check_sp500_company_details import SP500Checker
 from src.settings import Settings
 
-SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_basic_details_sample.txt"
-EXPECTED_RESULT = "tests/unit/data_samples/sp500_basic_details.csv"
+SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_company_details_sample.txt"
+EXPECTED_RESULT = "tests/unit/data_samples/sp500_company_details.csv"
 
 
 class TestSP500Checker(unittest.TestCase):
@@ -18,12 +18,12 @@ class TestSP500Checker(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Class Setup."""
-        cls.settings = Settings("sp500-basic-details-pipeline")
+        cls.settings = Settings("sp500-company-details-pipeline")
         cls.settings.DB_PATH = "database/mock_stock_database.db"
         cls.client = SQLiteClient(cls.settings)
         cls.previous_output = {"file_path": SAMPLE_HTML_FILE}
 
-    @patch("src.pipelines.sp500_basic_details.steps.check_sp500_basic_details.SQLHandler")
+    @patch("src.pipelines.sp500_company_details.steps.check_sp500_company_details.SQLHandler")
     def test_run(self, mock_sqlite) -> None:
         """Test run."""
 

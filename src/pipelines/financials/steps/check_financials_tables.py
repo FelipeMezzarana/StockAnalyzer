@@ -56,10 +56,10 @@ class FinancialsChecker(Step):
             raise KeyError(f"{self.table} Table no found.")
 
     def get_required_tickers(self) -> list[str]:
-        """Get valid tickers from SP500_BASIC_DETAILS."""
+        """Get valid tickers from SP500_COMPANY_DETAILS."""
 
         is_successful, result = self.sqlite_client.query(
-            "SELECT distinct(exchange_symbol) FROM  BRONZE_LAYER.SP500_BASIC_DETAILS"
+            "SELECT distinct(exchange_symbol) FROM  BRONZE_LAYER.SP500_COMPANY_DETAILS"
         )
 
         return [row[0] for row in result]

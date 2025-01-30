@@ -22,18 +22,37 @@ else
     echo "Network $NETWORK_NAME does not exist. Proceeding without a network."
 fi
 
-# Get arguments
-SCOPE=$1
-SUB_SCOPE=$2
 
-TAG=stock-analizer
+# Initialize variables
+SCOPE=""
+SUB_SCOPE=""
+SKIP=""
+
+
+# Parse CLI arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --sub-scope) SUB_SCOPE="$2"; shift ;;
+        --skip) SKIP="$2"; shift ;;
+        *) SCOPE="$1" ;;  # Any unnamed argument is treated as SCOPE (mandatory)
+    esac
+    shift
+done
+
+# Ensure SCOPE is provided (mandatory)
+if [ -z "$SCOPE" ]; then
+    echo "Error: The first argument (scope) is required."
+    exit 1
+fi
+
+TAG=stock-analyzer
 docker build -f Dockerfile -t $TAG .
 docker run \
  --volume="./database/":/database \
  --volume="./temp/":/temp \
  --env-file secrets.env \
  $NETWORK_OPTION \
-   $TAG python3 -m src.run "$SCOPE" "$SUB_SCOPE" 
+   $TAG python3 -m src.run "$SCOPE" ${SUB_SCOPE:+--sub-scope "$SUB_SCOPE"} ${SKIP:+--skip "$SKIP"}
 
 
  

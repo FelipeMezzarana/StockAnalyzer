@@ -64,8 +64,8 @@ class Settings:
         self.POLYGON: dict = {
             "BASE_URL": "https://api.polygon.io/",
             "ENDPOINTS": {
-                "grouped_daily_endpoint": "v2/aggs/grouped/locale/us/market/stocks/",
-                "ticker_basic_details_endpoint": "v3/reference/tickers?limit=1000",
+                "stock_daily_prices_endpoint": "v2/aggs/grouped/locale/us/market/stocks/",
+                "stock_company_details_endpoint": "v3/reference/tickers?limit=1000",
                 "financials_endpoint": "vX/reference/financials?",
             },
             "POLYGON_MAX_DAYS_HIST": 730,
