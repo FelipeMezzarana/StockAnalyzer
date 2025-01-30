@@ -88,7 +88,7 @@ def test_map_to_file():
     # Arrange
     settings = Settings("financials-pipeline")
     financials_extractor = FinancialsExtractor({}, settings)
-    financials_extractor.output["files_path"] = {"FINANCIALS_COMPREHENSIVE_INCOME": "mocked_path"}
+    financials_extractor.output["files_path"] = {"SP500_FINANCIALS_COMPREHENSIVE_INCOME": "mocked_path"}
     data = [
         {
             "start_date": "2024-09-01",
@@ -102,7 +102,7 @@ def test_map_to_file():
         }
     ]
     # Act
-    result = financials_extractor.map_to_file(data, "FINANCIALS_COMPREHENSIVE_INCOME")
+    result = financials_extractor.map_to_file(data, "SP500_FINANCIALS_COMPREHENSIVE_INCOME")
     expected_result = [
         {
             "start_date": "2024-09-01",

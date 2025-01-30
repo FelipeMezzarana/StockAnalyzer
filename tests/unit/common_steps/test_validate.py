@@ -9,8 +9,8 @@ import duckdb
 from src.common_steps.validate import Validator
 from src.settings import Settings
 
-SAMPLE_VALID_FILE = "tests/unit/data_samples/grouped_daily_sample.csv"
-SAMPLE_INVALID_FILE = "tests/unit/data_samples/invalid_grouped_daily_sample.csv"
+SAMPLE_VALID_FILE = "tests/unit/data_samples/stock_daily_prices_sample.csv"
+SAMPLE_INVALID_FILE = "tests/unit/data_samples/invalid_stock_daily_prices_sample.csv"
 
 
 class TestValidator(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestValidator(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Class Setup."""
-        cls.settings = Settings("grouped-daily-pipeline")
+        cls.settings = Settings("stock-daily-prices-pipeline")
 
     def test_run_valid(self) -> None:
         """Test run validator with valid data only."""

@@ -1,6 +1,6 @@
 {
-    "grouped-daily-pipeline": {
-        "name": "GROUPED_DAILY",
+    "stock-daily-prices-pipeline": {
+        "name": "STOCK_DAILY_PRICES",
         "schema": "bronze_layer",
         "fields_mapping": {
             "date": ["date", "DATE"],
@@ -17,8 +17,8 @@
         },
         "required_fields": ["date", "T", "o", "c", "h", "l", "t", "updated_at"]
     },
-    "ticker-basic-details-pipeline": {
-        "name": "TICKER_BASIC_DETAILS",
+    "stock-company-details-pipeline": {
+        "name": "STOCK_COMPANY_DETAILS",
         "schema": "bronze_layer",
         "fields_mapping": {
             "active": ["active", "BOOLEAN"],
@@ -37,8 +37,8 @@
         },
         "required_fields": ["ticker", "market", "updated_at"]
     },
-    "sp500-basic-details-pipeline": {
-        "name": "SP500_BASIC_DETAILS",
+    "sp500-company-details-pipeline": {
+        "name": "SP500_COMPANY_DETAILS",
         "schema": "bronze_layer",
         "fields_mapping": {
             "Symbol": ["exchange_symbol",  "VARCHAR(255)"],
@@ -54,8 +54,8 @@
         },
         "required_fields": ["Symbol", "Security", "GICS Sector","CIK", "updated_at"]
     },
-    "indexes-daily-close-pipeline": {
-        "name": "INDEXES_DAILY_CLOSE",
+    "index-daily-close-pipeline": {
+        "name": "INDEX_DAILY_CLOSE",
         "schema": "bronze_layer",
         "fields_mapping": {
             "date": ["date", "DATE"],
@@ -67,7 +67,7 @@
     },
     "financials-pipeline": [
         {
-            "name": "FINANCIALS_BALANCE_SHEET",
+            "name": "SP500_FINANCIALS_BALANCE_SHEET",
             "schema": "bronze_layer",
             "endpoint_path": "balance_sheet",
             "fields_mapping": {
@@ -117,7 +117,7 @@
             "required_fields": ["tickers", "updated_at"]
         },
         {
-            "name": "FINANCIALS_CASH_FLOW_STATEMENT",
+            "name": "SP500_FINANCIALS_CASH_FLOW",
             "schema": "bronze_layer",
             "endpoint_path": "cash_flow_statement",
             "fields_mapping": {
@@ -147,7 +147,7 @@
             "required_fields": ["tickers", "updated_at"]
         },
         {
-            "name": "FINANCIALS_INCOME_STATEMENT",
+            "name": "SP500_FINANCIALS_INCOME",
             "schema": "bronze_layer",
             "endpoint_path": "income_statement",
             "fields_mapping": {
@@ -214,7 +214,7 @@
             "required_fields": ["tickers", "updated_at"]
         },
         {
-            "name": "FINANCIALS_COMPREHENSIVE_INCOME",
+            "name": "SP500_FINANCIALS_COMPREHENSIVE_INCOME",
             "schema": "bronze_layer",
             "endpoint_path": "comprehensive_income",
             "fields_mapping": {

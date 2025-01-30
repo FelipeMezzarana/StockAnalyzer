@@ -1,20 +1,20 @@
 {
     "params": "pipeline, multiple_tables", 
     "test_cases": {
-        "grouped-daily-pipeline": {
-            "pipeline": "grouped-daily-pipeline",
+        "stock-daily-prices-pipeline": {
+            "pipeline": "stock-daily-prices-pipeline",
             "multiple_tables": false
         },  
-        "ticker-basic-details-pipeline": {
-            "pipeline": "ticker-basic-details-pipeline",
+        "stock-company-details-pipeline": {
+            "pipeline": "stock-company-details-pipeline",
             "multiple_tables": false
         },
-        "sp500-basic-details-pipeline": {
-            "pipeline": "sp500-basic-details-pipeline",
+        "sp500-company-details-pipeline": {
+            "pipeline": "sp500-company-details-pipeline",
             "multiple_tables": false
         },
-        "indexes-daily-close-pipeline": {
-            "pipeline": "indexes-daily-close-pipeline",
+        "index-daily-close-pipeline": {
+            "pipeline": "index-daily-close-pipeline",
             "multiple_tables": false
         },
         "financials-pipeline": {

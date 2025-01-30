@@ -7,7 +7,7 @@ from src.common_steps.wikipedia_extractor import WikipediaExtractor
 from src.settings import Settings
 from tests.unit.mock_objects.mock_clients import MockResponse
 
-SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_basic_details_sample.txt"
+SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_company_details_sample.txt"
 
 
 class TestWikipediaExtractor(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestWikipediaExtractor(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Class Setup."""
-        cls.settings = Settings("sp500-basic-details-pipeline")
+        cls.settings = Settings("sp500-company-details-pipeline")
 
     @patch(
         "src.common_steps.wikipedia_extractor.requests",

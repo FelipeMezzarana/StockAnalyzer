@@ -9,12 +9,12 @@ from ..common_steps.wikipedia_extractor import WikipediaExtractor
 from ..exceptions import StepNotFoundError
 from ..pipelines.financials.steps.check_financials_tables import FinancialsChecker
 from ..pipelines.financials.steps.extract_financials_data import FinancialsExtractor
-from ..pipelines.grouped_daily.steps.extract_grouped_daily import GroupedDailyExtractor
-from ..pipelines.indexes_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
-from ..pipelines.indexes_daily_close.steps.extract_index_daily_close import IndexDailyCloseExtractor
-from ..pipelines.sp500_basic_details.steps.check_sp500_basic_details import SP500Checker
-from ..pipelines.sp500_basic_details.steps.transform_sp500_basic_details import SP500Transformer
-from ..pipelines.ticker_basic_details.steps.extract_ticker_basic_details import (
+from ..pipelines.stock_daily_prices.steps.extract_stock_daily_prices import StockDailyPriceExtractor
+from ..pipelines.index_daily_close.steps.check_index_daily_close import IndexDailyCloseChecker
+from ..pipelines.index_daily_close.steps.extract_index_daily_close import IndexDailyCloseExtractor
+from ..pipelines.sp500_company_details.steps.check_sp500_company_details import SP500Checker
+from ..pipelines.sp500_company_details.steps.transform_sp500_company_details import SP500Transformer
+from ..pipelines.stock_company_details.steps.extract_stock_company_details import (
     TickerBasicDetailsExtractor,
 )
 from ..settings import Settings
@@ -35,12 +35,12 @@ class StepFactory:
         client = self.clients[self.settings.CLIENT](self.settings)
 
         self._steps = {
-            "extract-grouped-daily-polygon": (
-                lambda previous_output, settings, **kwargs: GroupedDailyExtractor(
+            "extract-stock-daily-prices": (
+                lambda previous_output, settings, **kwargs: StockDailyPriceExtractor(
                     previous_output, settings, client, **kwargs
                 )
             ),
-            "extract-ticker-basic-details-polygon": (
+            "extract-stock-company-details": (
                 lambda previous_output, settings, **kwargss: TickerBasicDetailsExtractor(
                     previous_output, settings, client, **kwargss
                 )

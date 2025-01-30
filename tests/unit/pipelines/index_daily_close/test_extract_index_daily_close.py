@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 # First party
-from src.pipelines.indexes_daily_close.steps.extract_index_daily_close import (
+from src.pipelines.index_daily_close.steps.extract_index_daily_close import (
     IndexDailyCloseExtractor,
 )
 from src.settings import Settings
@@ -19,10 +19,10 @@ class TestIndexDailyCloseExtractor(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Class Setup."""
-        cls.settings = Settings("indexes-daily-close-pipeline")
+        cls.settings = Settings("index-daily-close-pipeline")
         cls.settings.FRED["INDEXES"] = ["SP500"]  # Limit test to one prefix
 
-    @patch("src.pipelines.indexes_daily_close.steps.extract_index_daily_close.Fred")
+    @patch("src.pipelines.index_daily_close.steps.extract_index_daily_close.Fred")
     def test_run(self, mock_fred) -> None:
         """Test create pipeline."""
 

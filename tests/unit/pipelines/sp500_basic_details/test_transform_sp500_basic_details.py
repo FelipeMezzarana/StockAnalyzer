@@ -6,11 +6,11 @@ import unittest
 import duckdb
 
 # First party
-from src.pipelines.sp500_basic_details.steps.transform_sp500_basic_details import SP500Transformer
+from src.pipelines.sp500_company_details.steps.transform_sp500_company_details import SP500Transformer
 from src.settings import Settings
 
-SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_basic_details_sample.txt"
-EXPECTED_RESULT = "tests/unit/data_samples/sp500_basic_details.csv"
+SAMPLE_HTML_FILE = "tests/unit/data_samples/sp500_company_details_sample.txt"
+EXPECTED_RESULT = "tests/unit/data_samples/sp500_company_details.csv"
 
 
 class TestSP500Transformer(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestSP500Transformer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Class Setup."""
-        cls.settings = Settings("sp500-basic-details-pipeline")
+        cls.settings = Settings("sp500-company-details-pipeline")
         cls.previous_output = {"file_path": SAMPLE_HTML_FILE}
 
     def test_run(self) -> None:

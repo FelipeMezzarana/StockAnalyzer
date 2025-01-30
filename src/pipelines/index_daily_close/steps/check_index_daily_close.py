@@ -9,7 +9,7 @@ from ....utils.sql_handler import SQLHandler
 
 
 class IndexDailyCloseChecker(Step):
-    """Check status of INDEXES_DAILY_CLOSE."""
+    """Check status of INDEX_DAILY_CLOSE."""
 
     def __init__(self, previous_output: dict, settings: Settings, client: Client):
         """Init class."""
@@ -18,11 +18,11 @@ class IndexDailyCloseChecker(Step):
         self.indexes = settings.FRED["INDEXES"]
 
     def get_last_update(self) -> dict:
-        """Return last update date each index in table INDEXES_DAILY_CLOSE."""
+        """Return last update date each index in table INDEX_DAILY_CLOSE."""
 
         is_successful, result = self.sqlite_client.query(
             "SELECT index_code, max(date) as last_DATE FROM "
-            "BRONZE_LAYER.INDEXES_DAILY_CLOSE GROUP BY index_code"
+            "BRONZE_LAYER.INDEX_DAILY_CLOSE GROUP BY index_code"
         )
         if is_successful:
             last_update = dict(result)
@@ -33,7 +33,7 @@ class IndexDailyCloseChecker(Step):
             self.logger.debug(f"Indexes last updated: {indexes_last_update}")
             return indexes_last_update
         else:  # pragma: no cover
-            raise KeyError("INDEXES_DAILY_CLOSE Table no found.")
+            raise KeyError("INDEX_DAILY_CLOSE Table no found.")
 
     def run(self):
         """Run step."""

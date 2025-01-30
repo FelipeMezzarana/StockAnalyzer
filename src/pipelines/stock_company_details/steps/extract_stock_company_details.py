@@ -23,23 +23,23 @@ class TickerBasicDetailsExtractor(Step):
 
         self.settings = settings
         self.sqlite_client = SQLHandler(self.settings, client)
-        self.max_paginagion = self.settings.POLYGON["MAX_PAGINATION"]
+        self.max_pagination = self.settings.POLYGON["MAX_PAGINATION"]
         self.max_days_hist = self.settings.POLYGON["POLYGON_MAX_DAYS_HIST"]
         self.base_url = self.settings.POLYGON["BASE_URL"]
         self.endpoints = self.settings.POLYGON["ENDPOINTS"]
 
     def get_required_tickers(self) -> tuple[list[str], list[str]]:
         """Return required tickers list.
-        required = registered in GROUPED_DAILY table minus registred in TICKER_BASIC_DETAILS.
+        required = registered in STOCK_DAILY_PRICES table minus registered in STOCK_COMPANY_DETAILS.
         Query SQLite DB defined in src.settings.
         """
 
         _, all_tickers = self.sqlite_client.query(
-            "SELECT DISTINCT(exchange_symbol) FROM BRONZE_LAYER.GROUPED_DAILY"
+            "SELECT DISTINCT(exchange_symbol) FROM BRONZE_LAYER.STOCK_DAILY_PRICES"
         )
 
         _, registered_tickers = self.sqlite_client.query(
-            "SELECT DISTINCT(exchange_symbol) FROM BRONZE_LAYER.TICKER_BASIC_DETAILS"
+            "SELECT DISTINCT(exchange_symbol) FROM BRONZE_LAYER.STOCK_COMPANY_DETAILS"
         )
         registered_tickers_list = [r[0] for r in registered_tickers]
         required_tickers = [t[0] for t in all_tickers if t[0] not in registered_tickers_list]
@@ -71,17 +71,17 @@ class TickerBasicDetailsExtractor(Step):
         self.logger.info(f"{sort_by=}")
         initial_url = (
             f"{self.base_url}"
-            f"{self.endpoints.get('ticker_basic_details_endpoint')}"
+            f"{self.endpoints.get('stock_company_details_endpoint')}"
             f"&sort={sort_by}"
             "&market=stocks"
         )
 
         return initial_url
 
-    def update_ticker_basic_details(
+    def update_stock_company_details(
         self, required_tickers: list[str], registered_tickers: list[str]
     ):
-        """Update missing tickers in TICKER_BASIC_DETAILS table.
+        """Update missing tickers in STOCK_COMPANY_DETAILS table.
 
         required_tickers -- Missing tickers
         registered_tickers -- Existing tickers
@@ -89,7 +89,7 @@ class TickerBasicDetailsExtractor(Step):
 
         polygon_client = Polygon(self.settings)
 
-        file_path = "temp/ticker_basic_details_temp.csv"
+        file_path = "temp/stock_company_details_temp.csv"
         self.output["file_path"] = file_path
         header = list(self.settings.PIPELINE_TABLE["fields_mapping"].keys())
         api_call_count, row_count = 0, 0
@@ -100,7 +100,7 @@ class TickerBasicDetailsExtractor(Step):
             api_call_count += 1
             data = result.get("results")
             if data:
-                # filter registred
+                # filter registered
                 required_data = [t for t in data if t["ticker"] not in registered_tickers]
                 # Update requirements
                 tickers = [t.get("ticker") for t in data]
@@ -123,8 +123,8 @@ class TickerBasicDetailsExtractor(Step):
             if not next_url:  # pragma: no cover
                 self.logger.info("next_url not found.")
                 break
-            if api_call_count > self.max_paginagion:  # pragma: no cover
-                self.logger.info(f"{self.max_paginagion=} reached. stopping requests.")
+            if api_call_count > self.max_pagination:  # pragma: no cover
+                self.logger.info(f"{self.max_pagination=} reached. stopping requests.")
                 break
             result = polygon_client.request(next_url)
 
@@ -136,7 +136,7 @@ class TickerBasicDetailsExtractor(Step):
         enriched_data = []
         for stock_dict in data:
             enriched_stock_dict = stock_dict.copy()
-            # Add extra filds
+            # Add extra fields
             enriched_stock_dict["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             enriched_data.append(enriched_stock_dict)
 
@@ -149,6 +149,6 @@ class TickerBasicDetailsExtractor(Step):
         if not required_tickers:  # pragma: no cover
             self.output["file_path"] = "no_file_flagg"
             return True, self.output
-        self.update_ticker_basic_details(required_tickers, registered_tickers)
+        self.update_stock_company_details(required_tickers, registered_tickers)
 
         return True, self.output
