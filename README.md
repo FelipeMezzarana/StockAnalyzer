@@ -117,10 +117,9 @@ The application is executed via a CLI command. To run use:
 
 ```shell
 # Run through Docker (recommended)
- ./run.sh <scope> --sub-scope <sub_scope> --skip <table_name>
-
+ ./run.sh <scope> <sub_scope>
 # Run without Docker
-source secrets.env && python3 -m src.run --sub-scope <scope> --skip <sub_scope>
+source secrets.env && python3 -m src.run <scope> <sub_scope>
  ```
 
  \<scope> and <sub_scope> defines which table(s) will be updated. We have tree main options: 
@@ -131,15 +130,6 @@ In this case <sub_scope> must be a valid schema name (bronze_layer, silver_layer
  * \<scope> = **all** -> 
 In this case <sub_scope> can be omitted and all tables under all schemas will be updated.
 
-\<skip> is an optional argument that may be used for skipping table(s) update. Tables names must be separated by comma.
-
-Usage examples:
-```shell
-# Update all tables
-./run.sh all 
-# Updata bronze layer tables skipping two tables.
-./run.sh schema --sub-scope bronze_layer --skip 'index_daily_close, stock_company_details'
- ```
 
 **Notes**: 
 
