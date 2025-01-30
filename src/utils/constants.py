@@ -78,3 +78,7 @@ SUB_SCOPE_HELP_TEXT = (
     "Specifies the sub-scope to update: Name of the table if scope = 'pipeline'; "
     "name of schema if scope = 'schema'; not required if scope = 'all'."
 )
+
+SKIP_HELP_TEXT = (
+    "Table name. Use to skip the specified table update."
+)
