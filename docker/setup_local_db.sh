@@ -6,4 +6,4 @@ if [ ! -d "$PGDATA_DIR" ]; then
   echo "Created directory: $PGDATA_DIR"
 fi
 
-docker-compose up -d
+docker compose -f docker/docker-compose.yml up
