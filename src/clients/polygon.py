@@ -32,7 +32,7 @@ class Polygon:
         self.api_key_url = f"&apiKey={api_key}"
 
         self.api_calls_per_min: int = settings.POLYGON["POLYGON_CALLS_PER_MIN"]
-        self.api_sleep_time = 60 / self.api_calls_per_min
+        self.api_sleep_time = 61 / self.api_calls_per_min
         self.last_request = 0  # Placeholder
 
     def request(self, url: str) -> dict:
