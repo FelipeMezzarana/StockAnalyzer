@@ -12,8 +12,8 @@ for directory in "${directories[@]}"; do
     fi
 done
 
-TAG=stock_analyzer-unit-tests
-docker build --file Dockerfile.tests --tag $TAG .
+TAG=stock_analyzer-integration-test
+docker build --file docker/Dockerfile.tests --tag $TAG .
 mkdir -p coverage
-docker run --rm --volume="$PWD/coverage/":/var/coverage/ $TAG \
- bash -c "python3 -m pytest 'tests/unit' --cov src --cov-config tox.ini --cov-report html --cov-report term"
+docker run  --env-file secrets.env  $TAG \
+ bash -c "python3 -m pytest -v 'tests/integration' "

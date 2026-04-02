@@ -46,7 +46,7 @@ if [ -z "$SCOPE" ]; then
 fi
 
 TAG=stock-analyzer
-docker build -f Dockerfile -t $TAG .
+docker build -f docker/Dockerfile -t $TAG .
 docker run \
  --volume="./database/":/database \
  --volume="./temp/":/temp \
