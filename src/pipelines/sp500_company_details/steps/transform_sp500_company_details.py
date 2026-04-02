@@ -64,7 +64,7 @@ class SP500Transformer(Step):
 
         s_p_500_table = bs.find_all(
             "table", {"class": "wikitable sortable mw-collapsible sticky-header"}
-            )[0]
+        )[0]
         header = self.check_header(s_p_500_table)
         # Extra fields
         header.append("url")
