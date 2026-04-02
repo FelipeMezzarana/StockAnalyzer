@@ -70,7 +70,7 @@ class Settings:
             },
             "POLYGON_MAX_DAYS_HIST": 730,
             "POLYGON_CALLS_PER_MIN": 5,
-            "MAX_PAGINATION": 5,
+            "MAX_PAGINATION": 20,
             # Free API allows calls only until the end of the previous day
             "POLYGON_UPDATE_UNTIL": datetime.today().strftime("%Y-%m-%d"),
         }

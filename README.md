@@ -95,14 +95,18 @@ As for the database, although SQLLite is supported, we recommend using Postgres.
 ```
 The script will 
 * Setup a dockernized Postgres database "STOCK_ANALYZER" with volume mapped to /Documents/postgres/stock_analyzer_volume
-* Setup PgAdmin local server, to easily query "STOCK_ANALYZER". It that can be accessed at http://localhost:8080/ with credentials:
 * Setup a network to run the app through Docker.
+* Setup PgAdmin local server, to easily query "STOCK_ANALYZER". It that can be accessed at http://localhost:8080/ with credentials:
 
   * PgAdmin e-mail: admin@admin.com
   * PgAdmin password: root
   * host: pgdatabase
   * Postgres username: root
   * Postgres password: root
+
+To access PgAdmin, login in localhost:8080/ than go to servers (right click) -> register -> fill name and connection with above.
+
+![png](readme/pgadmin.png)
 
 Remember to shutdown services with:
 ```shell
@@ -117,7 +121,7 @@ The application is executed via a CLI command. To run use:
 
 ```shell
 # Run through Docker (recommended)
- ./run.sh <scope> --sub-scope <sub_scope> --skip <table_name>
+ ./docker/run.sh <scope> --sub-scope <sub_scope> --skip <table_name>
 
 # Run without Docker
 source secrets.env && python3 -m src.run --sub-scope <scope> --skip <sub_scope>
@@ -136,9 +140,9 @@ In this case <sub_scope> can be omitted and all tables under all schemas will be
 Usage examples:
 ```shell
 # Update all tables
-./run.sh all 
+./docker/run.sh all 
 # Updata bronze layer tables skipping two tables.
-./run.sh schema --sub-scope bronze_layer --skip 'index_daily_close, stock_company_details'
+./docker/run.sh schema --sub-scope bronze_layer --skip 'index_daily_close, stock_company_details'
  ```
 
 **Notes**: 
@@ -151,16 +155,16 @@ Usage examples:
 
 To run unit tests:
 ```shell
-./run_unit_tests.sh
+./docker/run_unit_tests.sh
 ```
 To run integration tests:
 ```shell
-./run_integration_test.sh 
+./docker/run_integration_test.sh 
 ```
 
 To run linting checks:
 ```shell
-./run_linting.sh 
+./docker/run_linting.sh 
 ```
 
 # Data Catalog

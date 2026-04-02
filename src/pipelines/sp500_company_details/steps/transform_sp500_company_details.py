@@ -62,7 +62,9 @@ class SP500Transformer(Step):
     def get_sp500_table(self, bs: BeautifulSoup) -> tuple[List[Dict], List[str]]:
         """Extract sp500 table from bs element."""
 
-        s_p_500_table = bs.find_all("table", {"class": "wikitable sortable sticky-header"})[0]
+        s_p_500_table = bs.find_all(
+            "table", {"class": "wikitable sortable mw-collapsible sticky-header"}
+            )[0]
         header = self.check_header(s_p_500_table)
         # Extra fields
         header.append("url")
