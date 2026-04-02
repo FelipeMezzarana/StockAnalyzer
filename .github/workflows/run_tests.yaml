@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: build-linter-image
-        run: docker build -f Dockerfile.linting -t stock_analyzer-linting .
+        run: docker build -f docker/Dockerfile.linting -t stock_analyzer-linting .
 
       - name: check-linting-tests
         run: docker run stock_analyzer-linting tox
@@ -39,7 +39,7 @@ jobs:
           done
 
       - name: build-tests-image
-        run: docker build --file Dockerfile.tests --tag stock_analyzer-tests .
+        run: docker build --file docker/Dockerfile.tests --tag stock_analyzer-tests .
 
       - name: run-unit-tests
         run: >-
