@@ -24,4 +24,5 @@ services:
 
 networks:
   stock_network:
+    name: stock_network
     driver: bridge

@@ -13,13 +13,15 @@ for directory in "${directories[@]}"; do
 done
 
 # Check if local instance network exists
-NETWORK_NAME="stockanalyzer_stock_network"
+NETWORK_NAME="stock_network"
 if docker network ls | grep -q "$NETWORK_NAME"; then
     NETWORK_OPTION="--network $NETWORK_NAME"
     echo "Using network $NETWORK_NAME."
 else
-    NETWORK_OPTION=""
-    echo "Network $NETWORK_NAME does not exist. Proceeding without a network."
+    echo "Network $NETWORK_NAME does not exist. Creating it..."
+    docker network create -d bridge $NETWORK_NAME
+    NETWORK_OPTION="--network $NETWORK_NAME"
+    echo "Using network $NETWORK_NAME."   
 fi
 
 
