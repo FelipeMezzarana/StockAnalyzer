@@ -91,7 +91,7 @@ If you want to run locally just be sure to install the dependencies in requireme
 As for the database, although SQLLite is supported, we recommend using Postgres. If you intend to use a local instance you can use the boilerplate solution provided. Use the shell script bellow to set up an local Postgres instance and easily query it:
 
 ```shell
-./setup_local_db.sh 
+./docker/setup_local_db.sh 
 ```
 The script will 
 * Setup a dockernized Postgres database "STOCK_ANALYZER" with volume mapped to /Documents/postgres/stock_analyzer_volume
@@ -110,7 +110,7 @@ To access PgAdmin, login in localhost:8080/ than go to servers (right click) -> 
 
 Remember to shutdown services with:
 ```shell
-docker compose down
+docker compose -f docker/docker-compose.yml down 
 ```
 
 
